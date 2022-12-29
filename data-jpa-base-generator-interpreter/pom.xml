@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>data-jpa-base-generator-interpreter</artifactId>
+
+  <name>Data Jpa Base Generator Interpreter</name>
+  <description>基于类快速生成Jpa Specification的框架工具中的注解解释器内容.</description>
+  <organization></organization>
+  <url>https://github.com/FSixteen/data-jpa-base-generator</url>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>FSixteen</name>
+    </developer>
+  </developers>
+
+  <scm>
+    <url>https://github.com/FSixteen/data-jpa-base-generator</url>
+    <connection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</connection>
+    <developerConnection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</developerConnection>
+    <tag>data-jpa-base-generator-interpreter</tag>
+  </scm>
+
+  <parent>
+    <groupId>io.github.fsixteen</groupId>
+    <artifactId>data-jpa-base-generator-parent</artifactId>
+    <version>1.0.0</version>
+    <relativePath>..</relativePath>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.github.fsixteen</groupId>
+      <artifactId>data-jpa-base-generator-annotations</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

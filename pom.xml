@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.github.fsixteen</groupId>
+  <artifactId>data-jpa-base-generator-parent</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+
+  <name>Data Jpa Base Generator Parent</name>
+  <description>基于类快速生成Jpa Specification的框架工具.</description>
+  <organization></organization>
+  <url>https://github.com/FSixteen/data-jpa-base-generator</url>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>FSixteen</name>
+    </developer>
+  </developers>
+
+  <scm>
+    <url>https://github.com/FSixteen/data-jpa-base-generator</url>
+    <connection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</connection>
+    <developerConnection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</developerConnection>
+    <tag>data-jpa-base-generator</tag>
+  </scm>
+
+  <properties>
+    <java.version>8</java.version>
+    <encoding>UTF-8</encoding>
+    <!-- 指定JDK版本 -->
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <maven.compiler.compilerVersion>${java.version}</maven.compiler.compilerVersion>
+    <!-- 编译时的编码 -->
+    <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
+    <maven.compiler.encoding>${encoding}</maven.compiler.encoding>
+    <argLine>-Dfile.encoding=${encoding}</argLine>
+  </properties>
+
+  <modules>
+    <module>data-jpa-base-generator-annotations</module>
+    <module>data-jpa-base-generator-interpreter</module>
+    <module>data-jpa-generator-base-service</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.7.36</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.fsixteen</groupId>
+        <artifactId>common-response-structure</artifactId>
+        <version>1.0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-annotations</artifactId>
+        <version>1.6.9</version>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger.core.v3</groupId>
+        <artifactId>swagger-annotations</artifactId>
+        <version>2.2.7</version>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.persistence</groupId>
+        <artifactId>jakarta.persistence-api</artifactId>
+        <version>2.2.3</version>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.validation</groupId>
+        <artifactId>jakarta.validation-api</artifactId>
+        <version>2.0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>5.6.14.Final</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-jpa</artifactId>
+        <version>2.7.6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>5.3.24</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>5.3.24</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.10.1</version>
+          <executions>
+            <execution>
+              <id>default</id>
+              <goals>
+                <goal>compile</goal>
+              </goals>
+              <configuration>
+                <source>${java.version}</source>
+                <target>${java.version}</target>
+              </configuration>
+            </execution>
+            <execution>
+              <id>jdk11</id>
+              <goals>
+                <goal>compile</goal>
+              </goals>
+              <configuration>
+                <release>11</release>
+                <multiReleaseOutput>true</multiReleaseOutput>
+              </configuration>
+            </execution>
+            <execution>
+              <id>jdk15</id>
+              <goals>
+                <goal>compile</goal>
+              </goals>
+              <configuration>
+                <release>15</release>
+                <multiReleaseOutput>true</multiReleaseOutput>
+              </configuration>
+            </execution>
+            <execution>
+              <id>jdk17</id>
+              <goals>
+                <goal>compile</goal>
+              </goals>
+              <configuration>
+                <release>17</release>
+                <multiReleaseOutput>true</multiReleaseOutput>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>
