@@ -22,18 +22,20 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.Annotation
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
 
 /**
+ * 夸表包含条件.<br>
+ * {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.InTable}注解解释器.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */
-public class InTableBuilderPlugin extends ComputerBuilderPlugin<InTable> {
+public class InTableBuilderPlugin extends AbstractComputerBuilderPlugin<InTable> {
+
     private static final Logger log = LoggerFactory.getLogger(InTableBuilderPlugin.class);
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public ComputerDescriptor<InTable> toPredicate(AnnotationDescriptor<InTable> ad, Object obj, Root<?> root, AbstractQuery<?> query, CriteriaBuilder cb) {
         try {
-            InTable anno = ad.getAnno();
-
             Object fieldValue = this.trimIfPresent(ad, ad.getValueFieldPd().getReadMethod().invoke(obj));
 
             if (ad.isRequired() && Objects.isNull(fieldValue)) {
@@ -52,6 +54,7 @@ public class InTableBuilderPlugin extends ComputerBuilderPlugin<InTable> {
                 return null;
             }
 
+            InTable anno = ad.getAnno();
             Subquery<?> subQuery = query.subquery(anno.targetEntity());
             Root<?> subRoot = subQuery.from(anno.targetEntity());
             subQuery.select(subRoot.get(anno.referencedColumnName()));
@@ -72,4 +75,5 @@ public class InTableBuilderPlugin extends ComputerBuilderPlugin<InTable> {
         }
         return null;
     }
+
 }

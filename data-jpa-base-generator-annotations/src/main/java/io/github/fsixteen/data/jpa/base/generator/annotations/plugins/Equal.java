@@ -10,7 +10,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import io.github.fsixteen.data.jpa.base.generator.annotations.GroupInfo;
-import io.github.fsixteen.data.jpa.base.generator.annotations.MultipleConditions;
 import io.github.fsixteen.data.jpa.base.generator.annotations.Selectable;
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ValueType;
@@ -19,7 +18,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal.List
 /**
  * 等值条件(select * from table_name where column_name = 'abc').<br>
  * 当且仅当参与计算值类型或函数返回值类型为{@code java.lang.Comparable}时有效.<br>
- * 
+ *
  * @author FSixteen
  * @since V1.0.0
  */
@@ -41,7 +40,7 @@ public @interface Equal {
     /**
      * 条件查询分组, 默认独立组<code>@GroupInfo("default", 0)</code>. <br>
      * 当<code>groups</code>值大于<code>1</code>组时, 该条件可以被多条件查询分组复用.
-     * 
+     *
      * @return GroupInfo[]
      */
     GroupInfo[] groups() default { @GroupInfo };
@@ -63,7 +62,7 @@ public @interface Equal {
     /**
      * 值函数.<br>
      * 当且仅当<code>valueType = ValueType.FUNCTION</code>时有效.<br>
-     * 
+     *
      * @return Function
      */
     ValueProcessorFunction valueProcessor() default @ValueProcessorFunction();
@@ -74,8 +73,9 @@ public @interface Equal {
      * - 为<code>true</code>时, 任何时机均参与计算.<br>
      * <br>
      * - 为<code>false</code>时, 根据{@link #ignoreNull()}, {@link #ignoreEmpty()},
-     * {@link #ignoreBlank()}则机参与计算.<br>
-     * 
+     * {@link
+     * #ignoreBlank()}则机参与计算.<br>
+     *
      * @return boolean
      */
     boolean required() default false;
@@ -134,8 +134,15 @@ public @interface Equal {
     @Target({ FIELD, METHOD })
     @Retention(RUNTIME)
     @Documented
-    @MultipleConditions
     @interface List {
+
+        /**
+         * {@link Equal} 集体.<br>
+         * 
+         * @return {@link Equal}[]
+         */
         Equal[] value();
+
     }
+
 }

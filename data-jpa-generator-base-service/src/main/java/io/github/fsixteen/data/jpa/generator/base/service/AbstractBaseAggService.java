@@ -60,8 +60,8 @@ public abstract class AbstractBaseAggService implements BaseAggService {
     private void setQueryWhere(Object obj, CriteriaBuilder cb, CriteriaQuery<GroupEntity> query, Root<?> root) {
         if (Objects.nonNull(obj)) {
             AnnotationCollection computer = CollectionCache.getAnnotationCollection(obj.getClass());
-            Predicate[] list = ComputerCollection.Builder.of().setAc(computer).setArgs(obj).setSpecification(root, query, cb).build(BuilderType.SELECTED)
-                    .getPredicateArray();
+            Predicate[] list = ComputerCollection.Builder.of().setAnnotationCollection(computer).setArgs(obj).setSpecification(root, query, cb)
+                    .build(BuilderType.SELECTED).getPredicateArray(cb);
             query.where(cb.and(list));
         }
     }

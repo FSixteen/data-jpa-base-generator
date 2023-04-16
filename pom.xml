@@ -75,6 +75,11 @@
         <version>2.2.8</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-core</artifactId>
+        <version>9.0.73</version>
+      </dependency>
+      <dependency>
         <groupId>jakarta.persistence</groupId>
         <artifactId>jakarta.persistence-api</artifactId>
         <version>2.2.3</version>
@@ -157,8 +162,140 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.3.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.2.1</version>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.4.1</version>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <doclint>all,-syntax</doclint>
+            <charset>${encoding}</charset>
+            <encoding>${encoding}</encoding>
+            <docencoding>${encoding}</docencoding>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>3.2.1</version>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>10.7.0</version>
+            </dependency>
+            <dependency>
+              <groupId>io.github.fsixteen</groupId>
+              <artifactId>code-formatter-resources</artifactId>
+              <version>1.0.0</version>
+            </dependency>
+          </dependencies>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <consoleOutput>true</consoleOutput>
+            <failsOnError>true</failsOnError>
+            <linkXRef>false</linkXRef>
+            <configLocation>checks.xml</configLocation>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>com.diffplug.spotless</groupId>
+          <artifactId>spotless-maven-plugin</artifactId>
+          <version>2.33.0</version>
+          <dependencies>
+            <dependency>
+              <groupId>io.github.fsixteen</groupId>
+              <artifactId>code-formatter-resources</artifactId>
+              <version>1.0.0</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <formats>
+              <format>
+                <includes>
+                  <include>*.md</include>
+                  <include>.gitignore</include>
+                </includes>
+                <trimTrailingWhitespace />
+                <endWithNewline />
+                <indent>
+                  <tabs>false</tabs>
+                  <spaces>true</spaces>
+                  <spacesPerTab>4</spacesPerTab>
+                </indent>
+              </format>
+            </formats>
+            <java>
+              <includes>
+                <include>src/main/**/*.java</include>
+                <include>src/test/**/*.java</include>
+              </includes>
+              <importOrder>
+                <order>java,javax,org,com,io</order>
+              </importOrder>
+              <removeUnusedImports />
+              <eclipse>
+                <version>4.21.0</version>
+                <file>formatter.xml</file>
+              </eclipse>
+            </java>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>verify</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>3.0.1</version>
+          <executions>
+            <execution>
+              <id>sign-artifacts</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>sign</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
-
 </project>

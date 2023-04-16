@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 /**
  * 逻辑处理器.<br>
- * 
+ *
  * @author FSixteen
  * @since V1.0.0
  */
@@ -18,7 +18,12 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 public @interface Constraint {
 
-    @Alias(value = "value")
+    /**
+     * 逻辑处理器执行类<br>
+     * .
+     * 
+     * @return Class&lt;?&gt;
+     */
     Class<?> processorBy() default Void.class;
 
 }

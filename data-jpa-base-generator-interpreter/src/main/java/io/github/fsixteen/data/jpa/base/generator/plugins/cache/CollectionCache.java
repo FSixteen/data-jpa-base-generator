@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import io.github.fsixteen.data.jpa.base.generator.plugins.collections.AnnotationCollection;
 
 /**
+ * 类注解描述信息集合缓存.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */
@@ -17,9 +19,8 @@ public final class CollectionCache {
     /**
      * 计算参数计算的内容.<br>
      *
-     * @param clazz
+     * @param clazz 参与请求计算的实例类
      */
-
     public static AnnotationCollection getAnnotationCollection(Class<?> clazz) {
         if (!CONPUTERS.containsKey(clazz) || CONPUTERS.get(clazz).isEmpty()) {
             synchronized (CollectionCache.class) {

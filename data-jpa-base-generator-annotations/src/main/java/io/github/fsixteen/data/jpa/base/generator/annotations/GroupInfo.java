@@ -19,12 +19,18 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
 @Documented
 public @interface GroupInfo {
 
-    @Alias(value = "name")
+    /**
+     * 条件分组名称.<br>
+     * 
+     * @return String
+     */
     String value() default Constant.DEFAULT;
 
-    @Alias(value = "value")
-    String name() default Constant.DEFAULT;
-
+    /**
+     * 条件顺序.<br>
+     * 
+     * @return int
+     */
     int order() default 0;
 
 }

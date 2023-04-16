@@ -7,18 +7,28 @@ import java.lang.reflect.Method;
 import java.util.function.Function;
 
 /**
+ * 字段获取工具.
+ * 
  * @author FSixteen
  * @since V1.0.0
  */
 public class FieldUtil {
 
+    /**
+     * 表示接受一个参数并产生结果的函数.<br>
+     * 
+     * @param <T> 入参类型
+     * @param <R> 出参类型
+     * @author FSixteen
+     * @since V1.0.0
+     */
     @FunctionalInterface
     public static interface SFunction<T, R> extends Function<T, R>, Serializable {
     }
 
     /**
      * 将bean属性的get方法, 作为lambda表达式传入时, 获取get方法对应的属性Field.<br>
-     * 
+     *
      * @param <T> 泛型
      * @param fn  lambda表达式, bean的属性的get方法
      * @return String
@@ -29,7 +39,7 @@ public class FieldUtil {
 
     /**
      * 将bean属性的get方法, 作为lambda表达式传入时, 获取get方法对应的属性Field.<br>
-     * 
+     *
      * @param <T> 泛型
      * @param fn  lambda表达式, bean的属性的get方法
      * @return Field
@@ -54,6 +64,6 @@ public class FieldUtil {
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
-
     }
+
 }

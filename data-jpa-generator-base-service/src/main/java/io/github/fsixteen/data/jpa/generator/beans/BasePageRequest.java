@@ -6,6 +6,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 /**
+ * 分页请求接口.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */

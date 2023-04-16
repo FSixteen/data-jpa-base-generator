@@ -25,11 +25,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 
 /**
+ * 基础查询Controller.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */
 public interface BaseSelectController<SI extends BaseSelectService<T, ID, S>, T extends IdEntity<ID>, ID extends Serializable, S extends Entity & BasePageRequest>
         extends BaseCommonController {
+
     static final Logger log = LoggerFactory.getLogger(BaseSelectController.class);
 
     public SI getService();
@@ -37,7 +40,7 @@ public interface BaseSelectController<SI extends BaseSelectService<T, ID, S>, T 
     /**
      * 后置处理器.
      *
-     * @return
+     * @return BiConsumer&lt;List&lt;T&gt;, Response&lt;List&lt;T&gt;, Void&gt;&gt;
      */
     default BiConsumer<List<T>, Response<List<T>, Void>> selectPostprocessor() {
         return (e, r) -> {

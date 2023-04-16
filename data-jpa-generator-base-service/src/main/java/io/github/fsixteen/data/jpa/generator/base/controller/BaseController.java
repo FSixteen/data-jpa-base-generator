@@ -8,6 +8,8 @@ import io.github.fsixteen.data.jpa.generator.base.service.BaseService;
 import io.github.fsixteen.data.jpa.generator.beans.BasePageRequest;
 
 /**
+ * 基础Controller.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */

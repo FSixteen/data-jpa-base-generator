@@ -18,13 +18,20 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDe
 
 /**
  * 有关{@link java.lang.Comparable}类型计算内容的注解解释器.<br>
- * 
+ *
  * @author FSixteen
  * @since V1.0.0
  */
-public class ComparableBuilderPlugin extends ComputerBuilderPlugin<Annotation> {
+public class ComparableBuilderPlugin extends AbstractComputerBuilderPlugin<Annotation> {
+
     private static final Logger log = LoggerFactory.getLogger(ComparableBuilderPlugin.class);
 
+    /**
+     * {@link ComparableBuilderPlugin}执行方式.<br>
+     * 
+     * @author FSixteen
+     * @since V1.0.0
+     */
     public static enum ComparableType {
         GT, GTE, LT, LTE, EQ
     }
@@ -84,6 +91,7 @@ public class ComparableBuilderPlugin extends ComputerBuilderPlugin<Annotation> {
                                     return this.<Comparable<?>>applyValueProcessor(ad, obj, root, query, cb);
                                 } catch (ReflectiveOperationException e) {
                                     log.error(e.getMessage(), e);
+                                    return null;
                                 }
                             default:
                                 return null;
@@ -115,4 +123,5 @@ public class ComparableBuilderPlugin extends ComputerBuilderPlugin<Annotation> {
         }
         return null;
     }
+
 }

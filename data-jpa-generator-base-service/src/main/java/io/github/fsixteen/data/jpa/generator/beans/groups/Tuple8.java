@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
+ * 八元元组分组.<br>
+ * 包含固定分组统计值.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */

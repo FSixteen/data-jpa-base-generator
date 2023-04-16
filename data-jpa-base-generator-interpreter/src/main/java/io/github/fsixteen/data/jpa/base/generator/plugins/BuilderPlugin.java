@@ -19,27 +19,34 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.Annotation
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
 
 /**
+ * 注解解释器接口.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */
 public interface BuilderPlugin<AN extends Annotation> {
+
     static final Map<Class<? extends ValueProcessor>, ValueProcessor> VALUE_PROCESSOR_CACHE = new ConcurrentHashMap<>(32);
     static Logger log = LoggerFactory.getLogger(BuilderPlugin.class);
 
     /**
-     * @param ad
-     * @param obj
-     * @param root
-     * @param query
-     * @param cb
+     * 接口创建注解逻辑描述信息.<br>
+     * 
+     * @param ad    注解描述信息实例
+     * @param obj   原实例.
+     * @param root  见{@link javax.persistence.criteria.Root}.
+     * @param query 见{@link javax.persistence.criteria.AbstractQuery}.
+     * @param cb    见{@link javax.persistence.criteria.CriteriaBuilder}.
      * @return ComputerDescriptor&lt;AN&gt;
      */
     ComputerDescriptor<AN> toPredicate(AnnotationDescriptor<AN> ad, Object obj, Root<?> root, AbstractQuery<?> query, CriteriaBuilder cb);
 
     /**
-     * @param ad
-     * @param root
-     * @param cb
+     * 创建等于空值的注解逻辑描述信息.<br>
+     * 
+     * @param ad   注解描述信息实例
+     * @param root 见{@link javax.persistence.criteria.Root}.
+     * @param cb   见{@link javax.persistence.criteria.CriteriaBuilder}.
      * @return ComputerDescriptor&lt;AN&gt;
      */
     default ComputerDescriptor<AN> toNullValuePredicate(final AnnotationDescriptor<AN> ad, final Root<?> root, final CriteriaBuilder cb) {
@@ -47,14 +54,16 @@ public interface BuilderPlugin<AN extends Annotation> {
     }
 
     /**
-     * @param &lt;T&gt;
-     * @param ad
-     * @param obj
-     * @param root
-     * @param query
-     * @param cb
+     * 值函数执行类执行返回{@link Expression}.<br>
+     * 
+     * @param <T>   返回计算数据类型
+     * @param ad    注解描述信息实例
+     * @param obj   原实例.
+     * @param root  见{@link javax.persistence.criteria.Root}.
+     * @param query 见{@link javax.persistence.criteria.AbstractQuery}.
+     * @param cb    见{@link javax.persistence.criteria.CriteriaBuilder}.
      * @return Expression&lt;T&gt;
-     * @throws ReflectiveOperationException
+     * @throws ReflectiveOperationException 值函数执行类实例化异常
      */
     default <T> Expression<T> applyValueProcessor(final AnnotationDescriptor<AN> ad, final Object obj, final Root<?> root, final AbstractQuery<?> query,
             final CriteriaBuilder cb) throws ReflectiveOperationException {
@@ -67,14 +76,16 @@ public interface BuilderPlugin<AN extends Annotation> {
     }
 
     /**
-     * @param &lt;T&gt;
-     * @param ad
-     * @param obj
-     * @param root
-     * @param query
-     * @param cb
+     * 值函数执行类执行返回{@link Expression}.<br>
+     * 
+     * @param <T>   返回计算数据类型
+     * @param ad    注解描述信息实例
+     * @param obj   原实例.
+     * @param root  见{@link javax.persistence.criteria.Root}.
+     * @param query 见{@link javax.persistence.criteria.AbstractQuery}.
+     * @param cb    见{@link javax.persistence.criteria.CriteriaBuilder}.
      * @return Expression&lt;T&gt;[]
-     * @throws ReflectiveOperationException
+     * @throws ReflectiveOperationException 值函数执行类实例化异常
      */
     default <T> Expression<T>[] applyBiValueProcessor(final AnnotationDescriptor<AN> ad, final Object obj, final Root<?> root, final AbstractQuery<?> query,
             final CriteriaBuilder cb) throws ReflectiveOperationException {
@@ -88,10 +99,10 @@ public interface BuilderPlugin<AN extends Annotation> {
 
     /**
      * 按需逻辑反转(If necessary, create a negation of the given restriction).
-     * 
-     * @param ad
-     * @param predicate
-     * @param cb
+     *
+     * @param ad        注解描述信息实例
+     * @param predicate 见{@link javax.persistence.criteria.Predicate}
+     * @param cb        见{@link javax.persistence.criteria.CriteriaBuilder}.
      * @return Predicate
      */
     default Predicate logicReverse(final AnnotationDescriptor<AN> ad, final Predicate predicate, final CriteriaBuilder cb) {
@@ -99,8 +110,11 @@ public interface BuilderPlugin<AN extends Annotation> {
     }
 
     /**
-     * @param ad
-     * @param obj
+     * 支持字符串两端空白字符.<br>
+     * 
+     * @param ad  注解描述信息实例
+     * @param obj 原实例.
+     * @see java.lang.String#trim()
      * @return Object
      */
     default Object trimIfPresent(final AnnotationDescriptor<AN> ad, final Object obj) {
@@ -108,7 +122,10 @@ public interface BuilderPlugin<AN extends Annotation> {
     }
 
     /**
-     * @param ad
+     * 打印日志.<br>
+     * *
+     * 
+     * @param ad 注解描述信息实例
      */
     default void printWarn(AnnotationDescriptor<AN> ad) {
         if (log.isDebugEnabled()) {

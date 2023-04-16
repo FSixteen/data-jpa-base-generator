@@ -39,7 +39,14 @@ public class GroupColumnUtils {
         return Column.of(column);
     }
 
+    /**
+     * {@link Column} 构造器.
+     * 
+     * @author FSixteen
+     * @since V1.0.0
+     */
     public static class Builder {
+
         List<Column> cs = new ArrayList<>();
 
         private Builder() {
@@ -76,7 +83,14 @@ public class GroupColumnUtils {
 
     }
 
+    /**
+     * 分组计算字段.
+     * 
+     * @author FSixteen
+     * @since V1.0.0
+     */
     public static class Column {
+
         private GroupColumnType type = GroupColumnType.VALUE;
         private boolean readOnly;
         private String fieldOrFun;
@@ -90,20 +104,20 @@ public class GroupColumnUtils {
             return new Column(false, GroupColumnType.VALUE, literal, null);
         }
 
-        public static Column field(final String field) {
-            return new Column(false, GroupColumnType.FIELD, field, null);
-        }
-
-        public static Column fun(final String fun, final Column[] args) {
-            return new Column(false, GroupColumnType.FIELD, fun, args);
-        }
-
         private static Column literal(final boolean readOnly, final String literal) {
             return new Column(readOnly, GroupColumnType.VALUE, literal, null);
         }
 
+        public static Column field(final String field) {
+            return new Column(false, GroupColumnType.FIELD, field, null);
+        }
+
         private static Column field(final boolean readOnly, final String field) {
             return new Column(readOnly, GroupColumnType.FIELD, field, null);
+        }
+
+        public static Column fun(final String fun, final Column[] args) {
+            return new Column(false, GroupColumnType.FIELD, fun, args);
         }
 
         private static Column fun(final boolean readOnly, final String fun, final Column[] args) {
@@ -115,8 +129,8 @@ public class GroupColumnUtils {
          * '[read@@]fun@@funname[::(${fieldname}|literal)][::(${fieldname}|literal)]...'
          * <br>
          * '[read@@]fieldname' <br>
-         * 
-         * @param column
+         *
+         * @param column 字段信息
          */
         public Column(final String column) {
             if (column.startsWith(READONLY_POSTFIX)) {
@@ -172,7 +186,6 @@ public class GroupColumnUtils {
                         }
                     }
                     return Optional.ofNullable(cb.function(this.fieldOrFun, Object.class, params));
-
             }
         }
 
@@ -208,6 +221,7 @@ public class GroupColumnUtils {
             }
             return out.toString();
         }
+
     }
 
 }

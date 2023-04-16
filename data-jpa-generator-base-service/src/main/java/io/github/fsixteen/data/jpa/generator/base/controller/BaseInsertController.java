@@ -17,6 +17,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 
 /**
+ * 基础添加Controller.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */

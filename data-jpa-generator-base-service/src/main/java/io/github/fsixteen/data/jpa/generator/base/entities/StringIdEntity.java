@@ -7,6 +7,7 @@ package io.github.fsixteen.data.jpa.generator.base.entities;
  * @since V1.0.0
  */
 public class StringIdEntity implements IdEntity<String> {
+
     private static final long serialVersionUID = 1L;
 
     public String id;

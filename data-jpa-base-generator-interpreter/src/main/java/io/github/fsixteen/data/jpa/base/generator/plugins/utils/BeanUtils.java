@@ -7,6 +7,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
+ * Bean 工具类.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */
@@ -15,7 +17,7 @@ public class BeanUtils {
     /**
      * 获取类的所有字段内容, 含超类.<br>
      *
-     * @param clazz
+     * @param clazz 任意类.
      * @return Field[]
      */
     public static Field[] getAllFields(Class<?> clazz) {

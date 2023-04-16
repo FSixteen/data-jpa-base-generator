@@ -21,15 +21,16 @@ import io.github.fsixteen.data.jpa.generator.constants.GroupResponseType;
  * @since V1.0.0
  */
 public interface BaseAggService {
+
     static final Logger log = LoggerFactory.getLogger(BaseAggService.class);
 
     /**
      * 通用分组.
-     * 
-     * @param request
-     * @param response
-     * @param clazz
-     * @param groupColumns
+     *
+     * @param request      见{@link javax.servlet.http.HttpServletRequest}
+     * @param response     见{@link javax.servlet.http.HttpServletResponse}
+     * @param clazz        请求实体类
+     * @param groupColumns 分组字段
      * @return Object
      */
     default Object group(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, String... groupColumns) {
@@ -38,12 +39,12 @@ public interface BaseAggService {
 
     /**
      * 通用分组.
-     * 
-     * @param request
-     * @param response
-     * @param clazz
-     * @param obj
-     * @param groupColumns
+     *
+     * @param request      见{@link javax.servlet.http.HttpServletRequest}
+     * @param response     见{@link javax.servlet.http.HttpServletResponse}
+     * @param clazz        请求实体类
+     * @param obj          请求实体
+     * @param groupColumns 分组字段
      * @return Object
      */
     default Object group(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, Object obj, String... groupColumns) {
@@ -52,12 +53,12 @@ public interface BaseAggService {
 
     /**
      * 通用分组.
-     * 
-     * @param request
-     * @param response
-     * @param type
-     * @param clazz
-     * @param groupColumns
+     *
+     * @param request      见{@link javax.servlet.http.HttpServletRequest}
+     * @param response     见{@link javax.servlet.http.HttpServletResponse}
+     * @param type         数据应答类型
+     * @param clazz        请求实体类
+     * @param groupColumns 分组字段
      * @return Object
      */
     default Object group(HttpServletRequest request, HttpServletResponse response, @NotNull GroupResponseType type, Class<?> clazz, String... groupColumns) {
@@ -67,29 +68,29 @@ public interface BaseAggService {
     /**
      * 通用分组.
      *
-     * @param request
-     * @param response
-     * @param type
-     * @param clazz
-     * @param obj
-     * @param groupColumns
-     * @return
+     * @param request      见{@link javax.servlet.http.HttpServletRequest}
+     * @param response     见{@link javax.servlet.http.HttpServletResponse}
+     * @param type         数据应答类型
+     * @param clazz        请求实体类
+     * @param obj          请求实体
+     * @param groupColumns 分组字段
+     * @return Object
      */
     public Object group(HttpServletRequest request, HttpServletResponse response, @NotNull GroupResponseType type, Class<?> clazz, Object obj,
             String... groupColumns);
 
     /**
      * 通用绘图分组.
-     * 
-     * @param <T>
-     * @param request
-     * @param response
-     * @param clazz
-     * @param unit
-     * @param st
-     * @param et
-     * @param valueFuns
-     * @param groupColumns
+     *
+     * @param <T>          条件实体类
+     * @param request      见{@link javax.servlet.http.HttpServletRequest}
+     * @param response     见{@link javax.servlet.http.HttpServletResponse}
+     * @param clazz        请求实体类
+     * @param unit         时间单位
+     * @param st           开始时间(含)
+     * @param et           结束时间(含)
+     * @param valueFuns    值获取函数(数组)
+     * @param groupColumns 分组字段
      * @return Object
      */
     default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, GroupDateTimeUnit unit, Date st, Date et,
@@ -99,16 +100,16 @@ public interface BaseAggService {
 
     /**
      * 通用绘图分组.
-     * 
-     * @param <T>
-     * @param request
-     * @param response
-     * @param clazz
-     * @param unit
-     * @param st
-     * @param et
-     * @param valueFuns
-     * @param groupColumns
+     *
+     * @param <T>          条件实体类
+     * @param request      见{@link javax.servlet.http.HttpServletRequest}
+     * @param response     见{@link javax.servlet.http.HttpServletResponse}
+     * @param clazz        请求实体类
+     * @param unit         时间单位
+     * @param st           开始时间(含)
+     * @param et           结束时间(含)
+     * @param valueFuns    值获取函数(数组)
+     * @param groupColumns 分组字段
      * @return Object
      */
     default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, Function<T, GroupDateTimeUnit> unit,
@@ -118,17 +119,17 @@ public interface BaseAggService {
 
     /**
      * 通用绘图分组.
-     * 
-     * @param <T>
-     * @param request
-     * @param response
-     * @param clazz
-     * @param unit
-     * @param st
-     * @param et
-     * @param labelFun
-     * @param valueFuns
-     * @param groupColumns
+     *
+     * @param <T>          条件实体类
+     * @param request      见{@link javax.servlet.http.HttpServletRequest}
+     * @param response     见{@link javax.servlet.http.HttpServletResponse}
+     * @param clazz        请求实体类
+     * @param unit         时间单位
+     * @param st           开始时间(含)
+     * @param et           结束时间(含)
+     * @param labelFun     标题获取函数
+     * @param valueFuns    值获取函数(数组)
+     * @param groupColumns 分组字段
      * @return Object
      */
     default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, GroupDateTimeUnit unit, Date st, Date et,
@@ -138,17 +139,17 @@ public interface BaseAggService {
 
     /**
      * 通用绘图分组.
-     * 
-     * @param <T>
-     * @param request
-     * @param response
-     * @param clazz
-     * @param unit
-     * @param st
-     * @param et
-     * @param labelFun
-     * @param valueFuns
-     * @param groupColumns
+     *
+     * @param <T>          条件实体类
+     * @param request      见{@link javax.servlet.http.HttpServletRequest}
+     * @param response     见{@link javax.servlet.http.HttpServletResponse}
+     * @param clazz        请求实体类
+     * @param unit         时间单位
+     * @param st           开始时间(含)
+     * @param et           结束时间(含)
+     * @param labelFun     标题获取函数
+     * @param valueFuns    值获取函数(数组)
+     * @param groupColumns 分组字段
      * @return Object
      */
     default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, Function<T, GroupDateTimeUnit> unit,
@@ -159,17 +160,17 @@ public interface BaseAggService {
 
     /**
      * 通用绘图分组.
-     * 
-     * @param <T>
-     * @param request
-     * @param response
-     * @param clazz
-     * @param obj
-     * @param unit
-     * @param st
-     * @param et
-     * @param valueFuns
-     * @param groupColumns
+     *
+     * @param <T>          条件实体类
+     * @param request      见{@link javax.servlet.http.HttpServletRequest}
+     * @param response     见{@link javax.servlet.http.HttpServletResponse}
+     * @param clazz        请求实体类
+     * @param obj          请求实体
+     * @param unit         时间单位
+     * @param st           开始时间(含)
+     * @param et           结束时间(含)
+     * @param valueFuns    值获取函数(数组)
+     * @param groupColumns 分组字段
      * @return Object
      */
     default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, T obj, GroupDateTimeUnit unit, Date st, Date et,
@@ -179,18 +180,18 @@ public interface BaseAggService {
 
     /**
      * 通用绘图分组.
-     * 
-     * @param <T>
-     * @param request
-     * @param response
-     * @param clazz
-     * @param obj
-     * @param unit
-     * @param st
-     * @param et
-     * @param labelFun
-     * @param valueFuns
-     * @param groupColumns
+     *
+     * @param <T>          条件实体类
+     * @param request      见{@link javax.servlet.http.HttpServletRequest}
+     * @param response     见{@link javax.servlet.http.HttpServletResponse}
+     * @param clazz        请求实体类
+     * @param obj          请求实体
+     * @param unit         时间单位
+     * @param st           开始时间(含)
+     * @param et           结束时间(含)
+     * @param labelFun     标题获取函数
+     * @param valueFuns    值获取函数(数组)
+     * @param groupColumns 分组字段
      * @return Object
      */
     default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, T obj, GroupDateTimeUnit unit, Date st, Date et,
@@ -200,18 +201,18 @@ public interface BaseAggService {
 
     /**
      * 通用绘图分组.
-     * 
-     * @param <T>
-     * @param request
-     * @param response
-     * @param clazz
-     * @param obj
-     * @param unit
-     * @param st
-     * @param et
-     * @param labelFun
-     * @param valueFuns
-     * @param groupColumns
+     *
+     * @param <T>          条件实体类
+     * @param request      见{@link javax.servlet.http.HttpServletRequest}
+     * @param response     见{@link javax.servlet.http.HttpServletResponse}
+     * @param clazz        请求实体类
+     * @param obj          请求实体
+     * @param unit         时间单位
+     * @param st           开始时间(含)
+     * @param et           结束时间(含)
+     * @param labelFun     标题获取函数
+     * @param valueFuns    值获取函数(数组)
+     * @param groupColumns 分组字段
      * @return Object
      */
     public <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, T obj, Function<T, GroupDateTimeUnit> unit,

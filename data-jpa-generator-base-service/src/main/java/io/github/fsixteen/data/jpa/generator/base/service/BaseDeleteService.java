@@ -26,11 +26,14 @@ import io.github.fsixteen.data.jpa.generator.exception.DataNonExistException;
  * @since V1.0.0
  */
 public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializable, D extends IdEntity<ID>> {
+
     static final Logger log = LoggerFactory.getLogger(BaseDeleteService.class);
 
+    public BaseDao<T, ID> getDao();
+
     /**
-     * 元素不存在时提示内容.
-     * 
+     * 元素不存在时提示内容.<br>
+     *
      * @return StatusInterface
      */
     default StatusInterface deleteNonDataExceptionStatus() {
@@ -38,8 +41,8 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 元素不存在时提示内容.
-     * 
+     * 元素不存在时提示内容.<br>
+     *
      * @return String
      */
     default String deleteNonDataExceptionMessage() {
@@ -47,19 +50,17 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 元素不存在时提示内容.
-     * 
+     * 元素不存在时提示内容.<br>
+     *
      * @return RuntimeException
      */
     default RuntimeException deleteNonDataException() {
         return new DataNonExistException(this.deleteNonDataExceptionStatus().code(), this.deleteNonDataExceptionMessage());
     }
 
-    public BaseDao<T, ID> getDao();
-
     /**
-     * 删除方式(默认软删除).
-     * 
+     * 删除方式(默认软删除).<br>
+     *
      * @return DeleteType;
      */
     default DeleteType deleteType() {
@@ -67,8 +68,8 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 校验元素是否允许被删除处理器.
-     * 
+     * 校验元素是否允许被删除处理器.<br>
+     *
      * @return Predicate&lt;T&gt;
      */
     default Predicate<T> deleteTest() {
@@ -76,7 +77,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 软删除执行处理器.
+     * 软删除执行处理器.<br>
      *
      * @return Consumer&lt;T&gt;
      */
@@ -91,7 +92,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 元素删除后置处理器.
+     * 元素删除后置处理器.<br>
      *
      * @return Consumer&lt;T&gt;
      */
@@ -104,11 +105,11 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 删除逻辑.
-     * 
-     * @param args
-     * @return T
+     * 删除逻辑.<br>
+     *
+     * @param args 删除实体实例
      * @see #deleteById(Serializable, Predicate, Consumer, Consumer)
+     * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default T delete(D args) {
@@ -116,11 +117,11 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 删除逻辑.
-     * 
-     * @param id
-     * @return T
+     * 删除逻辑.<br>
+     *
+     * @param id 删除实体主键ID
      * @see #deleteById(Serializable, Predicate, Consumer, Consumer)
+     * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default T deleteById(ID id) {
@@ -128,12 +129,12 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 删除逻辑.
-     * 
-     * @param id
-     * @param filter
-     * @return T
+     * 删除逻辑.<br>
+     *
+     * @param id     删除实体主键ID
+     * @param filter 校验元素是否允许被删除处理器
      * @see #deleteById(Serializable, Predicate, Consumer, Consumer)
+     * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default T deleteById(ID id, Predicate<T> filter) {
@@ -141,13 +142,13 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 删除逻辑.
-     * 
-     * @param id
-     * @param filter
-     * @param processor
-     * @return T
+     * 删除逻辑.<br>
+     *
+     * @param id        删除实体主键ID
+     * @param filter    校验元素是否允许被删除处理器
+     * @param processor 删除处理器
      * @see #deleteById(Serializable, Predicate, Consumer, Consumer)
+     * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default T deleteById(ID id, Predicate<T> filter, Consumer<T> processor) {
@@ -155,12 +156,12 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 删除逻辑.
-     * 
+     * 删除逻辑.<br>
+     *
      * @param id            主键
      * @param filter        校验元素是否允许被删除处理器
-     * @param processor     软删除执行处理器
-     * @param postprocessor 元素删除后置处理器
+     * @param processor     删除处理器
+     * @param postprocessor 删除后置处理器
      * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
@@ -184,4 +185,5 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
         }
         return ele;
     }
+
 }

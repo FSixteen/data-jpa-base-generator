@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
+ * 单元元组分组.<br>
+ * 包含固定分组统计值.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */
@@ -17,6 +20,12 @@ public class Tuple {
     @JsonInclude(value = Include.NON_NULL)
     private Object value;
 
+    /**
+     * 构造函数.<br>
+     * 
+     * @param key   Key
+     * @param value Value
+     */
     public Tuple(Object key, Object value) {
         super();
         this.key = key;

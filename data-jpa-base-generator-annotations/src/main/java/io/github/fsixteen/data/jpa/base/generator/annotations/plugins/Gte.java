@@ -10,7 +10,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import io.github.fsixteen.data.jpa.base.generator.annotations.GroupInfo;
-import io.github.fsixteen.data.jpa.base.generator.annotations.MultipleConditions;
 import io.github.fsixteen.data.jpa.base.generator.annotations.Selectable;
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ValueType;
@@ -19,7 +18,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Gte.List;
 /**
  * 大于等于条件(select * from table_name where column_name &gt;= 123).<br>
  * 当且仅当参与计算值类型或函数返回值类型为{@code java.lang.Number}时有效.<br>
- * 
+ *
  * @author FSixteen
  * @since V1.0.0
  */
@@ -31,42 +30,67 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Gte.List;
 public @interface Gte {
 
     /**
-     * @see io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal#scope
+     * 范围查询分组.<br>
+     * 默认同在一组范围查询内.<br>
+     * 
+     * @return String[]
      */
     String[] scope() default Constant.DEFAULT;
 
     /**
-     * @see io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal#groups
+     * 条件查询分组, 默认独立组<code>@GroupInfo("default", 0)</code>. <br>
+     * 当<code>groups</code>值大于<code>1</code>组时, 该条件可以被多条件查询分组复用.
+     *
+     * @return GroupInfo[]
      */
     GroupInfo[] groups() default { @GroupInfo };
 
     /**
-     * @see io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal#field
+     * 参与计算的最终字段. 不指定默认为当前参数字段.<br>
+     *
+     * @return String
      */
     String field() default "";
 
     /**
-     * @see io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal#valueType
+     * 参数字段指向的值类型, 默认为静态数值.<br>
+     *
+     * @return ValueType
      */
     ValueType valueType() default ValueType.VALUE;
 
     /**
-     * @see io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal#valueProcessor
+     * 值函数.<br>
+     * 当且仅当<code>valueType = ValueType.FUNCTION</code>时有效.<br>
+     *
+     * @return Function
      */
     ValueProcessorFunction valueProcessor() default @ValueProcessorFunction();
 
     /**
-     * @see io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal#required
+     * 参与计算方式.<br>
+     * <br>
+     * - 为<code>true</code>时, 任何时机均参与计算.<br>
+     * <br>
+     * - 为<code>false</code>时, 根据{@link #ignoreNull()}则机参与计算.<br>
+     *
+     * @return boolean
      */
     boolean required() default false;
 
     /**
-     * @see io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal#not
+     * 逻辑反向.<br>
+     *
+     * @return boolean
      */
     boolean not() default false;
 
     /**
-     * @see io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal#ignoreNull
+     * 忽略空值.<br>
+     * 当元素为集合, 判断每个元素, 忽略空值.<br>
+     * 当且仅当<code>required = false</code>时有效.<br>
+     *
+     * @return boolean
      */
     boolean ignoreNull() default true;
 
@@ -78,8 +102,15 @@ public @interface Gte {
     @Target({ FIELD, METHOD })
     @Retention(RUNTIME)
     @Documented
-    @MultipleConditions
     @interface List {
+
+        /**
+         * {@link Gte} 集体.<br>
+         * 
+         * @return {@link Gte}[]
+         */
         Gte[] value();
+
     }
+
 }

@@ -2,6 +2,7 @@
 
 !/.gitignore
 !/pom.xml
+!/code-formatter/
 !/data-jpa-base-generator-annotations/
 !/data-jpa-base-generator-interpreter/
 !/data-jpa-generator-base-service/

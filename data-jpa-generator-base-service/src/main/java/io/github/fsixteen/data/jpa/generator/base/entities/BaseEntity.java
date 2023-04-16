@@ -29,6 +29,7 @@ import io.swagger.annotations.ApiModelProperty;
 @JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler", "deleted", "createTime", "updateTime", "deleteTime" })
 @Where(clause = "deleted = false")
 public abstract class BaseEntity<ID extends Serializable> implements IdEntity<ID> {
+
     private static final long serialVersionUID = 1L;
 
     @Column(name = "deleted", nullable = false, unique = false, insertable = false, updatable = true, length = 0, precision = 0, scale = 0, columnDefinition = "boolean NOT NULL DEFAULT 0 COMMENT '删除状态'")

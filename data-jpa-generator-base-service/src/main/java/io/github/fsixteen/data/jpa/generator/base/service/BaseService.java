@@ -17,5 +17,7 @@ import io.github.fsixteen.data.jpa.generator.beans.BasePageRequest;
  */
 public interface BaseService<T extends IdEntity<ID>, ID extends Serializable, I extends Entity, D extends IdEntity<ID>, U extends IdEntity<ID>, S extends Entity & BasePageRequest>
         extends BaseInsertAndSelectService<T, ID, I, S>, BaseDeleteService<T, ID, D>, BaseUpdateService<T, ID, U> {
+
     static final Logger log = LoggerFactory.getLogger(BaseService.class);
+
 }

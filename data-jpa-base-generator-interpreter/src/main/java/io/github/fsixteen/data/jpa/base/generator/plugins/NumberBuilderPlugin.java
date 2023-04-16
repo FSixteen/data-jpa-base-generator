@@ -18,15 +18,37 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDe
 
 /**
  * 有关{@link java.lang.Number}类型计算内容的注解解释器.<br>
- * 
+ *
  * @author FSixteen
  * @since V1.0.0
  */
-public class NumberBuilderPlugin extends ComputerBuilderPlugin<Annotation> {
+public class NumberBuilderPlugin extends AbstractComputerBuilderPlugin<Annotation> {
+
     private static final Logger log = LoggerFactory.getLogger(NumberBuilderPlugin.class);
 
+    /**
+     * {@link NumberBuilderPlugin}执行方式.<br>
+     * 
+     * @author FSixteen
+     * @since V1.0.0
+     */
     public static enum NumberType {
-        GT, GTE, LT, LTE
+        /**
+         * 大于
+         */
+        GT,
+        /**
+         * 大于等于
+         */
+        GTE,
+        /**
+         * 小于
+         */
+        LT,
+        /**
+         * 小于等于
+         */
+        LTE
     }
 
     private NumberType type = NumberType.GT;
@@ -75,6 +97,7 @@ public class NumberBuilderPlugin extends ComputerBuilderPlugin<Annotation> {
                                     return this.<Number>applyValueProcessor(ad, obj, root, query, cb);
                                 } catch (ReflectiveOperationException e) {
                                     log.error(e.getMessage(), e);
+                                    return null;
                                 }
                             default:
                                 return null;
@@ -105,4 +128,5 @@ public class NumberBuilderPlugin extends ComputerBuilderPlugin<Annotation> {
         }
         return null;
     }
+
 }

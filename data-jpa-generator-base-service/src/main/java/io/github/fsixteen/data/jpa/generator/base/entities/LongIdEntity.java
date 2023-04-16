@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
  * @since V1.0.0
  */
 public class LongIdEntity implements IdEntity<Long> {
+
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "主键", requiredMode = RequiredMode.NOT_REQUIRED, hidden = false, example = "110", accessMode = AccessMode.AUTO)

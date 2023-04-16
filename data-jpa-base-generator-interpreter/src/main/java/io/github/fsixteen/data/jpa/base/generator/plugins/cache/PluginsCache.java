@@ -41,6 +41,8 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.SplitInBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.SplitNotInBuilderPlugin;
 
 /**
+ * 注解及注解对应解析器缓存.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */
@@ -79,14 +81,32 @@ public final class PluginsCache {
         PLUGINS.put(Unique.class, new ComparableBuilderPlugin(ComparableType.EQ));
     }
 
+    /**
+     * 判断注解是否存在注解解析器.<br>
+     * 
+     * @param type 注解类
+     * @return boolean
+     */
     public static boolean containsKey(Class<? extends Annotation> type) {
         return PLUGINS.containsKey(type) && Objects.nonNull(PLUGINS.get(type));
     }
 
+    /**
+     * 注册注解解析器.<br>
+     * 
+     * @param type 注解类
+     * @param obj  注解解析器
+     */
     public static void register(Class<? extends Annotation> type, BuilderPlugin<? extends Annotation> obj) {
         PLUGINS.put(type, obj);
     }
 
+    /**
+     * 引用注解解析器.<br>
+     * 
+     * @param type 注解类
+     * @return BuilderPlugin&lt;? extends Annotation>&gt;
+     */
     public static BuilderPlugin<? extends Annotation> reference(Class<? extends Annotation> type) {
         return PLUGINS.get(type);
     }

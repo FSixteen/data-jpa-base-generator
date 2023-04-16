@@ -20,14 +20,38 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.Annotation
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
 
 /**
+ * 有关包含, 不包含某集合类型计算内容的注解解释器.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */
-public class InBuilderPlugin<AN extends Annotation> extends ComputerBuilderPlugin<AN> {
+public class InBuilderPlugin<AN extends Annotation> extends AbstractComputerBuilderPlugin<AN> {
+
     private static final Logger log = LoggerFactory.getLogger(InBuilderPlugin.class);
 
+    /**
+     * {@link InBuilderPlugin}执行方式.<br>
+     * 
+     * @author FSixteen
+     * @since V1.0.0
+     */
     public static enum InType {
-        IN, NOT_IN, SPLIT_IN, SPLIT_NOT_IN
+        /**
+         * 包含
+         */
+        IN,
+        /**
+         * 不包含
+         */
+        NOT_IN,
+        /**
+         * 分割后包含
+         */
+        SPLIT_IN,
+        /**
+         * 分割后不包含
+         */
+        SPLIT_NOT_IN
     }
 
     private InType type = InType.IN;
@@ -85,6 +109,7 @@ public class InBuilderPlugin<AN extends Annotation> extends ComputerBuilderPlugi
                                     return this.<Collection<?>>applyValueProcessor(ad, obj, root, query, cb);
                                 } catch (ReflectiveOperationException e) {
                                     log.error(e.getMessage(), e);
+                                    return null;
                                 }
                             default:
                                 return null;
@@ -110,4 +135,5 @@ public class InBuilderPlugin<AN extends Annotation> extends ComputerBuilderPlugi
         }
         return null;
     }
+
 }

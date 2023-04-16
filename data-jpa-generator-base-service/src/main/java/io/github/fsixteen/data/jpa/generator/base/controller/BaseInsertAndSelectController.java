@@ -8,6 +8,8 @@ import io.github.fsixteen.data.jpa.generator.base.service.BaseInsertAndSelectSer
 import io.github.fsixteen.data.jpa.generator.beans.BasePageRequest;
 
 /**
+ * 基础添加和查询Controller.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */

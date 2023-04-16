@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 
 /**
  * 启用(有效)顺序.<br>
- * 
+ *
  * @author FSixteen
  * @since V1.0.0
  */
@@ -18,5 +18,12 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Documented
 public @interface Order {
+
+    /**
+     * 启用(有效)顺序.<br>
+     * 
+     * @return int
+     */
     int value() default 0;
+
 }

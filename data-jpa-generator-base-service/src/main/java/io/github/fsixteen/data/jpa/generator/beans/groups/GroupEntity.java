@@ -10,6 +10,8 @@ import org.springframework.lang.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
+ * 分组统计实体.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */

@@ -19,6 +19,7 @@ import io.github.fsixteen.data.jpa.generator.base.jpa.BaseDao;
  * @since V1.0.0
  */
 public final class BaseCommonService {
+
     /** DAO对象TYPE信息 */
     private static final Map<Class<?>, Optional<Type[]>> DAO_TYPES = new ConcurrentHashMap<>();
     /** DAO对象Table Class */
@@ -28,9 +29,9 @@ public final class BaseCommonService {
 
     /**
      * 获取{@link Type}对象信息.<br>
-     *
+     * 
      * @param clazz {@link BaseDao} Class对象.
-     * @return {@link BaseDao} Class对象的{@link Type}对象.
+     * @return Optional&lt;Type[]&gt;, Class对象的{@link Type}对象.
      */
     public static Optional<Type[]> getDaoTypes(final Class<?> clazz) {
         if (!DAO_TYPES.containsKey(clazz) || Objects.isNull(DAO_TYPES.get(clazz))) {
@@ -55,11 +56,11 @@ public final class BaseCommonService {
     }
 
     /**
-     * 获取{@link BaseDao}实体Class信息.
+     * 获取{@link BaseDao}实体Class信息.<br>
      *
-     * @param <T>
-     * @param clazz
-     * @return
+     * @param <T>   实体类
+     * @param clazz {@link BaseDao} Class对象.
+     * @return Class&lt;ID&gt;, Class对象的{@link Type}对象.
      */
     @SuppressWarnings("unchecked")
     public static <T> Class<T> getTableClass(final Class<?> clazz) {
@@ -76,11 +77,11 @@ public final class BaseCommonService {
     }
 
     /**
-     * 获取{@link BaseDao}实体主键Class信息.
+     * 获取{@link BaseDao}实体主键Class信息.<br>
      *
-     * @param <ID>
-     * @param clazz
-     * @return
+     * @param <ID>  实体主键类
+     * @param clazz {@link BaseDao} Class对象.
+     * @return Class&lt;ID&gt;, Class对象的{@link Type}对象.
      */
     @SuppressWarnings("unchecked")
     public static <ID> Class<ID> getIdClass(final Class<?> clazz) {

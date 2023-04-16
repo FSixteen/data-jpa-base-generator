@@ -41,13 +41,14 @@ import io.github.fsixteen.data.jpa.generator.exception.DataNonExistException;
  * @since V1.0.0
  */
 public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializable, U extends IdEntity<ID>> {
+
     static final Logger log = LoggerFactory.getLogger(BaseUpdateService.class);
 
     public BaseDao<T, ID> getDao();
 
     /**
-     * 元素不存在时提示内容.
-     * 
+     * 元素不存在时提示内容.<br>
+     *
      * @return StatusInterface
      */
     default StatusInterface updateNonDataExceptionStatus() {
@@ -55,8 +56,8 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 元素不存在时提示内容.
-     * 
+     * 元素不存在时提示内容.<br>
+     *
      * @return String
      */
     default String updateNonDataExceptionMessage() {
@@ -64,8 +65,8 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 元素不存在时提示内容.
-     * 
+     * 元素不存在时提示内容.<br>
+     *
      * @return RuntimeException
      */
     default RuntimeException updateNonDataException() {
@@ -73,8 +74,8 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 状态锁定, 暂无权限提示内容.
-     * 
+     * 状态锁定, 暂无权限提示内容.<br>
+     *
      * @return String
      */
     default String accessDeniedExceptionMessage() {
@@ -82,17 +83,17 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 元素已存在时提示内容(内容被占用等).
-     * 
-     * @return String
+     * 元素已存在时提示内容(内容被占用等).<br>
+     *
+     * @return StatusInterface
      */
     default StatusInterface updateExistedExceptionStatus() {
         return Status.EXISTED_ERROR.get();
     }
 
     /**
-     * 元素已存在时提示内容(内容被占用等).
-     * 
+     * 元素已存在时提示内容(内容被占用等).<br>
+     *
      * @return String
      */
     default String updateExistedExceptionMessage() {
@@ -100,8 +101,8 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 元素已存在时提示内容(内容被占用等).
-     * 
+     * 元素已存在时提示内容(内容被占用等).<br>
+     *
      * @return RuntimeException
      */
     default RuntimeException updateExistedException() {
@@ -109,18 +110,18 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 校验元素是否允许被更新处理器.
-     * 
-     * @return Predicate&lt;U&gt;
+     * 校验元素是否允许被更新处理器.<br>
+     *
+     * @return BiPredicate&lt;U, BaseDao&lt;T, ID&gt;&gt;
      */
     default BiPredicate<U, BaseDao<T, ID>> updateExisted() {
         return (args, dao) -> Boolean.FALSE;
     }
 
     /**
-     * 更新前置处理器.
+     * 更新前置处理器.<br>
      *
-     * @return Consumer&lt;T&gt;
+     * @return Consumer&lt;U&gt;
      */
     default Consumer<U> updatePreprocessor() {
         return (args) -> {
@@ -131,7 +132,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 更新判断器.
+     * 更新判断器.<br>
      *
      * @return Predicate&lt;T&gt;
      */
@@ -140,16 +141,16 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 更新判断器.
+     * 更新判断器.<br>
      *
-     * @return BiPredicate&lt;T&gt;
+     * @return BiPredicate&lt;T, U&gt;
      */
     default BiPredicate<T, U> updateBiTest() {
         return (ele, args) -> this.updateTest().test(ele);
     }
 
     /**
-     * 更新处理器.
+     * 更新处理器.<br>
      *
      * @return Consumer&lt;T&gt;
      */
@@ -162,18 +163,18 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 更新处理器.
+     * 更新处理器.<br>
      *
-     * @return BiConsumer&lt;T&gt;
+     * @return BiConsumer&lt;T, U&gt;
      */
     default BiConsumer<T, U> updateBiProcessor() {
         return (ele, args) -> this.updateProcessor().accept(ele);
     }
 
     /**
-     * 更新后置处理器.
+     * 更新后置处理器.<br>
      *
-     * @return BiConsumer&lt;T&gt;
+     * @return BiConsumer&lt;T, U&gt;
      */
     default BiConsumer<T, U> updatePostprocessor() {
         return (ele, args) -> {
@@ -184,11 +185,11 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 更新逻辑.
+     * 更新逻辑.<br>
      * 
-     * @param args
-     * @return T
+     * @param args 更新实体实例
      * @see #update(BaseEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default T update(U args) {
@@ -196,12 +197,12 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 更新逻辑.
+     * 更新逻辑.<br>
      * 
-     * @param args
-     * @param preprocessor
-     * @return T
+     * @param args         更新实体实例
+     * @param preprocessor 更新前置处理器
      * @see #update(BaseEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default T update(U args, Consumer<U> preprocessor) {
@@ -209,13 +210,13 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 更新逻辑.
+     * 更新逻辑.<br>
      * 
-     * @param args
-     * @param preprocessor
-     * @param filter
-     * @return T
+     * @param args         更新实体实例
+     * @param preprocessor 更新前置处理器
+     * @param filter       更新判断器
      * @see #update(BaseEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default T update(U args, Consumer<U> preprocessor, BiPredicate<T, U> filter) {
@@ -223,13 +224,13 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 更新逻辑.
+     * 更新逻辑.<br>
      * 
-     * @param args
-     * @param filter
-     * @param processor
-     * @return T
+     * @param args      更新实体实例
+     * @param filter    更新判断器
+     * @param processor 更新处理器
      * @see #update(BaseEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default T update(U args, BiPredicate<T, U> filter, BiConsumer<T, U> processor) {
@@ -237,28 +238,28 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 更新逻辑.
-     * 
-     * @param args
-     * @param filter
-     * @param processor
-     * @return T
+     * 更新逻辑.<br>
+     *
+     * @param args      更新实体实例
+     * @param filter    更新判断器
+     * @param processor 更新处理器
      * @see #update(BaseEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default T update(U args, BiPredicate<T, U> filter, Consumer<T> processor) {
-        return update(args, this.updatePreprocessor(), filter, (ele, __) -> processor.accept(ele));
+        return update(args, this.updatePreprocessor(), filter, (ele, temp) -> processor.accept(ele));
     }
 
     /**
-     * 更新逻辑.
+     * 更新逻辑.<br>
      * 
-     * @param args
-     * @param preprocessor
-     * @param filter
-     * @param processor
-     * @return T
+     * @param args         更新实体实例
+     * @param preprocessor 更新前置处理器
+     * @param filter       更新判断器
+     * @param processor    更新处理器
      * @see #update(BaseEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default T update(U args, Consumer<U> preprocessor, BiPredicate<T, U> filter, BiConsumer<T, U> processor) {
@@ -266,13 +267,13 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 更新逻辑.
+     * 更新逻辑.<br>
      * 
-     * @param args
-     * @param preprocessor
-     * @param filter
-     * @param processor
-     * @param postprocessor
+     * @param args          更新实体实例
+     * @param preprocessor  更新前置处理器
+     * @param filter        更新判断器
+     * @param processor     更新处理器
+     * @param postprocessor 更新后置处理器
      * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
@@ -294,7 +295,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
         JsonIncludeProperties includeProperties = args.getClass().getAnnotation(JsonIncludeProperties.class);
         if (Objects.nonNull(includeProperties) && 0 < includeProperties.value().length) {
             List<String> includes = Arrays.asList(includeProperties.value());
-            Set<String> fields = Stream.of(io.github.fsixteen.data.jpa.generator.utils.BeanUtils.getAllFields(args.getClass()))
+            Set<String> fields = Stream.of(io.github.fsixteen.data.jpa.base.generator.plugins.utils.BeanUtils.getAllFields(args.getClass()))
                     .filter(it -> Modifier.isStatic(it.getModifiers())).map(Field::getName).filter(it -> !includes.contains(it)).collect(Collectors.toSet());
             ignoreSet.addAll(fields);
         }
@@ -304,4 +305,5 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
         Optional.ofNullable(postprocessor).ifPresent(it -> it.accept(savedEle, args));
         return savedEle;
     }
+
 }

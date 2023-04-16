@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.NoRepositoryBean;
 
 /**
+ * Base Dao.
+ * 
  * @author FSixteen
  * @since V1.0.0
  */

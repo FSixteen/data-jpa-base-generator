@@ -7,7 +7,7 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.Annotation
 
 /**
  * 有关{@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitNotIn}注解解释器.<br>
- * 
+ *
  * @author FSixteen
  * @since V1.0.0
  */

@@ -19,10 +19,14 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.Annotation
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
 
 /**
+ * 范围条件.<br>
+ * {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Between}注解解释器.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */
-public class BetweenBuilderPlugin extends ComputerBuilderPlugin<Between> {
+public class BetweenBuilderPlugin extends AbstractComputerBuilderPlugin<Between> {
+
     private static final Logger log = LoggerFactory.getLogger(BetweenBuilderPlugin.class);
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -64,6 +68,7 @@ public class BetweenBuilderPlugin extends ComputerBuilderPlugin<Between> {
                                     return cb.between(root.get(ad.getComputerFieldName()), args[0], args[1]);
                                 } catch (ReflectiveOperationException e) {
                                     log.error(e.getMessage(), e);
+                                    return null;
                                 }
                             default:
                                 return null;
@@ -79,4 +84,5 @@ public class BetweenBuilderPlugin extends ComputerBuilderPlugin<Between> {
         }
         return null;
     }
+
 }

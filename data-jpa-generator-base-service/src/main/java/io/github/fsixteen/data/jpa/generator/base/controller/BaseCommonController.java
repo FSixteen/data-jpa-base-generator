@@ -4,6 +4,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
 /**
+ * 基础通用Controller.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */

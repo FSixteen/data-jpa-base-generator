@@ -18,15 +18,41 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDe
 
 /**
  * 有关{@link java.lang.String}类型计算内容的相似注解解释器.<br>
- * 
+ *
  * @author FSixteen
  * @since V1.0.0
  */
-public class LikeBuilderPlugin extends ComputerBuilderPlugin<Annotation> {
+public class LikeBuilderPlugin extends AbstractComputerBuilderPlugin<Annotation> {
+
     private static final Logger log = LoggerFactory.getLogger(LikeBuilderPlugin.class);
 
+    /**
+     * {@link LikeBuilderPlugin}执行方式.<br>
+     * 
+     * @author FSixteen
+     * @since V1.0.0
+     */
     public static enum LikeType {
-        LEFT, RIGHT, CENNTER, START_WITH, END_WITH
+        /**
+         * 左包含
+         */
+        LEFT,
+        /**
+         * 右包含
+         */
+        RIGHT,
+        /**
+         * 任意位置包含
+         */
+        CENNTER,
+        /**
+         * 左包含
+         */
+        START_WITH,
+        /**
+         * 右包含
+         */
+        END_WITH
     }
 
     private LikeType type = LikeType.CENNTER;
@@ -113,6 +139,7 @@ public class LikeBuilderPlugin extends ComputerBuilderPlugin<Annotation> {
                                     }
                                 } catch (ReflectiveOperationException e) {
                                     log.error(e.getMessage(), e);
+                                    return null;
                                 }
                             default:
                                 return null;
@@ -130,4 +157,5 @@ public class LikeBuilderPlugin extends ComputerBuilderPlugin<Annotation> {
         }
         return null;
     }
+
 }
