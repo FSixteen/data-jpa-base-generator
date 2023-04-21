@@ -62,7 +62,7 @@
       <dependency>
         <groupId>io.github.fsixteen</groupId>
         <artifactId>common-response-structure</artifactId>
-        <version>[1.0.2,2.0.0)</version>
+        <version>[1.0.2,)</version>
       </dependency>
       <dependency>
         <groupId>io.swagger</groupId>
@@ -102,12 +102,12 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-web</artifactId>
-        <version>5.3.26</version>
+        <version>5.3.27</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
-        <version>5.3.26</version>
+        <version>5.3.27</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -216,7 +216,7 @@
             <dependency>
               <groupId>io.github.fsixteen</groupId>
               <artifactId>code-formatter-resources</artifactId>
-              <version>1.0.0</version>
+              <version>[1.0.0,)</version>
             </dependency>
           </dependencies>
           <executions>
@@ -242,7 +242,7 @@
             <dependency>
               <groupId>io.github.fsixteen</groupId>
               <artifactId>code-formatter-resources</artifactId>
-              <version>1.0.0</version>
+              <version>[1.0.0,)</version>
             </dependency>
           </dependencies>
           <configuration>
