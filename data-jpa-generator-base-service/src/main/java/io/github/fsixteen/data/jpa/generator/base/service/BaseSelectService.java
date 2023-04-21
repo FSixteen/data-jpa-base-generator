@@ -42,10 +42,8 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
      */
     default Specification<T> selectQuery(S args) {
         final AnnotationCollection computer = CollectionCache.getAnnotationCollection(args.getClass());
-        return !computer.isEmpty(BuilderType.SELECTED)
-                ? (root, query, cb) -> computer.toComputerCollection().setArgs(args).setSpecification(root, query, cb).build(BuilderType.SELECTED)
-                        .getPredicate(cb)
-                : (root, query, cb) -> cb.and();
+        return !computer.isEmpty(BuilderType.SELECTED) ? (root, query, cb) -> computer.toComputerCollection().withArgs(args).withSpecification(root, query, cb)
+                .build(BuilderType.SELECTED).getPredicate(cb) : (root, query, cb) -> cb.and();
     }
 
     /**
@@ -95,7 +93,7 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
      *
      * @param args        查询实体
      * @param pageRequest 查询分页信息
-     * @see #select(IdEntity, PageRequest, Consumer)
+     * @see #select(Entity, PageRequest, Consumer)
      * @return Page&lt;T&gt;
      */
     default Page<T> select(S args, PageRequest pageRequest) {

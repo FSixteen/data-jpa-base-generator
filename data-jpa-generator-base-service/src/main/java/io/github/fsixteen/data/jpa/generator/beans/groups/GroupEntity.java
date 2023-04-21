@@ -114,6 +114,12 @@ public class GroupEntity {
         return this.tuple.toArray();
     }
 
+    /**
+     * 转嵌套Map.<br>
+     * 
+     * @param offset 嵌套层次
+     * @return Collector&lt;GroupEntity,?,?&gt;
+     */
     public static Collector<GroupEntity, ?, ?> toMap(int offset) {
         Collector<GroupEntity, ?, ?> coll = groupingBy(offset);
         for (int index = offset; index > 1; index--) {

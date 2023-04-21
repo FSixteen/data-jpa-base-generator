@@ -62,7 +62,7 @@
       <dependency>
         <groupId>io.github.fsixteen</groupId>
         <artifactId>common-response-structure</artifactId>
-        <version>1.0.2</version>
+        <version>[1.0.2,2.0.0)</version>
       </dependency>
       <dependency>
         <groupId>io.swagger</groupId>
@@ -128,6 +128,9 @@
               <configuration>
                 <source>${java.version}</source>
                 <target>${java.version}</target>
+                <excludes>
+                  <exclude>module-info.java</exclude>
+                </excludes>
               </configuration>
             </execution>
             <execution>
@@ -183,7 +186,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.4.1</version>
+          <version>3.5.0</version>
           <executions>
             <execution>
               <phase>package</phase>
@@ -193,6 +196,7 @@
             </execution>
           </executions>
           <configuration>
+            <!-- <doclint>all,-syntax</doclint> -->
             <doclint>all,-syntax</doclint>
             <charset>${encoding}</charset>
             <encoding>${encoding}</encoding>
@@ -297,5 +301,31 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+      </plugin>
+    </plugins>
   </build>
 </project>

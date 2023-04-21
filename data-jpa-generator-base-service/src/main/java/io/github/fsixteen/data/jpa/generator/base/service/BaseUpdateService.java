@@ -27,7 +27,6 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 
 import io.github.fsixteen.common.structure.StatusInterface;
 import io.github.fsixteen.common.structure.extend.Status;
-import io.github.fsixteen.data.jpa.generator.base.entities.BaseEntity;
 import io.github.fsixteen.data.jpa.generator.base.entities.IdEntity;
 import io.github.fsixteen.data.jpa.generator.base.jpa.BaseDao;
 import io.github.fsixteen.data.jpa.generator.exception.AccessDeniedException;
@@ -188,7 +187,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * 更新逻辑.<br>
      * 
      * @param args 更新实体实例
-     * @see #update(BaseEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @see #update(IdEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
@@ -201,7 +200,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * 
      * @param args         更新实体实例
      * @param preprocessor 更新前置处理器
-     * @see #update(BaseEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @see #update(IdEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
@@ -215,7 +214,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @param args         更新实体实例
      * @param preprocessor 更新前置处理器
      * @param filter       更新判断器
-     * @see #update(BaseEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @see #update(IdEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
@@ -229,7 +228,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @param args      更新实体实例
      * @param filter    更新判断器
      * @param processor 更新处理器
-     * @see #update(BaseEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @see #update(IdEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
@@ -243,7 +242,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @param args      更新实体实例
      * @param filter    更新判断器
      * @param processor 更新处理器
-     * @see #update(BaseEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @see #update(IdEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
@@ -258,7 +257,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @param preprocessor 更新前置处理器
      * @param filter       更新判断器
      * @param processor    更新处理器
-     * @see #update(BaseEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @see #update(IdEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return T
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })

@@ -23,6 +23,8 @@ import javax.persistence.criteria.Root;
 import io.github.fsixteen.data.jpa.generator.constants.GroupColumnType;
 
 /**
+ * 分组查询字段处理工具.<br>
+ * 
  * @author FSixteen
  * @since V1.0.0
  */
@@ -171,7 +173,7 @@ public class GroupColumnUtils {
             this.args = args;
         }
 
-        public Optional<Expression<Object>> toTupleElement(final Root<?> root, final CriteriaBuilder cb) {
+        private Optional<Expression<Object>> toTupleElement(final Root<?> root, final CriteriaBuilder cb) {
             switch (this.type) {
                 case VALUE:
                     return Optional.ofNullable(cb.literal(this.fieldOrFun));

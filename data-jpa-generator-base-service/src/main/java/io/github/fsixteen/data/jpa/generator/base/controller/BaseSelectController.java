@@ -50,6 +50,14 @@ public interface BaseSelectController<SI extends BaseSelectService<T, ID, S>, T 
         };
     }
 
+    /**
+     * 分页查询.<br>
+     * 
+     * @param request  {@link javax.servlet.http.HttpServletRequest}实例, 自动注入
+     * @param response {@link javax.servlet.http.HttpServletResponse}实例, 自动注入
+     * @param data     请求实例
+     * @return Response&lt;List&lt;T&gt;, Void&gt;
+     */
     @ApiOperation(value = "分页查询", notes = "分页查询")
     @Operation(summary = "分页查询", description = "分页查询")
     @PostMapping(value = "select")
@@ -60,6 +68,13 @@ public interface BaseSelectController<SI extends BaseSelectService<T, ID, S>, T 
         return result;
     }
 
+    /**
+     * 完整查询.<br>
+     * 
+     * @param request  {@link javax.servlet.http.HttpServletRequest}实例, 自动注入
+     * @param response {@link javax.servlet.http.HttpServletResponse}实例, 自动注入
+     * @return Response&lt;List&lt;T&gt;, Void&gt;
+     */
     @ApiOperation(value = "完整查询", notes = "完整查询", hidden = true)
     @Operation(summary = "完整查询", description = "完整查询", hidden = true)
     @PostMapping(value = "select/all")

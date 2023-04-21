@@ -7,5 +7,12 @@ package io.github.fsixteen.data.jpa.base.generator.plugins.constant;
  * @since V1.0.0
  */
 public enum BuilderType {
-    SELECTED, EXISTS
+    /**
+     * 查询
+     */
+    SELECTED,
+    /**
+     * 判断已存在
+     */
+    EXISTS
 }

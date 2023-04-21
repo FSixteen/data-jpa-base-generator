@@ -324,9 +324,8 @@ public final class AnnotationDescriptor<AN extends Annotation> {
      * <br>
      * - 为<code>true</code>时, 任何时机均参与计算.<br>
      * <br>
-     * - 为<code>false</code>时, 根据{@link #ignoreNull()}, {@link #ignoreEmpty()},
-     * {@link
-     * #ignoreBlank()}则机参与计算.<br>
+     * - 为<code>false</code>时, 根据{@link #isIgnoreNull()}, {@link #isIgnoreEmpty()},
+     * {@link #isIgnoreBlank()}则机参与计算.<br>
      *
      * @return boolean
      */

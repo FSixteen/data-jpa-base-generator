@@ -7,11 +7,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import javax.persistence.criteria.AbstractQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -23,10 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.fsixteen.data.jpa.base.generator.annotations.Constraint;
-import io.github.fsixteen.data.jpa.base.generator.annotations.Existed;
+import io.github.fsixteen.data.jpa.base.generator.annotations.GroupComputerType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.GroupComputerType.Type;
-import io.github.fsixteen.data.jpa.base.generator.annotations.GroupInfo;
-import io.github.fsixteen.data.jpa.base.generator.annotations.Selectable;
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
 import io.github.fsixteen.data.jpa.base.generator.plugins.BuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.cache.PluginsCache;
@@ -46,34 +41,17 @@ public final class ComputerCollection {
 
     private AnnotationCollection annotationCollection;
 
-    private Collection<ComputerDescriptor<Annotation>> selectCds = new ArrayList<>();
+    private Collection<ComputerDescriptor<Annotation>> computerDescriptors = new ArrayList<>();
 
-    private Collection<ComputerDescriptor<Annotation>> existedCds = new ArrayList<>();
-
-    private ComputerCollection() {
+    public static ComputerCollection of(BuilderType type, AnnotationCollection ac, Collection<ComputerDescriptor<Annotation>> selectCds) {
+        return new ComputerCollection(type, ac, selectCds);
     }
 
-    private ComputerCollection(BuilderType type, AnnotationCollection annotationCollection, Collection<ComputerDescriptor<Annotation>> selectCds,
-            Collection<ComputerDescriptor<Annotation>> existedCds) {
+    private ComputerCollection(BuilderType type, AnnotationCollection annotationCollection, Collection<ComputerDescriptor<Annotation>> selectCds) {
         super();
         this.type = type;
         this.annotationCollection = annotationCollection;
-        Optional.ofNullable(selectCds).ifPresent(it -> it.forEach(this.selectCds::add));
-        Optional.ofNullable(existedCds).ifPresent(it -> it.forEach(this.existedCds::add));
-    }
-
-    public static ComputerCollection of() {
-        return new ComputerCollection();
-    }
-
-    public static ComputerCollection of(AnnotationCollection annotationCollection, Collection<ComputerDescriptor<Annotation>> selectCds,
-            Collection<ComputerDescriptor<Annotation>> existedCds) {
-        return new ComputerCollection(BuilderType.SELECTED, annotationCollection, selectCds, existedCds);
-    }
-
-    public static ComputerCollection of(BuilderType type, AnnotationCollection ac, Collection<ComputerDescriptor<Annotation>> selectCds,
-            Collection<ComputerDescriptor<Annotation>> existedCds) {
-        return new ComputerCollection(type, ac, selectCds, existedCds);
+        Optional.ofNullable(selectCds).ifPresent(it -> it.forEach(this.computerDescriptors::add));
     }
 
     public BuilderType getType() {
@@ -92,45 +70,65 @@ public final class ComputerCollection {
         this.annotationCollection = annotationCollection;
     }
 
-    public Type getConputerType(String name) {
-        return this.annotationCollection.getConputerType(name);
+    /**
+     * 获取分组计算信息.<br>
+     * 
+     * @param scope 范围查询分组名称
+     * @see AnnotationCollection#getGroupComputerType(String)
+     * @return Map&lt;String, GroupComputerType&gt;
+     */
+    public Map<String, GroupComputerType> getConputerType(String scope) {
+        return this.annotationCollection.getGroupComputerType(scope);
     }
 
-    public Map<String, Type> getConputerType() {
-        return this.annotationCollection.getConputerType();
+    /**
+     * 获取分组计算信息.<br>
+     * 
+     * @param scope 范围查询分组名称
+     * @param value 条件分组名称
+     * @return GroupComputerType
+     */
+    public Type getComputerType(String scope, String value) {
+        return this.annotationCollection.getComputerType(scope, value);
     }
 
-    public Collection<ComputerDescriptor<Annotation>> getSelectCds() {
-        return selectCds;
+    /**
+     * 获取分组计算信息.<br>
+     * 
+     * @param scope 范围查询分组名称
+     * @param value 条件分组名称
+     * @see AnnotationCollection#getGroupComputerType(String, String)
+     * @return GroupComputerType
+     */
+    public GroupComputerType getGroupComputerType(String scope, String value) {
+        return this.annotationCollection.getGroupComputerType(scope, value);
     }
 
-    public void setSelectCds(Collection<ComputerDescriptor<Annotation>> selectCds) {
-        this.selectCds = selectCds;
+    /**
+     * 获取分组计算信息.<br>
+     * 
+     * @param scope 范围查询分组名称
+     * @return GroupComputerType[];
+     */
+    public GroupComputerType[] getGroupComputerTypes(String scope) {
+        return this.annotationCollection.getGroupComputerTypes(scope);
     }
 
-    public void addSelectCd(ComputerDescriptor<Annotation> cd) {
-        Optional.ofNullable(cd).filter(it -> it.getAnnoDesc().getAnno().annotationType().isAnnotationPresent(Selectable.class)).ifPresent(this.selectCds::add);
+    /**
+     * 获取分组计算信息.<br>
+     * 
+     * @return GroupComputerType[];
+     */
+    public GroupComputerType[] getGroupComputerTypes() {
+        return this.annotationCollection.getGroupComputerTypes();
     }
 
-    public Collection<ComputerDescriptor<Annotation>> getExistedCds() {
-        return existedCds;
+    public Collection<ComputerDescriptor<Annotation>> getComputerDescriptors() {
+        return computerDescriptors;
     }
 
-    public void setExistedCds(Collection<ComputerDescriptor<Annotation>> existedCds) {
-        this.existedCds = existedCds;
-    }
-
-    public void addExistedCd(ComputerDescriptor<Annotation> cd) {
-        Optional.ofNullable(cd).filter(it -> it.getAnnoDesc().getAnno().annotationType().isAnnotationPresent(Existed.class)).ifPresent(this.existedCds::add);
-    }
-
-    public void addCd(ComputerDescriptor<Annotation> cd) {
-        this.addSelectCd(cd);
-        this.addExistedCd(cd);
-    }
-
-    public Collection<ComputerDescriptor<Annotation>> getCds() {
-        return BuilderType.SELECTED == this.type ? this.selectCds : this.existedCds;
+    public void setComputerDescriptors(Collection<ComputerDescriptor<Annotation>> computerDescriptors) {
+        this.computerDescriptors = computerDescriptors;
     }
 
     /**
@@ -140,10 +138,10 @@ public final class ComputerCollection {
      * @return Predicate
      */
     public Predicate getPredicate(final CriteriaBuilder cb) {
-        if (Type.OR == this.getConputerType(Constant.GLOBAL)) {
-            return cb.or(this.getPredicateArray(Constant.DEFAULT, cb));
+        if (Type.OR == this.getComputerType(Constant.DEFAULT, Constant.GLOBAL)) {
+            return cb.or(this.getPredicateArray(cb, Constant.DEFAULT));
         }
-        return cb.and(this.getPredicateArray(Constant.DEFAULT, cb));
+        return cb.and(this.getPredicateArray(cb, Constant.DEFAULT));
     }
 
     /**
@@ -153,39 +151,18 @@ public final class ComputerCollection {
      * @return List&lt;Predicate&gt;
      */
     public List<Predicate> getPredicateList(final CriteriaBuilder cb) {
-        return this.getPredicateList(Constant.DEFAULT, cb);
+        return this.getPredicateList(cb, Constant.DEFAULT);
     }
 
     /**
      * 获取{@link javax.persistence.criteria.Predicate}.<br>
      * 
-     * @param scope 范围查询分组
      * @param cb    见{@link javax.persistence.criteria.CriteriaBuilder}
+     * @param scope 范围查询分组
      * @return List&lt;Predicate&gt;
      */
-    public List<Predicate> getPredicateList(final String scope, final CriteriaBuilder cb) {
-        List<ComputerDescriptor<Annotation>> valid = this.getCds().stream().filter(it -> Objects.nonNull(it) && !it.isEmpty() && it.containsScope(scope))
-                .collect(Collectors.toList());
-        Map<String, List<Tuple>> groups = new ConcurrentHashMap<>();
-        for (ComputerDescriptor<Annotation> computerDescriptor : valid) {
-            for (GroupInfo groupInfo : computerDescriptor.getAnnoDesc().getGroups()) {
-                if (!groups.containsKey(groupInfo.value())) {
-                    groups.put(groupInfo.value(), new ArrayList<>());
-                }
-                groups.get(groupInfo.value()).add(Tuple.of(groupInfo.order(), computerDescriptor));
-            }
-        }
-        List<Predicate> ps = new ArrayList<>();
-        for (Entry<String, List<Tuple>> entry : groups.entrySet()) {
-            List<Predicate> groupPs = entry.getValue().stream().sorted((l, r) -> l.getFirst().compareTo(r.getFirst())).map(Tuple::getLast)
-                    .map(ComputerDescriptor::getPredicate).collect(Collectors.toList());
-            if (Type.OR == this.getConputerType(entry.getKey())) {
-                ps.add(cb.or(groupPs.toArray(new Predicate[groupPs.size()])));
-            } else {
-                ps.add(cb.and(groupPs.toArray(new Predicate[groupPs.size()])));
-            }
-        }
-        return ps;
+    public List<Predicate> getPredicateList(final CriteriaBuilder cb, final String scope) {
+        return new PredicateBuildProcessor(this, cb, scope).toPredicate();
     }
 
     /**
@@ -195,18 +172,18 @@ public final class ComputerCollection {
      * @return Predicate[]
      */
     public Predicate[] getPredicateArray(final CriteriaBuilder cb) {
-        return this.getPredicateArray(Constant.DEFAULT, cb);
+        return this.getPredicateArray(cb, Constant.DEFAULT);
     }
 
     /**
      * 获取{@link javax.persistence.criteria.Predicate}.<br>
      * 
-     * @param scope 范围查询分组
      * @param cb    见{@link javax.persistence.criteria.CriteriaBuilder}
+     * @param scope 范围查询分组
      * @return Predicate[]
      */
-    public Predicate[] getPredicateArray(final String scope, final CriteriaBuilder cb) {
-        List<Predicate> predicates = this.getPredicateList(scope, cb);
+    public Predicate[] getPredicateArray(final CriteriaBuilder cb, final String scope) {
+        List<Predicate> predicates = this.getPredicateList(cb, scope);
         return predicates.toArray(new Predicate[predicates.size()]);
     }
 
@@ -216,54 +193,7 @@ public final class ComputerCollection {
      * @return boolean
      */
     public boolean isEmpty() {
-        return this.isEmpty(BuilderType.SELECTED) && this.isEmpty(BuilderType.EXISTS);
-    }
-
-    /**
-     * 判断指定计算方式内的计算条件是否为空.<br>
-     * 
-     * @param type 计算方式
-     * @return boolean
-     */
-    public boolean isEmpty(BuilderType type) {
-        switch (type) {
-            case SELECTED:
-                return this.selectCds.isEmpty() || 0L == this.selectCds.stream().filter(Objects::nonNull).count();
-            case EXISTS:
-                return this.existedCds.isEmpty() || 0L == this.existedCds.stream().filter(Objects::nonNull).count();
-            default:
-                return this.isEmpty();
-        }
-    }
-
-    /**
-     * 内部元组.
-     * 
-     * @author FSixteen
-     * @since V1.0.0
-     */
-    private static class Tuple {
-
-        private Integer first;
-        private ComputerDescriptor<Annotation> last;
-
-        public static Tuple of(Integer first, ComputerDescriptor<Annotation> last) {
-            return new Tuple(first, last);
-        }
-
-        public Tuple(Integer first, ComputerDescriptor<Annotation> last) {
-            this.first = first;
-            this.last = last;
-        }
-
-        public Integer getFirst() {
-            return first;
-        }
-
-        public ComputerDescriptor<Annotation> getLast() {
-            return last;
-        }
-
+        return this.computerDescriptors.isEmpty() || 0L == this.computerDescriptors.stream().filter(Objects::nonNull).count();
     }
 
     /**
@@ -286,10 +216,6 @@ public final class ComputerCollection {
             }
         }
 
-        private Collection<ComputerDescriptor<Annotation>> selectCds = new ArrayList<>();
-
-        private Collection<ComputerDescriptor<Annotation>> existedCds = new ArrayList<>();
-
         private AnnotationCollection annotationCollection;
 
         private Object args;
@@ -300,15 +226,13 @@ public final class ComputerCollection {
 
         private CriteriaBuilder cb;
 
+        private Collection<ComputerDescriptor<Annotation>> computerDescriptors = new ArrayList<>();
+
         private Builder() {
         }
 
         public static Builder of() {
             return new Builder();
-        }
-
-        public AnnotationCollection getAnnotationCollection() {
-            return annotationCollection;
         }
 
         /**
@@ -317,13 +241,9 @@ public final class ComputerCollection {
          * @param ac {@link AnnotationCollection} 实体
          * @return Builder
          */
-        public Builder setAnnotationCollection(AnnotationCollection ac) {
+        public Builder withAnnotationCollection(AnnotationCollection ac) {
             this.annotationCollection = ac;
             return this;
-        }
-
-        public Object getArgs() {
-            return args;
         }
 
         /**
@@ -332,7 +252,7 @@ public final class ComputerCollection {
          * @param args 计算实体.
          * @return Builder
          */
-        public Builder setArgs(Object args) {
+        public Builder withArgs(Object args) {
             this.args = args;
             return this;
         }
@@ -347,7 +267,7 @@ public final class ComputerCollection {
          * @param cb    见{@link javax.persistence.criteria.CriteriaBuilder}
          * @return Builder
          */
-        public Builder setSpecification(Root<?> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+        public Builder withSpecification(Root<?> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
             this.root = root;
             this.query = query;
             this.cb = cb;
@@ -388,7 +308,7 @@ public final class ComputerCollection {
         private Builder createComputerDescriptor(AnnotationDescriptor<Annotation> ad, Collection<ComputerDescriptor<Annotation>> cds) {
             try {
                 Object obj = PluginsCache.reference(this.createConstraint(ad));
-                cds.add(ComputerDescriptor.class.cast(toPredicateMethod.invoke(obj, ad, this.getArgs(), root, query, cb)));
+                cds.add(ComputerDescriptor.class.cast(toPredicateMethod.invoke(obj, ad, this.args, root, query, cb)));
             } catch (ReflectiveOperationException | IllegalArgumentException e) {
                 log.error(e.getMessage(), e);
             }
@@ -415,10 +335,9 @@ public final class ComputerCollection {
          * @return ComputerCollection
          */
         public ComputerCollection build(BuilderType type) {
-            this.createComputerDescriptor(
-                    BuilderType.SELECTED == type ? this.getAnnotationCollection().getSelectAds() : this.getAnnotationCollection().getExistedAds(),
-                    BuilderType.SELECTED == type ? this.selectCds : this.existedCds);
-            return new ComputerCollection(type, this.annotationCollection, this.selectCds, this.existedCds);
+            this.createComputerDescriptor(BuilderType.SELECTED == type ? this.annotationCollection.getSelectAds() : this.annotationCollection.getExistedAds(),
+                    this.computerDescriptors);
+            return new ComputerCollection(type, this.annotationCollection, this.computerDescriptors);
         }
 
     }

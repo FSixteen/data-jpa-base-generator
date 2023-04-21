@@ -73,7 +73,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
     default Specification<T> isExisted(I args) {
         final AnnotationCollection computer = CollectionCache.getAnnotationCollection(args.getClass());
         return !computer.isEmpty(BuilderType.EXISTS)
-                ? (root, query, cb) -> computer.toComputerCollection().setArgs(args).setSpecification(root, query, cb).build(BuilderType.EXISTS)
+                ? (root, query, cb) -> computer.toComputerCollection().withArgs(args).withSpecification(root, query, cb).build(BuilderType.EXISTS)
                         .getPredicate(cb)
                 : (root, query, cb) -> cb.equal(cb.literal(0), cb.literal(1));
     }
