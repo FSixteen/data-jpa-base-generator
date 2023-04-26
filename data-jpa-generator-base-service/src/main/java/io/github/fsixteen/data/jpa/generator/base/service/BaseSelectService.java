@@ -11,8 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.Nullable;
 
 import io.github.fsixteen.data.jpa.base.generator.plugins.cache.CollectionCache;
 import io.github.fsixteen.data.jpa.base.generator.plugins.collections.AnnotationCollection;
@@ -21,6 +23,7 @@ import io.github.fsixteen.data.jpa.generator.base.entities.Entity;
 import io.github.fsixteen.data.jpa.generator.base.entities.IdEntity;
 import io.github.fsixteen.data.jpa.generator.base.jpa.BaseDao;
 import io.github.fsixteen.data.jpa.generator.beans.BasePageRequest;
+import io.github.fsixteen.data.jpa.generator.beans.DefaultPageRequest;
 
 /**
  * 通用Service处理类.<br>
@@ -35,12 +38,93 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
     public BaseDao<T, ID> getDao();
 
     /**
+     * 信息查询.<br>
+     * 
+     * @param id 查询实体主键
+     * @return Optional&lt;T&gt;
+     */
+    default Optional<T> findById(ID id) {
+        return this.getDao().findById(id);
+    }
+
+    /**
+     * 信息查询.<br>
+     * 
+     * @param args 查询实体
+     * @return Optional&lt;T&gt;
+     */
+    default Optional<T> findOne(Entity args) {
+        return this.getDao().findOne(this.selectQuery(args));
+    }
+
+    /**
+     * 信息查询.<br>
+     * 
+     * @return List&lt;T&gt;
+     */
+    default List<T> findAll() {
+        return this.getDao().findAll();
+    }
+
+    /**
+     * 信息查询.<br>
+     * 
+     * @param args 查询实体
+     * @return List&lt;T&gt;
+     */
+    default List<T> findAll(Entity args) {
+        return this.getDao().findAll(this.selectQuery(args));
+    }
+
+    /**
+     * 信息查询.<br>
+     * 
+     * @param spec 查询条件
+     * @return List&lt;T&gt;
+     */
+    default List<T> findAll(@Nullable Specification<T> spec) {
+        return this.getDao().findAll(spec);
+    }
+
+    /**
+     * 信息查询.<br>
+     * 
+     * @param spec     查询条件
+     * @param pageable 分页信息
+     * @return List&lt;T&gt;
+     */
+    default Page<T> findAll(@Nullable Specification<T> spec, Pageable pageable) {
+        return this.getDao().findAll(spec, pageable);
+    }
+
+    /**
+     * 信息查询.<br>
+     * 
+     * @param spec 查询条件
+     * @param sort 排序规则
+     * @return List&lt;T&gt;
+     */
+    default List<T> findAll(@Nullable Specification<T> spec, Sort sort) {
+        return this.getDao().findAll(spec, sort);
+    }
+
+    /**
+     * 信息查询.<br>
+     * 
+     * @param args 查询实体
+     * @return Page&lt;T&gt;
+     */
+    default Page<T> findAll(DefaultPageRequest args) {
+        return this.getDao().findAll(this.selectQuery(args), this.selectPageRequest().apply(args));
+    }
+
+    /**
      * 获取查询条件.<br>
      * 
      * @param args 查询实体
      * @return Specification&lt;T&gt;
      */
-    default Specification<T> selectQuery(S args) {
+    default Specification<T> selectQuery(Entity args) {
         final AnnotationCollection computer = CollectionCache.getAnnotationCollection(args.getClass());
         return !computer.isEmpty(BuilderType.SELECTED) ? (root, query, cb) -> computer.toComputerCollection().withArgs(args).withSpecification(root, query, cb)
                 .build(BuilderType.SELECTED).getPredicate(cb) : (root, query, cb) -> cb.and();
@@ -73,7 +157,7 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
      *
      * @return Function&lt;S,PageRequest&gt;
      */
-    default Function<S, PageRequest> selectPageRequest() {
+    default Function<BasePageRequest, PageRequest> selectPageRequest() {
         return (args) -> PageRequest.of(args.getPage(), args.getSize(), this.selectSort().get());
     }
 
