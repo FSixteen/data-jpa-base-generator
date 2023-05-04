@@ -6,9 +6,11 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -128,7 +130,20 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 更新逻辑.<br>
+     * 添加后置处理器.<br>
+     *
+     * @return BiConsumer&lt;Iterable&lt;T&gt, Iterable&lt;I&gt&gt;
+     */
+    default BiConsumer<Iterable<T>, Iterable<I>> insertAllPostprocessor() {
+        return (ele, args) -> {
+            if (log.isDebugEnabled()) {
+                log.debug("Insert Post Processor Nothing.");
+            }
+        };
+    }
+
+    /**
+     * 添加逻辑.<br>
      * 
      * @param args 添加实体实例
      * @return T
@@ -139,7 +154,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 更新逻辑.<br>
+     * 添加逻辑.<br>
      * 
      * @param args         添加实体实例
      * @param preprocessor 添加前置处理器
@@ -151,7 +166,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 更新逻辑.<br>
+     * 添加逻辑.<br>
      * 
      * @param args         添加实体实例
      * @param preprocessor 添加前置处理器
@@ -164,7 +179,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 更新逻辑.<br>
+     * 添加逻辑.<br>
      * 
      * @param args          添加实体实例
      * @param preprocessor  添加前置处理器
@@ -197,6 +212,89 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
             BeanUtils.copyProperties(args, news, ignoreSet.toArray(new String[ignoreSet.size()]));
             Optional.ofNullable(processor).ifPresent(it -> it.accept(news, args));
             T savedEle = this.getDao().save(news);
+            Optional.ofNullable(postprocessor).ifPresent(it -> it.accept(savedEle, args));
+            return savedEle;
+        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
+            throw new ReflectionException(e.getMessage());
+        }
+    }
+
+    /**
+     * 添加逻辑.<br>
+     * 
+     * @param args 添加实体实例
+     * @return List&lt;T&gt;
+     */
+    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    default List<T> insertAll(Iterable<I> args) {
+        return insertAll(args, this.insertPreprocessor());
+    }
+
+    /**
+     * 添加逻辑.<br>
+     * 
+     * @param args         添加实体实例
+     * @param preprocessor 添加前置处理器
+     * @return List&lt;T&gt;
+     */
+    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    default List<T> insertAll(Iterable<I> args, Consumer<I> preprocessor) {
+        return insertAll(args, preprocessor, this.insertBiProcessor());
+    }
+
+    /**
+     * 添加逻辑.<br>
+     * 
+     * @param args         添加实体实例
+     * @param preprocessor 添加前置处理器
+     * @param processor    添加处理器
+     * @return List&lt;T&gt;
+     */
+    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    default List<T> insertAll(Iterable<I> args, Consumer<I> preprocessor, BiConsumer<T, I> processor) {
+        return insertAll(args, preprocessor, processor, this.insertAllPostprocessor());
+    }
+
+    /**
+     * 添加逻辑.<br>
+     * 
+     * @param args          添加实体实例
+     * @param preprocessor  添加前置处理器
+     * @param processor     添加处理器
+     * @param postprocessor 添加后置处理器
+     * @return List&lt;T&gt;
+     */
+    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @SuppressWarnings("unchecked")
+    default List<T> insertAll(Iterable<I> args, Consumer<I> preprocessor, BiConsumer<T, I> processor, BiConsumer<Iterable<T>, Iterable<I>> postprocessor) {
+        Optional.ofNullable(preprocessor).ifPresent(it -> args.forEach(ele -> it.accept(ele)));
+        args.forEach(ele -> {
+            if (this.getDao().exists(this.isExisted(ele))) {
+                throw this.insertExistedException();
+            }
+        });
+        try {
+            Map<I, T> eles = new ConcurrentHashMap<>();
+            for (I arg : args) {
+                T news = (T) BaseCommonService.getTableClass(this.getDao().getClass()).getDeclaredConstructor().newInstance();
+                Set<String> ignoreSet = new HashSet<>();
+                JsonIgnoreProperties ignoreProperties = arg.getClass().getAnnotation(JsonIgnoreProperties.class);
+                if (Objects.nonNull(ignoreProperties) && 0 < ignoreProperties.value().length) {
+                    ignoreSet.addAll(Arrays.asList(ignoreProperties.value()));
+                }
+                JsonIncludeProperties includeProperties = arg.getClass().getAnnotation(JsonIncludeProperties.class);
+                if (Objects.nonNull(includeProperties) && 0 < includeProperties.value().length) {
+                    List<String> includes = Arrays.asList(includeProperties.value());
+                    Set<String> fields = Stream.of(io.github.fsixteen.data.jpa.base.generator.plugins.utils.BeanUtils.getAllFields(args.getClass()))
+                            .filter(it -> Modifier.isStatic(it.getModifiers())).map(Field::getName).filter(it -> !includes.contains(it))
+                            .collect(Collectors.toSet());
+                    ignoreSet.addAll(fields);
+                }
+                BeanUtils.copyProperties(arg, news, ignoreSet.toArray(new String[ignoreSet.size()]));
+                eles.put(arg, news);
+            }
+            Optional.ofNullable(processor).ifPresent(it -> eles.entrySet().forEach(entry -> it.accept(entry.getValue(), entry.getKey())));
+            List<T> savedEle = this.getDao().saveAllAndFlush(eles.values());
             Optional.ofNullable(postprocessor).ifPresent(it -> it.accept(savedEle, args));
             return savedEle;
         } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {

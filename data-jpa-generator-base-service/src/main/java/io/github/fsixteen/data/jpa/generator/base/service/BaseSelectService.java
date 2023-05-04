@@ -38,6 +38,24 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
     public BaseDao<T, ID> getDao();
 
     /**
+     * 查询排序规则.<br>
+     *
+     * @return Supplier&lt;Sort&gt;
+     */
+    default Supplier<Sort> defaultSort() {
+        return () -> Sort.unsorted();
+    }
+
+    /**
+     * 查询排序规则.<br>
+     *
+     * @return Supplier&lt;Sort&gt;
+     */
+    default Supplier<Sort> findSort() {
+        return this.defaultSort();
+    }
+
+    /**
      * 信息查询.<br>
      * 
      * @param id 查询实体主键
@@ -54,7 +72,8 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
      * @return Optional&lt;T&gt;
      */
     default Optional<T> findOne(Entity args) {
-        return this.getDao().findOne(this.selectQuery(args));
+        List<T> eles = this.getDao().findAll(this.selectQuery(args), PageRequest.of(0, 1, this.findSort().get())).getContent();
+        return 0 < eles.size() ? Optional.ofNullable(eles.get(0)) : Optional.empty();
     }
 
     /**
@@ -74,6 +93,26 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
      */
     default List<T> findAll(Entity args) {
         return this.getDao().findAll(this.selectQuery(args));
+    }
+
+    /**
+     * 信息查询.<br>
+     * 
+     * @param args 查询实体
+     * @return Page&lt;T&gt;
+     */
+    default Page<T> findAll(BasePageRequest args) {
+        return this.getDao().findAll(this.selectPageRequest().apply(args));
+    }
+
+    /**
+     * 信息查询.<br>
+     * 
+     * @param args 查询实体
+     * @return Page&lt;T&gt;
+     */
+    default Page<T> findAll(DefaultPageRequest args) {
+        return this.getDao().findAll(this.selectQuery(args), this.selectPageRequest().apply(args));
     }
 
     /**
@@ -109,16 +148,6 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 信息查询.<br>
-     * 
-     * @param args 查询实体
-     * @return Page&lt;T&gt;
-     */
-    default Page<T> findAll(DefaultPageRequest args) {
-        return this.getDao().findAll(this.selectQuery(args), this.selectPageRequest().apply(args));
-    }
-
-    /**
      * 获取查询条件.<br>
      * 
      * @param args 查询实体
@@ -149,7 +178,7 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
      * @return Supplier&lt;Sort&gt;
      */
     default Supplier<Sort> selectSort() {
-        return () -> Sort.unsorted();
+        return this.defaultSort();
     }
 
     /**
@@ -226,7 +255,7 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
      * @return Supplier&lt;Sort&gt;
      */
     default Supplier<Sort> selectAllSort() {
-        return () -> Sort.unsorted();
+        return this.defaultSort();
     }
 
     /**
