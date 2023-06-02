@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.InitBinder;
  * 基础通用Controller.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public interface BaseCommonController {
 

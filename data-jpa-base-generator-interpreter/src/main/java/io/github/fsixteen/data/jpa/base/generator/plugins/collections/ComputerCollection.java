@@ -33,7 +33,7 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDe
  * 类注解逻辑描述信息集合.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public final class ComputerCollection {
 
@@ -200,7 +200,7 @@ public final class ComputerCollection {
      * {@link ComputerCollection} 构造器.
      * 
      * @author FSixteen
-     * @since V1.0.0
+     * @since 1.0.0
      */
     public static class Builder {
 
@@ -210,7 +210,7 @@ public final class ComputerCollection {
         static {
             try {
                 toPredicateMethod = BuilderPlugin.class.getMethod("toPredicate", AnnotationDescriptor.class, Object.class, Root.class, AbstractQuery.class,
-                        CriteriaBuilder.class);
+                    CriteriaBuilder.class);
             } catch (NoSuchMethodException | SecurityException e) {
                 log.error(e.getMessage(), e);
             }
@@ -287,7 +287,7 @@ public final class ComputerCollection {
             try {
                 if (!PluginsCache.containsKey(type)) {
                     Constructor<BuilderPlugin<? extends Annotation>> cp = (Constructor<BuilderPlugin<? extends Annotation>>) type
-                            .getAnnotation(Constraint.class).processorBy().getDeclaredConstructor();
+                        .getAnnotation(Constraint.class).processorBy().getDeclaredConstructor();
                     PluginsCache.register(type, cp.newInstance());
                 }
             } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
@@ -336,7 +336,7 @@ public final class ComputerCollection {
          */
         public ComputerCollection build(BuilderType type) {
             this.createComputerDescriptor(BuilderType.SELECTED == type ? this.annotationCollection.getSelectAds() : this.annotationCollection.getExistedAds(),
-                    this.computerDescriptors);
+                this.computerDescriptors);
             return new ComputerCollection(type, this.annotationCollection, this.computerDescriptors);
         }
 

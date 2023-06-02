@@ -10,7 +10,7 @@ import java.util.function.Function;
  * 字段获取工具.
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public class FieldUtil {
 
@@ -20,7 +20,7 @@ public class FieldUtil {
      * @param <T> 入参类型
      * @param <R> 出参类型
      * @author FSixteen
-     * @since V1.0.0
+     * @since 1.0.0
      */
     @FunctionalInterface
     public static interface SFunction<T, R> extends Function<T, R>, Serializable {

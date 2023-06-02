@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * 分组统计实体.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 @JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" })
 public class GroupEntity {

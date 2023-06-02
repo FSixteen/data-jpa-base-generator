@@ -4,7 +4,7 @@ package io.github.fsixteen.data.jpa.base.generator.annotations.plugins.utils;
  * 数组工具.
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public class ArrayUtils {
 

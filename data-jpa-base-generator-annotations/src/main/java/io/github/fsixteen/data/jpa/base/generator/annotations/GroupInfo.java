@@ -12,7 +12,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
  * 分组信息.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 @Target({})
 @Retention(RUNTIME)

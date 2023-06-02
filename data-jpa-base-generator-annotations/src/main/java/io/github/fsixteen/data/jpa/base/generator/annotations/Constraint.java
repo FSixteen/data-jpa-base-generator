@@ -8,10 +8,25 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * 逻辑处理器.<br>
+ * 该注解类用于指定特定逻辑注解标识类的逻辑处理器执行实现类.<br>
+ * The annotation class is used to specify the logical processor execution class
+ * for a specific annotation class flag.<br>
+ * 使用示例 eg:<br>
+ * 
+ * <pre>
+ * &#64;Target({ FIELD, METHOD })
+ * &#64;Retention(RUNTIME)
+ * &#64;Repeatable(List.class)
+ * &#64;Documented
+ * &#64;Selectable
+ * &#64;Constraint(processorBy = io.github.fsixteen.data.jpa.base.generator.plugins.ComparableBuilderPlugin.class)
+ * public &#64;interface Equal {
+ *     .....
+ * }
+ * </pre>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 @Documented
 @Target({ ANNOTATION_TYPE })
@@ -19,8 +34,7 @@ import java.lang.annotation.Target;
 public @interface Constraint {
 
     /**
-     * 逻辑处理器执行类<br>
-     * .
+     * 特定逻辑注解标识类的逻辑处理器执行实现类.<br>
      * 
      * @return Class&lt;?&gt;
      */

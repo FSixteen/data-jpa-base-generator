@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.fsixteen.data.jpa.base.generator.annotations.interfaces.DefaultValueProcessor;
+import io.github.fsixteen.data.jpa.base.generator.plugins.constant.ComparableType;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.AnnotationDescriptor;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
 
@@ -20,50 +21,21 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDe
  * 有关{@link java.lang.String}类型计算内容的相似注解解释器.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public class LikeBuilderPlugin extends AbstractComputerBuilderPlugin<Annotation> {
 
     private static final Logger log = LoggerFactory.getLogger(LikeBuilderPlugin.class);
 
-    /**
-     * {@link LikeBuilderPlugin}执行方式.<br>
-     * 
-     * @author FSixteen
-     * @since V1.0.0
-     */
-    public static enum LikeType {
-        /**
-         * 左包含
-         */
-        LEFT,
-        /**
-         * 右包含
-         */
-        RIGHT,
-        /**
-         * 任意位置包含
-         */
-        CENNTER,
-        /**
-         * 左包含
-         */
-        START_WITH,
-        /**
-         * 右包含
-         */
-        END_WITH
-    }
+    private ComparableType type = ComparableType.CONTAINS;
 
-    private LikeType type = LikeType.CENNTER;
-
-    public LikeBuilderPlugin(LikeType type) {
+    public LikeBuilderPlugin(ComparableType type) {
         this.type = type;
     }
 
     @Override
     public ComputerDescriptor<Annotation> toPredicate(AnnotationDescriptor<Annotation> ad, Object obj, Root<?> root, AbstractQuery<?> query,
-            CriteriaBuilder cb) {
+        CriteriaBuilder cb) {
         try {
             Object fieldValue = this.trimIfPresent(ad, ad.getValueFieldPd().getReadMethod().invoke(obj));
 
@@ -84,73 +56,74 @@ public class LikeBuilderPlugin extends AbstractComputerBuilderPlugin<Annotation>
             }
 
             Optional<Predicate> optional = Optional.ofNullable(fieldValue)
-                    // 值类型判断
-                    .filter(it -> {
-                        switch (ad.getValueType()) {
-                            case VALUE:
-                                return String.class.isInstance(it) && ad.getComputerField().getType() == ad.getValueField().getType();
-                            case COLUMN:
-                                return String.class.isInstance(it);
-                            case FUNCTION:
-                                return Objects.nonNull(ad.getValueProcessor()) && DefaultValueProcessor.class != ad.getValueProcessor().processorClass();
-                            default:
-                                return false;
-                        }
-                    })
-                    // 值转换
-                    .map(it -> {
-                        switch (ad.getValueType()) {
-                            case VALUE:
+                // 值类型判断
+                .filter(it -> {
+                    switch (ad.getValueType()) {
+                        case VALUE:
+                            return String.class.isInstance(it)
+                                && root.getModel().getAttribute(ad.getComputerFieldName()).getJavaType() == ad.getValueField().getType();
+                        case COLUMN:
+                            return String.class.isInstance(it);
+                        case FUNCTION:
+                            return Objects.nonNull(ad.getValueProcessor()) && DefaultValueProcessor.class != ad.getValueProcessor().processorClass();
+                        default:
+                            return false;
+                    }
+                })
+                // 值转换
+                .map(it -> {
+                    switch (ad.getValueType()) {
+                        case VALUE:
+                            switch (this.type) {
+                                case LEFT:
+                                case START_WITH:
+                                    return cb.<String>literal(String.format("%s%%", String.class.cast(it)));
+                                case RIGHT:
+                                case END_WITH:
+                                    return cb.<String>literal(String.format("%%%s", String.class.cast(it)));
+                                case CONTAINS:
+                                default:
+                                    return cb.<String>literal(String.format("%%%s%%", String.class.cast(it)));
+                            }
+                        case COLUMN:
+                            switch (this.type) {
+                                case LEFT:
+                                case START_WITH:
+                                    return cb.concat(root.<String>get(String.class.cast(it)), "%");
+                                case RIGHT:
+                                case END_WITH:
+                                    return cb.concat("%", root.<String>get(String.class.cast(it)));
+                                case CONTAINS:
+                                default:
+                                    return cb.concat("%", cb.concat(root.<String>get(String.class.cast(it)), "%"));
+                            }
+                        case FUNCTION:
+                            try {
                                 switch (this.type) {
                                     case LEFT:
                                     case START_WITH:
-                                        return cb.<String>literal(String.format("%s%%", String.class.cast(it)));
+                                        return cb.concat(this.<String>applyValueProcessor(ad, obj, root, query, cb), "%");
                                     case RIGHT:
                                     case END_WITH:
-                                        return cb.<String>literal(String.format("%%%s", String.class.cast(it)));
-                                    case CENNTER:
+                                        return cb.concat("%", this.<String>applyValueProcessor(ad, obj, root, query, cb));
+                                    case CONTAINS:
                                     default:
-                                        return cb.<String>literal(String.format("%%%s%%", String.class.cast(it)));
+                                        return cb.concat("%", cb.concat(this.<String>applyValueProcessor(ad, obj, root, query, cb), "%"));
                                 }
-                            case COLUMN:
-                                switch (this.type) {
-                                    case LEFT:
-                                    case START_WITH:
-                                        return cb.concat(root.<String>get(String.class.cast(it)), "%");
-                                    case RIGHT:
-                                    case END_WITH:
-                                        return cb.concat("%", root.<String>get(String.class.cast(it)));
-                                    case CENNTER:
-                                    default:
-                                        return cb.concat("%", cb.concat(root.<String>get(String.class.cast(it)), "%"));
-                                }
-                            case FUNCTION:
-                                try {
-                                    switch (this.type) {
-                                        case LEFT:
-                                        case START_WITH:
-                                            return cb.concat(this.<String>applyValueProcessor(ad, obj, root, query, cb), "%");
-                                        case RIGHT:
-                                        case END_WITH:
-                                            return cb.concat("%", this.<String>applyValueProcessor(ad, obj, root, query, cb));
-                                        case CENNTER:
-                                        default:
-                                            return cb.concat("%", cb.concat(this.<String>applyValueProcessor(ad, obj, root, query, cb), "%"));
-                                    }
-                                } catch (ReflectiveOperationException e) {
-                                    log.error(e.getMessage(), e);
-                                    return null;
-                                }
-                            default:
+                            } catch (ReflectiveOperationException e) {
+                                log.error(e.getMessage(), e);
                                 return null;
-                        }
-                    })
-                    // Predicate创建
-                    .map(it -> cb.like(root.get(ad.getComputerFieldName()), it));
+                            }
+                        default:
+                            return null;
+                    }
+                })
+                // Predicate创建
+                .map(it -> cb.like(root.get(ad.getComputerFieldName()), it));
             if (optional.isPresent()) {
                 return ComputerDescriptor.of(ad, this.logicReverse(ad, optional.get(), cb));
             } else {
-                this.printWarn(ad);
+                this.printWarn(ad, root);
             }
         } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
             log.error(e.getMessage(), e);

@@ -15,11 +15,10 @@ import java.beans.IntrospectionException;
  * </p>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  * @see java.beans.IntrospectionException
  */
 public class IntrospectionRuntimeException extends RuntimeException {
-
     private static final long serialVersionUID = 1L;
 
     public IntrospectionRuntimeException() {

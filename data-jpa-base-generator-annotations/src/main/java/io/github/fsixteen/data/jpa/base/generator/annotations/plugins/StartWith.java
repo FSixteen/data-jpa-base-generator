@@ -20,7 +20,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.StartWith.
  * 当且仅当参与计算值类型或函数返回值类型为{@code java.lang.String}时有效.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 @Target({ FIELD, METHOD })
 @Retention(RUNTIME)

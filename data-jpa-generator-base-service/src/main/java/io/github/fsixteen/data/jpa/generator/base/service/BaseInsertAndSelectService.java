@@ -10,8 +10,8 @@ import io.github.fsixteen.data.jpa.generator.beans.BasePageRequest;
  * 通用Service处理类.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public interface BaseInsertAndSelectService<T extends IdEntity<ID>, ID extends Serializable, I extends Entity, S extends Entity & BasePageRequest>
-        extends BaseInsertService<T, ID, I>, BaseSelectService<T, ID, S> {
+    extends BaseInsertService<T, ID, I>, BaseSelectService<T, ID, S> {
 }

@@ -6,10 +6,9 @@ import io.github.fsixteen.data.jpa.generator.base.entities.Entity;
  * 默认分页请求.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public class DefaultPageRequest implements BasePageRequest, Entity {
-
     private static final long serialVersionUID = 1L;
 
     private int page = 0;

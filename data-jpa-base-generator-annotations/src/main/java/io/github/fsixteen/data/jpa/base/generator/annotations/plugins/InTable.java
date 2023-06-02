@@ -4,7 +4,6 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
@@ -22,7 +21,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.InTable.Li
  * 当且仅当参与计算值类型或函数返回值类型为{@code java.lang.Comparable}时有效.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 @Target({ FIELD, METHOD })
 @Retention(RUNTIME)
@@ -80,10 +79,11 @@ public @interface InTable {
      * - io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Like.class<br>
      * - ......
      * </code>
-     *
-     * @return Class&lt;?&gt;
+     * 
+     * @since 1.0.1
+     * @return String
      */
-    Class<Annotation> valueInProcessorClass();
+    String valueInProcessorClass() default "io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal";
 
     /**
      * 范围查询分组.<br>

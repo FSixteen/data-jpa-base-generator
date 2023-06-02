@@ -23,7 +23,7 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDe
  * {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Between}注解解释器.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public class BetweenBuilderPlugin extends AbstractComputerBuilderPlugin<Between> {
 
@@ -44,40 +44,40 @@ public class BetweenBuilderPlugin extends AbstractComputerBuilderPlugin<Between>
             }
 
             Optional<Predicate> optional = Optional.ofNullable(fieldValue)
-                    // 值转换
-                    .map(it -> Collection.class.isInstance(it) ? Collection.class.cast(it).<Object>toArray(new Object[2]) : it)
-                    // 值类型判断
-                    .filter(it -> {
-                        switch (ad.getValueType()) {
-                            case VALUE:
-                                return it.getClass().isArray() && 2 == ((Object[]) it).length;
-                            case FUNCTION:
-                                return Objects.nonNull(ad.getValueProcessor()) && DefaultValueProcessor.class != ad.getValueProcessor().processorClass();
-                            default:
-                                return false;
-                        }
-                    })
-                    // Predicate创建
-                    .map(it -> {
-                        switch (ad.getValueType()) {
-                            case VALUE:
-                                return cb.between(root.get(ad.getComputerFieldName()), ((Comparable[]) it)[0], ((Comparable[]) it)[1]);
-                            case FUNCTION:
-                                try {
-                                    Expression<Comparable>[] args = this.applyBiValueProcessor(ad, obj, root, query, cb);
-                                    return cb.between(root.get(ad.getComputerFieldName()), args[0], args[1]);
-                                } catch (ReflectiveOperationException e) {
-                                    log.error(e.getMessage(), e);
-                                    return null;
-                                }
-                            default:
+                // 值转换
+                .map(it -> Collection.class.isInstance(it) ? Collection.class.cast(it).<Object>toArray(new Object[2]) : it)
+                // 值类型判断
+                .filter(it -> {
+                    switch (ad.getValueType()) {
+                        case VALUE:
+                            return it.getClass().isArray() && 2 == ((Object[]) it).length;
+                        case FUNCTION:
+                            return Objects.nonNull(ad.getValueProcessor()) && DefaultValueProcessor.class != ad.getValueProcessor().processorClass();
+                        default:
+                            return false;
+                    }
+                })
+                // Predicate创建
+                .map(it -> {
+                    switch (ad.getValueType()) {
+                        case VALUE:
+                            return cb.between(root.get(ad.getComputerFieldName()), ((Comparable[]) it)[0], ((Comparable[]) it)[1]);
+                        case FUNCTION:
+                            try {
+                                Expression<Comparable>[] args = this.applyBiValueProcessor(ad, obj, root, query, cb);
+                                return cb.between(root.get(ad.getComputerFieldName()), args[0], args[1]);
+                            } catch (ReflectiveOperationException e) {
+                                log.error(e.getMessage(), e);
                                 return null;
-                        }
-                    });
+                            }
+                        default:
+                            return null;
+                    }
+                });
             if (optional.isPresent()) {
                 return ComputerDescriptor.of(ad, this.logicReverse(ad, optional.get(), cb));
             } else {
-                this.printWarn(ad);
+                this.printWarn(ad, root);
             }
         } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
             log.error(e.getMessage(), e);

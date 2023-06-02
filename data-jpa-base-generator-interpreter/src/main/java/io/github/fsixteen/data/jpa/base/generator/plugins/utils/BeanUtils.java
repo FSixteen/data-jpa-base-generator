@@ -7,18 +7,21 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Bean 工具类.<br>
+ * Bean utils.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public class BeanUtils {
 
     /**
-     * 获取类的所有字段内容, 含超类.<br>
+     * Returns an array of Field objects reflecting all the fields declared by
+     * the class or interface represented by this Class object. This includes
+     * public, protected, default (package) access, private fields, and
+     * inherited fields.<br>
      *
-     * @param clazz 任意类.
-     * @return Field[]
+     * @param clazz The {@code Class} object
+     * @return an array of Field objects
      */
     public static Field[] getAllFields(Class<?> clazz) {
         Set<Field> fieldList = new HashSet<>();

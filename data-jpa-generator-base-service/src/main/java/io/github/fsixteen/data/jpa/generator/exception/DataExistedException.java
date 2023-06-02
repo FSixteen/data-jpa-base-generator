@@ -7,10 +7,9 @@ import io.github.fsixteen.common.structure.extend.Status;
  * 内容已存在.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public class DataExistedException extends RuntimeException {
-
     private static final long serialVersionUID = 1L;
 
     private Long code = Status.EXISTED_ERROR.get().code();

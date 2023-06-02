@@ -6,7 +6,7 @@ import java.lang.annotation.Annotation;
  * 注解解释器抽像类.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
-public abstract class AbstractComputerBuilderPlugin<AN extends Annotation> implements BuilderPlugin<AN> {
+public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implements BuilderPlugin<A> {
 }

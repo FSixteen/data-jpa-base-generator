@@ -23,7 +23,7 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDe
  * 查询条件构建器.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 class PredicateBuildProcessor {
 
@@ -82,7 +82,7 @@ class PredicateBuildProcessor {
      */
     private Map<String, List<Tuple<ComputerDescriptor<Annotation>>>> createStandardGroups() {
         List<ComputerDescriptor<Annotation>> valid = this.computerCollection.getComputerDescriptors().stream()
-                .filter(it -> Objects.nonNull(it) && !it.isEmpty() && it.containsScope(scope)).collect(Collectors.toList());
+            .filter(it -> Objects.nonNull(it) && !it.isEmpty() && it.containsScope(scope)).collect(Collectors.toList());
         Map<String, List<Tuple<ComputerDescriptor<Annotation>>>> standardGroups = new ConcurrentHashMap<>();
         for (ComputerDescriptor<Annotation> computerDescriptor : valid) {
             for (GroupInfo groupInfo : computerDescriptor.getAnnoDesc().getGroups()) {
@@ -200,7 +200,7 @@ class PredicateBuildProcessor {
      * 内部元组.
      * 
      * @author FSixteen
-     * @since V1.0.0
+     * @since 1.0.0
      */
     private static class Tuple<V> {
 

@@ -26,7 +26,7 @@
     <url>https://github.com/FSixteen/data-jpa-base-generator</url>
     <connection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</connection>
     <developerConnection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</developerConnection>
-    <tag>data-jpa-base-generator-annotations</tag>
+    <tag>V1.0.1</tag>
   </scm>
 
   <parent>
@@ -36,15 +36,15 @@
     <relativePath>..</relativePath>
   </parent>
 
+  <properties>
+    <automatic.module.name>io.github.fsixteen.base.annotations</automatic.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>jakarta.persistence</groupId>
       <artifactId>jakarta.persistence-api</artifactId>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins></plugins>
-  </build>
 
 </project>

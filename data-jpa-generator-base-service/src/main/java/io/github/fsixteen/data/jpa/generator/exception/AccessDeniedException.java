@@ -7,10 +7,9 @@ import io.github.fsixteen.common.structure.extend.Status;
  * 访问拒绝.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public class AccessDeniedException extends RuntimeException {
-
     private static final long serialVersionUID = 1L;
 
     private Long code = Status.PERMISSION_ERROR.get().code();
@@ -24,6 +23,9 @@ public class AccessDeniedException extends RuntimeException {
         this(status.code(), status.msg());
     }
 
+    /**
+     * @param msg 提示内容
+     */
     public AccessDeniedException(String msg) {
         super(msg);
         this.msg = msg;
@@ -41,10 +43,20 @@ public class AccessDeniedException extends RuntimeException {
         this.msg = msg;
     }
 
+    /**
+     * 提示状态码.
+     * 
+     * @return Long
+     */
     public Long getCode() {
         return code;
     }
 
+    /**
+     * 提示内容.
+     * 
+     * @return String
+     */
     public String getMsg() {
         return msg;
     }

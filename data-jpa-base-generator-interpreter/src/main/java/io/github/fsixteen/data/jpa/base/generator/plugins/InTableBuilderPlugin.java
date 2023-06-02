@@ -1,6 +1,5 @@
 package io.github.fsixteen.data.jpa.base.generator.plugins;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,7 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDe
  * {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.InTable}注解解释器.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public class InTableBuilderPlugin extends AbstractComputerBuilderPlugin<InTable> {
 
@@ -34,7 +33,8 @@ public class InTableBuilderPlugin extends AbstractComputerBuilderPlugin<InTable>
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public ComputerDescriptor<InTable> toPredicate(AnnotationDescriptor<InTable> ad, Object obj, Root<?> root, AbstractQuery<?> query, CriteriaBuilder cb) {
+    public ComputerDescriptor<InTable> toPredicate(AnnotationDescriptor<InTable> ad, Object obj, Root<?> root, AbstractQuery<?> query, CriteriaBuilder cb)
+        throws ClassNotFoundException {
         try {
             Object fieldValue = this.trimIfPresent(ad, ad.getValueFieldPd().getReadMethod().invoke(obj));
 
@@ -60,7 +60,7 @@ public class InTableBuilderPlugin extends AbstractComputerBuilderPlugin<InTable>
             subQuery.select(subRoot.get(anno.referencedColumnName()));
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(root.get(anno.columnName()).in(subQuery));
-            Class<Annotation> annoClass = anno.valueInProcessorClass();
+            String annoClass = anno.valueInProcessorClass();
             if (ValueInType.TARGET == anno.valueInType()) {
                 ComputerDescriptor<?> cd = PluginsCache.reference(annoClass).toPredicate((AnnotationDescriptor) ad, obj, subRoot, subQuery, cb);
                 subQuery.where(cd.getPredicate());

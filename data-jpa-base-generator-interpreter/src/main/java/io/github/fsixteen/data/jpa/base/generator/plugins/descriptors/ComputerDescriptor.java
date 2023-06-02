@@ -11,16 +11,16 @@ import javax.persistence.criteria.Predicate;
  * 注解逻辑描述信息.
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
-public final class ComputerDescriptor<AN extends Annotation> {
+public final class ComputerDescriptor<A extends Annotation> {
 
-    private AnnotationDescriptor<AN> annoDesc;
+    private AnnotationDescriptor<A> annoDesc;
 
     private Predicate predicate;
 
-    public static <AN extends Annotation> ComputerDescriptor<AN> of(final AnnotationDescriptor<AN> annoDesc, final Predicate predicate) {
-        return new ComputerDescriptor<AN>(annoDesc, predicate);
+    public static <A extends Annotation> ComputerDescriptor<A> of(final AnnotationDescriptor<A> annoDesc, final Predicate predicate) {
+        return new ComputerDescriptor<A>(annoDesc, predicate);
     }
 
     /**
@@ -29,13 +29,13 @@ public final class ComputerDescriptor<AN extends Annotation> {
      * @param annoDesc  注解描述信息
      * @param predicate 查询条件
      */
-    public ComputerDescriptor(final AnnotationDescriptor<AN> annoDesc, final Predicate predicate) {
+    public ComputerDescriptor(final AnnotationDescriptor<A> annoDesc, final Predicate predicate) {
         super();
         this.annoDesc = annoDesc;
         this.predicate = predicate;
     }
 
-    public AnnotationDescriptor<AN> getAnnoDesc() {
+    public AnnotationDescriptor<A> getAnnoDesc() {
         return annoDesc;
     }
 

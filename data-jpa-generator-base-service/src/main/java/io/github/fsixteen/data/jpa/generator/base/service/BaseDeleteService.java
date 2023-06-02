@@ -23,7 +23,7 @@ import io.github.fsixteen.data.jpa.generator.exception.DataNonExistException;
  * 通用Service处理类.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializable, D extends IdEntity<ID>> {
 

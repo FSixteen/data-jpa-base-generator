@@ -37,7 +37,7 @@ import io.github.fsixteen.data.jpa.generator.utils.GroupColumnUtils.Column;
  * 通用Service聚合处理类.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public abstract class AbstractBaseAggService implements BaseAggService {
 
@@ -61,7 +61,7 @@ public abstract class AbstractBaseAggService implements BaseAggService {
         if (Objects.nonNull(obj)) {
             AnnotationCollection computer = CollectionCache.getAnnotationCollection(obj.getClass());
             Predicate[] list = ComputerCollection.Builder.of().withAnnotationCollection(computer).withArgs(obj).withSpecification(root, query, cb)
-                    .build(BuilderType.SELECTED).getPredicateArray(cb);
+                .build(BuilderType.SELECTED).getPredicateArray(cb);
             query.where(cb.and(list));
         }
     }
@@ -77,7 +77,7 @@ public abstract class AbstractBaseAggService implements BaseAggService {
 
     @Override
     public Object group(HttpServletRequest request, HttpServletResponse response, @NotNull GroupResponseType type, Class<?> clazz, Object obj,
-            String... groupColumns) {
+        String... groupColumns) {
         CriteriaQuery<GroupEntity> query = this.createCriteriaQuery(clazz, obj, groupColumns);
         List<GroupEntity> rs = this.em.createQuery(query).getResultList();
         switch (type) {
@@ -98,8 +98,7 @@ public abstract class AbstractBaseAggService implements BaseAggService {
 
     @Override
     public <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, T obj, Function<T, GroupDateTimeUnit> unit,
-            Function<T, Date> st, Function<T, Date> et, Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns,
-            String... groupColumns) {
+        Function<T, Date> st, Function<T, Date> et, Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
         final String[] timeRange = getTimeArrayByTimeRange(st.apply(obj), et.apply(obj), unit.apply(obj).getLocal(), unit.apply(obj).getOffset());
         CriteriaQuery<GroupEntity> query = this.createCriteriaQuery(clazz, obj, groupColumns);
         List<GroupEntity> rs = this.em.createQuery(query).getResultList();

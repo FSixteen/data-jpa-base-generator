@@ -3,10 +3,10 @@ package io.github.fsixteen.data.jpa.generator.base.entities;
 import java.io.Serializable;
 
 /**
- * 主键字段-持久层端.<br>
+ * 主键字段接口.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public interface IdEntity<ID extends Serializable> extends Entity {
 

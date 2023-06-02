@@ -18,7 +18,7 @@ import io.github.fsixteen.data.jpa.generator.constants.GroupResponseType;
  * 通用Service聚合处理类.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public interface BaseAggService {
 
@@ -77,7 +77,7 @@ public interface BaseAggService {
      * @return Object
      */
     public Object group(HttpServletRequest request, HttpServletResponse response, @NotNull GroupResponseType type, Class<?> clazz, Object obj,
-            String... groupColumns);
+        String... groupColumns);
 
     /**
      * 通用绘图分组.
@@ -94,7 +94,7 @@ public interface BaseAggService {
      * @return Object
      */
     default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, GroupDateTimeUnit unit, Date st, Date et,
-            Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
+        Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
         return this.dateRangeGroup(request, response, clazz, null, (ele) -> unit, (ele) -> st, (ele) -> et, GroupEntity::getKey, valueFuns, groupColumns);
     }
 
@@ -113,7 +113,7 @@ public interface BaseAggService {
      * @return Object
      */
     default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, Function<T, GroupDateTimeUnit> unit,
-            Function<T, Date> st, Function<T, Date> et, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
+        Function<T, Date> st, Function<T, Date> et, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
         return this.dateRangeGroup(request, response, clazz, null, unit, st, et, GroupEntity::getKey, valueFuns, groupColumns);
     }
 
@@ -133,7 +133,7 @@ public interface BaseAggService {
      * @return Object
      */
     default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, GroupDateTimeUnit unit, Date st, Date et,
-            Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
+        Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
         return this.dateRangeGroup(request, response, clazz, null, (ele) -> unit, (ele) -> st, (ele) -> et, labelFun, valueFuns, groupColumns);
     }
 
@@ -153,8 +153,7 @@ public interface BaseAggService {
      * @return Object
      */
     default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, Function<T, GroupDateTimeUnit> unit,
-            Function<T, Date> st, Function<T, Date> et, Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns,
-            String... groupColumns) {
+        Function<T, Date> st, Function<T, Date> et, Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
         return this.dateRangeGroup(request, response, clazz, null, unit, st, et, labelFun, valueFuns, groupColumns);
     }
 
@@ -174,7 +173,7 @@ public interface BaseAggService {
      * @return Object
      */
     default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, T obj, GroupDateTimeUnit unit, Date st, Date et,
-            Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
+        Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
         return this.dateRangeGroup(request, response, clazz, obj, (ele) -> unit, (ele) -> st, (ele) -> et, GroupEntity::getKey, valueFuns, groupColumns);
     }
 
@@ -195,7 +194,7 @@ public interface BaseAggService {
      * @return Object
      */
     default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, T obj, GroupDateTimeUnit unit, Date st, Date et,
-            Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
+        Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
         return this.dateRangeGroup(request, response, clazz, obj, (ele) -> unit, (ele) -> st, (ele) -> et, labelFun, valueFuns, groupColumns);
     }
 
@@ -216,7 +215,6 @@ public interface BaseAggService {
      * @return Object
      */
     public <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, T obj, Function<T, GroupDateTimeUnit> unit,
-            Function<T, Date> st, Function<T, Date> et, Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns,
-            String... groupColumns);
+        Function<T, Date> st, Function<T, Date> et, Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns, String... groupColumns);
 
 }

@@ -16,9 +16,9 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.exceptions.Introspecti
  * 注解描述信息.
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
-public final class AnnotationDescriptor<AN extends Annotation> {
+public final class AnnotationDescriptor<A extends Annotation> {
 
     private static final String FIELD = "field";
 
@@ -26,16 +26,10 @@ public final class AnnotationDescriptor<AN extends Annotation> {
     private Class<?> objClass;
 
     /** 注解. */
-    private AN anno;
+    private A anno;
 
     /** 参与计算字段名称. */
     private String computerFieldName;
-
-    /** 参与计算字段. */
-    private Field computerField;
-
-    /** 参与计算字段描述信息. */
-    private PropertyDescriptor computerFieldPd;
 
     /** 参与计算值字段名称. */
     private String valueFieldName;
@@ -143,20 +137,20 @@ public final class AnnotationDescriptor<AN extends Annotation> {
      */
     private boolean trim = true;
 
-    public static <T, AN extends Annotation> AnnotationDescriptor<AN> of(final Class<T> objClass, final AN anno)
-            throws IntrospectionException, NoSuchFieldException, SecurityException {
+    public static <T, A extends Annotation> AnnotationDescriptor<A> of(final Class<T> objClass, final A anno)
+        throws IntrospectionException, NoSuchFieldException, SecurityException {
         return of(objClass, anno, null);
     }
 
-    public static <T, AN extends Annotation> AnnotationDescriptor<AN> of(final Class<T> objClass, final AN anno, final Field valueField) {
-        return new AnnotationDescriptor<AN>(objClass, anno, valueField);
+    public static <T, A extends Annotation> AnnotationDescriptor<A> of(final Class<T> objClass, final A anno, final Field valueField) {
+        return new AnnotationDescriptor<A>(objClass, anno, valueField);
     }
 
-    private AnnotationDescriptor(final Class<?> objClass, final AN anno) {
+    private AnnotationDescriptor(final Class<?> objClass, final A anno) {
         this(objClass, anno, null);
     }
 
-    private AnnotationDescriptor(final Class<?> objClass, final AN anno, final Field valueField) {
+    private AnnotationDescriptor(final Class<?> objClass, final A anno, final Field valueField) {
         super();
         this.objClass = objClass;
         this.anno = anno;
@@ -175,8 +169,10 @@ public final class AnnotationDescriptor<AN extends Annotation> {
         this.valueField = Optional.ofNullable(valueField).orElseGet(() -> this.reflectField(objClass, FIELD));
         this.valueFieldName = this.valueField.getName();
         try {
-            // 可爱又可笑的修改, 用于解决多版本编译, 报'cannot access com.sun.beans.introspect.PropertyInfo'
-            // 'class file for com.sun.beans.introspect.PropertyInfo not found'错误问题.
+            // 可爱又可笑的修改, 用于解决多版本编译, 报'cannot access
+            // com.sun.beans.introspect.PropertyInfo'
+            // 'class file for com.sun.beans.introspect.PropertyInfo not
+            // found'错误问题.
             // jdk8与jdk9(含)以上, java.beans.PropertyDescriptor 构造函数发生变化所致.
             this.valueFieldPd = new PropertyDescriptor((String) this.valueFieldName, objClass);
         } catch (IntrospectionException e) {
@@ -184,15 +180,6 @@ public final class AnnotationDescriptor<AN extends Annotation> {
         }
 
         this.computerFieldName = Optional.ofNullable(this.field).filter(it -> !it.isEmpty()).orElseGet(() -> this.valueFieldName);
-        this.computerField = this.reflectField(objClass, this.computerFieldName);
-        try {
-            // 可爱又可笑的修改, 用于解决多版本编译, 报'cannot access com.sun.beans.introspect.PropertyInfo'
-            // 'class file for com.sun.beans.introspect.PropertyInfo not found'错误问题.
-            // jdk8与jdk9(含)以上, java.beans.PropertyDescriptor 构造函数发生变化所致.
-            this.computerFieldPd = new PropertyDescriptor((String) this.computerFieldName, objClass);
-        } catch (IntrospectionException e) {
-            throw new IntrospectionRuntimeException(e);
-        }
     }
 
     private Field reflectField(final Class<?> objClass, final String fieldName) {
@@ -215,7 +202,7 @@ public final class AnnotationDescriptor<AN extends Annotation> {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T fieldValue(final AN anno, final String fieldName) {
+    private <T> T fieldValue(final A anno, final String fieldName) {
         try {
             return (T) anno.annotationType().getMethod(fieldName).invoke(anno);
         } catch (ReflectiveOperationException | SecurityException | IllegalArgumentException e) {
@@ -223,50 +210,64 @@ public final class AnnotationDescriptor<AN extends Annotation> {
         }
     }
 
-    private String stringFieldValue(final AN anno, final String fieldName) {
+    private String stringFieldValue(final A anno, final String fieldName) {
         return Optional.ofNullable(this.fieldValue(anno, fieldName)).filter(String.class::isInstance).map(String.class::cast).orElseGet(() -> null);
     }
 
-    private boolean booleanFieldValue(final AN anno, final String fieldName) {
+    private boolean booleanFieldValue(final A anno, final String fieldName) {
         return Optional.ofNullable(this.fieldValue(anno, fieldName)).filter(Boolean.class::isInstance).map(Boolean.class::cast).orElseGet(() -> false);
     }
 
-    /** 实例类. */
+    /**
+     * 实例类.
+     * 
+     * @return Class&lt;?&gt;
+     */
     public Class<?> getObjClass() {
         return objClass;
     }
 
-    /** 注解. */
-    public AN getAnno() {
+    /**
+     * 注解.
+     * 
+     * @return A
+     */
+    public A getAnno() {
         return anno;
     }
 
-    /** 参与计算字段名称. */
+    /**
+     * 参与计算字段名称.
+     * 
+     * @return String
+     */
     public String getComputerFieldName() {
         return computerFieldName;
     }
 
-    /** 参与计算字段. */
-    public Field getComputerField() {
-        return computerField;
-    }
-
-    /** 参与计算字段描述信息. */
-    public PropertyDescriptor getComputerFieldPd() {
-        return computerFieldPd;
-    }
-
-    /** 参与计算值字段名称. */
+    /**
+     * 参与计算值字段名称.
+     * 
+     * @return String
+     */
     public String getValueFieldName() {
         return valueFieldName;
     }
 
-    /** 参与计算值字段. */
+    /**
+     * 参与计算值字段.
+     * 
+     * @return Field
+     */
     public Field getValueField() {
         return valueField;
     }
 
-    /** 参与计算值字段描述信息. */
+    /**
+     * 参与计算值字段描述信息.
+     * 
+     * @return PropertyDescriptor
+     */
     public PropertyDescriptor getValueFieldPd() {
         return valueFieldPd;
     }
@@ -324,7 +325,8 @@ public final class AnnotationDescriptor<AN extends Annotation> {
      * <br>
      * - 为<code>true</code>时, 任何时机均参与计算.<br>
      * <br>
-     * - 为<code>false</code>时, 根据{@link #isIgnoreNull()}, {@link #isIgnoreEmpty()},
+     * - 为<code>false</code>时, 根据{@link #isIgnoreNull()},
+     * {@link #isIgnoreEmpty()},
      * {@link #isIgnoreBlank()}则机参与计算.<br>
      *
      * @return boolean

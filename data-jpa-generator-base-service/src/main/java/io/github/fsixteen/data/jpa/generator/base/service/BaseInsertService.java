@@ -1,20 +1,13 @@
 package io.github.fsixteen.data.jpa.generator.base.service;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
@@ -22,9 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.domain.Specification;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 
 import io.github.fsixteen.common.structure.extend.Status;
 import io.github.fsixteen.data.jpa.base.generator.plugins.cache.CollectionCache;
@@ -40,7 +30,7 @@ import io.github.fsixteen.data.jpa.generator.exception.ReflectionException;
  * 通用Service处理类.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializable, I extends Entity> {
 
@@ -69,15 +59,45 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
     /**
      * 判断实例存在逻辑.<br>
      * 
-     * @param args 添加实体实例
-     * @return Specification&lt;T&gt;
+     * @return BiPredicate&lt;U, BaseDao&lt;T, ID&gt;&gt;
      */
-    default Specification<T> isExisted(I args) {
-        final AnnotationCollection computer = CollectionCache.getAnnotationCollection(args.getClass());
-        return !computer.isEmpty(BuilderType.EXISTS)
-                ? (root, query, cb) -> computer.toComputerCollection().withArgs(args).withSpecification(root, query, cb).build(BuilderType.EXISTS)
+    default BiPredicate<I, BaseDao<T, ID>> checkExistedBeforInsert() {
+        return (args, dao) -> {
+            AnnotationCollection computer = CollectionCache.getAnnotationCollection(args.getClass());
+            Specification<
+                T> specification = !computer.isEmpty(BuilderType.EXISTS)
+                    ? (root, query, cb) -> computer.toComputerCollection().withArgs(args).withSpecification(root, query, cb).build(BuilderType.EXISTS)
                         .getPredicate(cb)
-                : (root, query, cb) -> cb.equal(cb.literal(0), cb.literal(1));
+                    : (root, query, cb) -> cb.equal(cb.literal(0), cb.literal(1));
+            return dao.exists(specification);
+        };
+    }
+
+    /**
+     * 插入前是否进行校验.<br>
+     * 
+     * @return boolean
+     */
+    default boolean isCheckExistedBeforInsert() {
+        return Boolean.TRUE;
+    }
+
+    /**
+     * 插入前是否进行校验.<br>
+     * 
+     * @return boolean
+     */
+    default boolean isCheckExistedBeforInsertOne() {
+        return this.isCheckExistedBeforInsert();
+    }
+
+    /**
+     * 批量插入前是否进行校验.<br>
+     * 
+     * @return boolean
+     */
+    default boolean isCheckExistedBeforInsertAll() {
+        return this.isCheckExistedBeforInsert();
     }
 
     /**
@@ -191,25 +211,13 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
     @SuppressWarnings("unchecked")
     default T insert(I args, Consumer<I> preprocessor, BiConsumer<T, I> processor, BiConsumer<T, I> postprocessor) {
         Optional.ofNullable(preprocessor).ifPresent(it -> it.accept(args));
-        if (this.getDao().exists(this.isExisted(args))) {
+        if (this.isCheckExistedBeforInsertOne() && this.checkExistedBeforInsert().test(args, this.getDao())) {
             throw this.insertExistedException();
         }
         try {
             T news = (T) BaseCommonService.getTableClass(this.getDao().getClass()).getDeclaredConstructor().newInstance();
-            Set<String> ignoreSet = new HashSet<>();
-            JsonIgnoreProperties ignoreProperties = args.getClass().getAnnotation(JsonIgnoreProperties.class);
-            if (Objects.nonNull(ignoreProperties) && 0 < ignoreProperties.value().length) {
-                ignoreSet.addAll(Arrays.asList(ignoreProperties.value()));
-            }
-            JsonIncludeProperties includeProperties = args.getClass().getAnnotation(JsonIncludeProperties.class);
-            if (Objects.nonNull(includeProperties) && 0 < includeProperties.value().length) {
-                List<String> includes = Arrays.asList(includeProperties.value());
-                Set<String> fields = Stream.of(io.github.fsixteen.data.jpa.base.generator.plugins.utils.BeanUtils.getAllFields(args.getClass()))
-                        .filter(it -> Modifier.isStatic(it.getModifiers())).map(Field::getName).filter(it -> !includes.contains(it))
-                        .collect(Collectors.toSet());
-                ignoreSet.addAll(fields);
-            }
-            BeanUtils.copyProperties(args, news, ignoreSet.toArray(new String[ignoreSet.size()]));
+            String[] ignoreSet = BaseCommonService.jsonIgnoreProperties(args);
+            BeanUtils.copyProperties(args, news, ignoreSet);
             Optional.ofNullable(processor).ifPresent(it -> it.accept(news, args));
             T savedEle = this.getDao().save(news);
             Optional.ofNullable(postprocessor).ifPresent(it -> it.accept(savedEle, args));
@@ -268,29 +276,19 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
     @SuppressWarnings("unchecked")
     default List<T> insertAll(Iterable<I> args, Consumer<I> preprocessor, BiConsumer<T, I> processor, BiConsumer<Iterable<T>, Iterable<I>> postprocessor) {
         Optional.ofNullable(preprocessor).ifPresent(it -> args.forEach(ele -> it.accept(ele)));
-        args.forEach(ele -> {
-            if (this.getDao().exists(this.isExisted(ele))) {
-                throw this.insertExistedException();
-            }
-        });
+        if (this.isCheckExistedBeforInsertAll()) {
+            args.forEach(ele -> {
+                if (this.checkExistedBeforInsert().test(ele, this.getDao())) {
+                    throw this.insertExistedException();
+                }
+            });
+        }
         try {
             Map<I, T> eles = new ConcurrentHashMap<>();
+            String[] ignoreSet = BaseCommonService.jsonIgnoreProperties(args);
             for (I arg : args) {
                 T news = (T) BaseCommonService.getTableClass(this.getDao().getClass()).getDeclaredConstructor().newInstance();
-                Set<String> ignoreSet = new HashSet<>();
-                JsonIgnoreProperties ignoreProperties = arg.getClass().getAnnotation(JsonIgnoreProperties.class);
-                if (Objects.nonNull(ignoreProperties) && 0 < ignoreProperties.value().length) {
-                    ignoreSet.addAll(Arrays.asList(ignoreProperties.value()));
-                }
-                JsonIncludeProperties includeProperties = arg.getClass().getAnnotation(JsonIncludeProperties.class);
-                if (Objects.nonNull(includeProperties) && 0 < includeProperties.value().length) {
-                    List<String> includes = Arrays.asList(includeProperties.value());
-                    Set<String> fields = Stream.of(io.github.fsixteen.data.jpa.base.generator.plugins.utils.BeanUtils.getAllFields(args.getClass()))
-                            .filter(it -> Modifier.isStatic(it.getModifiers())).map(Field::getName).filter(it -> !includes.contains(it))
-                            .collect(Collectors.toSet());
-                    ignoreSet.addAll(fields);
-                }
-                BeanUtils.copyProperties(arg, news, ignoreSet.toArray(new String[ignoreSet.size()]));
+                BeanUtils.copyProperties(arg, news, ignoreSet);
                 eles.put(arg, news);
             }
             Optional.ofNullable(processor).ifPresent(it -> eles.entrySet().forEach(entry -> it.accept(entry.getValue(), entry.getKey())));

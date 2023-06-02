@@ -1,29 +1,19 @@
 package io.github.fsixteen.data.jpa.generator.base.service;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 
 import io.github.fsixteen.common.structure.StatusInterface;
 import io.github.fsixteen.common.structure.extend.Status;
@@ -32,12 +22,13 @@ import io.github.fsixteen.data.jpa.generator.base.jpa.BaseDao;
 import io.github.fsixteen.data.jpa.generator.exception.AccessDeniedException;
 import io.github.fsixteen.data.jpa.generator.exception.DataExistedException;
 import io.github.fsixteen.data.jpa.generator.exception.DataNonExistException;
+import io.github.fsixteen.data.jpa.generator.utils.BeanUtils;
 
 /**
  * 通用Service处理类.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializable, U extends IdEntity<ID>> {
 
@@ -113,8 +104,35 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      *
      * @return BiPredicate&lt;U, BaseDao&lt;T, ID&gt;&gt;
      */
-    default BiPredicate<U, BaseDao<T, ID>> updateExisted() {
+    default BiPredicate<U, BaseDao<T, ID>> checkExistedBeforUpdate() {
         return (args, dao) -> Boolean.FALSE;
+    }
+
+    /**
+     * 更新前是否进行校验.<br>
+     * 
+     * @return boolean
+     */
+    default boolean isCheckExistedBeforUpdate() {
+        return Boolean.TRUE;
+    }
+
+    /**
+     * 更新前是否进行校验.<br>
+     * 
+     * @return boolean
+     */
+    default boolean isCheckExistedBeforUpdateOne() {
+        return this.isCheckExistedBeforUpdate();
+    }
+
+    /**
+     * 更新插入前是否进行校验.<br>
+     * 
+     * @return boolean
+     */
+    default boolean isCheckExistedBeforUpdateAll() {
+        return this.isCheckExistedBeforUpdate();
     }
 
     /**
@@ -179,6 +197,19 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
         return (ele, args) -> {
             if (log.isDebugEnabled()) {
                 log.debug("Update Post Processor Nothing.");
+            }
+        };
+    }
+
+    /**
+     * 更新后置处理器.<br>
+     *
+     * @return BiConsumer&lt;Iterable&lt;T&gt, Iterable&lt;U&gt&gt;
+     */
+    default BiConsumer<Iterable<T>, Iterable<U>> updateAllPostprocessor() {
+        return (ele, args) -> {
+            if (log.isDebugEnabled()) {
+                log.debug("Insert Post Processor Nothing.");
             }
         };
     }
@@ -278,7 +309,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default T update(U args, Consumer<U> preprocessor, BiPredicate<T, U> filter, BiConsumer<T, U> processor, BiConsumer<T, U> postprocessor) {
         Optional.ofNullable(preprocessor).ifPresent(it -> it.accept(args));
-        if (this.updateExisted().test(args, this.getDao())) {
+        if (this.isCheckExistedBeforUpdateOne() && this.checkExistedBeforUpdate().test(args, this.getDao())) {
             throw this.updateExistedException();
         }
         Optional<T> eleOptional = this.getDao().findById(args.getId());
@@ -286,21 +317,129 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
             throw this.updateNonDataException();
         }
         T ele = eleOptional.filter(it -> filter.test(it, args)).orElseThrow(() -> new AccessDeniedException(this.accessDeniedExceptionMessage()));
-        Set<String> ignoreSet = new HashSet<>();
-        JsonIgnoreProperties ignoreProperties = args.getClass().getAnnotation(JsonIgnoreProperties.class);
-        if (Objects.nonNull(ignoreProperties) && 0 < ignoreProperties.value().length) {
-            ignoreSet.addAll(Arrays.asList(ignoreProperties.value()));
-        }
-        JsonIncludeProperties includeProperties = args.getClass().getAnnotation(JsonIncludeProperties.class);
-        if (Objects.nonNull(includeProperties) && 0 < includeProperties.value().length) {
-            List<String> includes = Arrays.asList(includeProperties.value());
-            Set<String> fields = Stream.of(io.github.fsixteen.data.jpa.base.generator.plugins.utils.BeanUtils.getAllFields(args.getClass()))
-                    .filter(it -> Modifier.isStatic(it.getModifiers())).map(Field::getName).filter(it -> !includes.contains(it)).collect(Collectors.toSet());
-            ignoreSet.addAll(fields);
-        }
-        BeanUtils.copyProperties(args, ele, ignoreSet.toArray(new String[ignoreSet.size()]));
+        String[] ignoreSet = BaseCommonService.jsonIgnoreProperties(args);
+        BeanUtils.copyProperties(args, ele, ignoreSet);
         Optional.ofNullable(processor).ifPresent(it -> it.accept(ele, args));
         T savedEle = this.getDao().save(ele);
+        Optional.ofNullable(postprocessor).ifPresent(it -> it.accept(savedEle, args));
+        return savedEle;
+    }
+
+    /**
+     * 更新逻辑.<br>
+     * 
+     * @param args 更新实体实例
+     * @see #update(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @return List&lt;T&gt;
+     */
+    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    default List<T> updateAll(List<U> args) {
+        return updateAll(args, this.updatePreprocessor());
+    }
+
+    /**
+     * 更新逻辑.<br>
+     * 
+     * @param args         更新实体实例
+     * @param preprocessor 更新前置处理器
+     * @see #update(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @return List&lt;T&gt;
+     */
+    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    default List<T> updateAll(List<U> args, Consumer<U> preprocessor) {
+        return updateAll(args, preprocessor, this.updateBiTest());
+    }
+
+    /**
+     * 更新逻辑.<br>
+     * 
+     * @param args         更新实体实例
+     * @param preprocessor 更新前置处理器
+     * @param filter       更新判断器
+     * @see #update(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @return List&lt;T&gt;
+     */
+    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    default List<T> updateAll(List<U> args, Consumer<U> preprocessor, BiPredicate<T, U> filter) {
+        return updateAll(args, preprocessor, filter, this.updateBiProcessor());
+    }
+
+    /**
+     * 更新逻辑.<br>
+     * 
+     * @param args      更新实体实例
+     * @param filter    更新判断器
+     * @param processor 更新处理器
+     * @see #update(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @return List&lt;T&gt;
+     */
+    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    default List<T> updateAll(List<U> args, BiPredicate<T, U> filter, BiConsumer<T, U> processor) {
+        return updateAll(args, this.updatePreprocessor(), filter, processor, this.updateAllPostprocessor());
+    }
+
+    /**
+     * 更新逻辑.<br>
+     *
+     * @param args      更新实体实例
+     * @param filter    更新判断器
+     * @param processor 更新处理器
+     * @see #update(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @return List&lt;T&gt;
+     */
+    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    default List<T> updateAll(List<U> args, BiPredicate<T, U> filter, Consumer<T> processor) {
+        return updateAll(args, this.updatePreprocessor(), filter, (ele, temp) -> processor.accept(ele));
+    }
+
+    /**
+     * 更新逻辑.<br>
+     * 
+     * @param args         更新实体实例
+     * @param preprocessor 更新前置处理器
+     * @param filter       更新判断器
+     * @param processor    更新处理器
+     * @see #update(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @return List&lt;T&gt;
+     */
+    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    default List<T> updateAll(List<U> args, Consumer<U> preprocessor, BiPredicate<T, U> filter, BiConsumer<T, U> processor) {
+        return updateAll(args, preprocessor, filter, processor, this.updateAllPostprocessor());
+    }
+
+    /**
+     * 更新逻辑.<br>
+     * 
+     * @param args          更新实体实例
+     * @param preprocessor  更新前置处理器
+     * @param filter        更新判断器
+     * @param processor     更新处理器
+     * @param postprocessor 更新后置处理器
+     * @return List&lt;T&gt;
+     */
+    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    default List<T> updateAll(List<U> args, Consumer<U> preprocessor, BiPredicate<T, U> filter, BiConsumer<T, U> processor,
+        BiConsumer<Iterable<T>, Iterable<U>> postprocessor) {
+        Optional.ofNullable(preprocessor).ifPresent(it -> args.forEach(ele -> it.accept(ele)));
+        if (this.isCheckExistedBeforUpdateAll()) {
+            args.forEach(ele -> {
+                if (this.checkExistedBeforUpdate().test(ele, this.getDao())) {
+                    throw this.updateExistedException();
+                }
+            });
+        }
+        Map<U, T> eles = new ConcurrentHashMap<>();
+        String[] ignoreSet = BaseCommonService.jsonIgnoreProperties(args);
+        for (U arg : args) {
+            Optional<T> eleOptional = this.getDao().findById(arg.getId());
+            if (!eleOptional.isPresent()) {
+                throw this.updateNonDataException();
+            }
+            T ele = eleOptional.filter(it -> filter.test(it, arg)).orElseThrow(() -> new AccessDeniedException(this.accessDeniedExceptionMessage()));
+            BeanUtils.copyProperties(arg, ele, ignoreSet);
+        }
+        Optional.ofNullable(processor).ifPresent(it -> eles.entrySet().forEach(entry -> it.accept(entry.getValue(), entry.getKey())));
+        List<T> savedEle = this.getDao().saveAllAndFlush(eles.values());
         Optional.ofNullable(postprocessor).ifPresent(it -> it.accept(savedEle, args));
         return savedEle;
     }

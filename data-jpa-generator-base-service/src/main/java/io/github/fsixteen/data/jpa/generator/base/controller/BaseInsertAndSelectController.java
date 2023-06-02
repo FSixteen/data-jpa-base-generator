@@ -11,8 +11,8 @@ import io.github.fsixteen.data.jpa.generator.beans.BasePageRequest;
  * 基础添加和查询Controller.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
-public interface BaseInsertAndSelectController<SI extends BaseInsertAndSelectService<T, ID, I, S>, T extends IdEntity<ID>, ID extends Serializable, I extends Entity, S extends Entity & BasePageRequest>
-        extends BaseInsertController<SI, T, ID, I>, BaseSelectController<SI, T, ID, S> {
+public interface BaseInsertAndSelectController<SI extends BaseInsertAndSelectService<T, ID, I, S>, T extends IdEntity<ID>, ID extends Serializable,
+    I extends Entity, S extends Entity & BasePageRequest> extends BaseInsertController<SI, T, ID, I>, BaseSelectController<SI, T, ID, S> {
 }

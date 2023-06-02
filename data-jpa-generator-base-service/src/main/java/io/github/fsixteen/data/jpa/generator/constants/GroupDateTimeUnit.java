@@ -6,7 +6,7 @@ import java.util.Calendar;
  * 时间单位.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public enum GroupDateTimeUnit {
 

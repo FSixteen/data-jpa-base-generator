@@ -12,7 +12,7 @@ import io.github.fsixteen.data.jpa.generator.base.groups.InsertGroup;
  * 主键字段自增规则.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public interface NumberAutoIncrementIdRule<ID extends Number> extends IdEntity<ID> {
 

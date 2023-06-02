@@ -26,7 +26,7 @@ import io.github.fsixteen.data.jpa.generator.constants.GroupColumnType;
  * 分组查询字段处理工具.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public class GroupColumnUtils {
 
@@ -45,7 +45,7 @@ public class GroupColumnUtils {
      * {@link Column} 构造器.
      * 
      * @author FSixteen
-     * @since V1.0.0
+     * @since 1.0.0
      */
     public static class Builder {
 
@@ -89,7 +89,7 @@ public class GroupColumnUtils {
      * 分组计算字段.
      * 
      * @author FSixteen
-     * @since V1.0.0
+     * @since 1.0.0
      */
     public static class Column {
 

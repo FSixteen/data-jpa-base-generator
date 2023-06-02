@@ -15,7 +15,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
  * 分组计算信息.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 @Target({ TYPE })
 @Retention(RUNTIME)
@@ -59,16 +59,16 @@ public @interface GroupComputerType {
      * 计算方式枚举.<br>
      * 
      * @author FSixteen
-     * @since V1.0.0
+     * @since 1.0.0
      */
     public static enum Type {
         /**
-         * 并集
+         * 并集.
          */
         AND,
 
         /**
-         * 或集
+         * 或集.
          */
         OR;
     }

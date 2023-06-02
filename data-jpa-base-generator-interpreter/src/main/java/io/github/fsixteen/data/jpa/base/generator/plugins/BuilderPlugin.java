@@ -22,9 +22,9 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDe
  * 注解解释器接口.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
-public interface BuilderPlugin<AN extends Annotation> {
+public interface BuilderPlugin<A extends Annotation> {
 
     static final Map<Class<? extends ValueProcessor>, ValueProcessor> VALUE_PROCESSOR_CACHE = new ConcurrentHashMap<>(32);
     static Logger log = LoggerFactory.getLogger(BuilderPlugin.class);
@@ -38,8 +38,10 @@ public interface BuilderPlugin<AN extends Annotation> {
      * @param query 见{@link javax.persistence.criteria.AbstractQuery}.
      * @param cb    见{@link javax.persistence.criteria.CriteriaBuilder}.
      * @return ComputerDescriptor&lt;AN&gt;
+     * @throws ClassNotFoundException if the class cannot be located
      */
-    ComputerDescriptor<AN> toPredicate(AnnotationDescriptor<AN> ad, Object obj, Root<?> root, AbstractQuery<?> query, CriteriaBuilder cb);
+    ComputerDescriptor<A> toPredicate(AnnotationDescriptor<A> ad, Object obj, Root<?> root, AbstractQuery<?> query, CriteriaBuilder cb)
+        throws ClassNotFoundException;
 
     /**
      * 创建等于空值的注解逻辑描述信息.<br>
@@ -49,7 +51,7 @@ public interface BuilderPlugin<AN extends Annotation> {
      * @param cb   见{@link javax.persistence.criteria.CriteriaBuilder}.
      * @return ComputerDescriptor&lt;AN&gt;
      */
-    default ComputerDescriptor<AN> toNullValuePredicate(final AnnotationDescriptor<AN> ad, final Root<?> root, final CriteriaBuilder cb) {
+    default ComputerDescriptor<A> toNullValuePredicate(final AnnotationDescriptor<A> ad, final Root<?> root, final CriteriaBuilder cb) {
         return ComputerDescriptor.of(ad, this.logicReverse(ad, root.get(ad.getComputerFieldName()).isNull(), cb));
     }
 
@@ -65,14 +67,14 @@ public interface BuilderPlugin<AN extends Annotation> {
      * @return Expression&lt;T&gt;
      * @throws ReflectiveOperationException 值函数执行类实例化异常
      */
-    default <T> Expression<T> applyValueProcessor(final AnnotationDescriptor<AN> ad, final Object obj, final Root<?> root, final AbstractQuery<?> query,
-            final CriteriaBuilder cb) throws ReflectiveOperationException {
+    default <T> Expression<T> applyValueProcessor(final AnnotationDescriptor<A> ad, final Object obj, final Root<?> root, final AbstractQuery<?> query,
+        final CriteriaBuilder cb) throws ReflectiveOperationException {
         Class<? extends ValueProcessor> clazz = ad.getValueProcessor().processorClass();
         if (!VALUE_PROCESSOR_CACHE.containsKey(clazz)) {
             VALUE_PROCESSOR_CACHE.put(clazz, clazz.getDeclaredConstructor().newInstance());
         }
         ValueProcessor processor = VALUE_PROCESSOR_CACHE.get(clazz);
-        return processor.<AN, T>create(ad.getAnno(), ad.getValueProcessor(), obj, root, query, cb);
+        return processor.<A, T>create(ad.getAnno(), ad.getValueProcessor(), obj, root, query, cb);
     }
 
     /**
@@ -87,14 +89,14 @@ public interface BuilderPlugin<AN extends Annotation> {
      * @return Expression&lt;T&gt;[]
      * @throws ReflectiveOperationException 值函数执行类实例化异常
      */
-    default <T> Expression<T>[] applyBiValueProcessor(final AnnotationDescriptor<AN> ad, final Object obj, final Root<?> root, final AbstractQuery<?> query,
-            final CriteriaBuilder cb) throws ReflectiveOperationException {
+    default <T> Expression<T>[] applyBiValueProcessor(final AnnotationDescriptor<A> ad, final Object obj, final Root<?> root, final AbstractQuery<?> query,
+        final CriteriaBuilder cb) throws ReflectiveOperationException {
         Class<? extends ValueProcessor> clazz = ad.getValueProcessor().processorClass();
         if (!VALUE_PROCESSOR_CACHE.containsKey(clazz)) {
             VALUE_PROCESSOR_CACHE.put(clazz, clazz.getDeclaredConstructor().newInstance());
         }
         ValueProcessor processor = VALUE_PROCESSOR_CACHE.get(clazz);
-        return processor.<AN, T>biCreate(ad.getAnno(), ad.getValueProcessor(), obj, root, query, cb);
+        return processor.<A, T>biCreate(ad.getAnno(), ad.getValueProcessor(), obj, root, query, cb);
     }
 
     /**
@@ -105,7 +107,7 @@ public interface BuilderPlugin<AN extends Annotation> {
      * @param cb        见{@link javax.persistence.criteria.CriteriaBuilder}.
      * @return Predicate
      */
-    default Predicate logicReverse(final AnnotationDescriptor<AN> ad, final Predicate predicate, final CriteriaBuilder cb) {
+    default Predicate logicReverse(final AnnotationDescriptor<A> ad, final Predicate predicate, final CriteriaBuilder cb) {
         return Objects.isNull(predicate) || !ad.isNot() ? predicate : cb.not(predicate);
     }
 
@@ -117,21 +119,21 @@ public interface BuilderPlugin<AN extends Annotation> {
      * @see java.lang.String#trim()
      * @return Object
      */
-    default Object trimIfPresent(final AnnotationDescriptor<AN> ad, final Object obj) {
+    default Object trimIfPresent(final AnnotationDescriptor<A> ad, final Object obj) {
         return obj instanceof String && ad.isTrim() ? String.class.cast(obj).trim() : obj;
     }
 
     /**
      * 打印日志.<br>
-     * *
      * 
-     * @param ad 注解描述信息实例
+     * @param ad   注解描述信息实例
+     * @param root 见{@link javax.persistence.criteria.Root}.
      */
-    default void printWarn(AnnotationDescriptor<AN> ad) {
+    default void printWarn(final AnnotationDescriptor<A> ad, final Root<?> root) {
         if (log.isDebugEnabled()) {
             log.debug("无效 {} 计算内容, 参与计算字段名 {}, 参与计算值字段名 {}, 类型分别为 {}, {}, 不满足计算条件, 已放弃该条件.", ad.getAnno().annotationType().getSimpleName(),
-                    ad.getComputerFieldName(), ad.getValueFieldName(), ad.getComputerField().getType().getSimpleName(),
-                    ad.getValueField().getType().getSimpleName());
+                ad.getComputerFieldName(), ad.getValueFieldName(), root.getModel().getAttribute(ad.getComputerFieldName()).getJavaType().getSimpleName(),
+                ad.getValueField().getType().getSimpleName());
         }
     }
 

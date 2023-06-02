@@ -9,11 +9,11 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.collections.Annotation
  * 类注解描述信息集合缓存.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public final class CollectionCache {
 
-    /** 参数计算字段内容 */
+    /** 参数计算字段内容. */
     private static final Map<Class<?>, AnnotationCollection> CONPUTERS = new ConcurrentHashMap<>();
 
     /**

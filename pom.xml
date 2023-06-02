@@ -29,11 +29,11 @@
     <url>https://github.com/FSixteen/data-jpa-base-generator</url>
     <connection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</connection>
     <developerConnection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</developerConnection>
-    <tag>data-jpa-base-generator</tag>
+    <tag>V1.0.1</tag>
   </scm>
 
   <properties>
-    <java.version>8</java.version>
+    <java.version>11</java.version>
     <encoding>UTF-8</encoding>
     <!-- 指定JDK版本 -->
     <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -44,12 +44,16 @@
     <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
     <maven.compiler.encoding>${encoding}</maven.compiler.encoding>
     <argLine>-Dfile.encoding=${encoding}</argLine>
+    <!-- 依赖版本 -->
+    <spring.version>5.3.27</spring.version>
+    <spring.boot.version>2.7.11</spring.boot.version>
   </properties>
 
   <modules>
     <module>data-jpa-base-generator-annotations</module>
     <module>data-jpa-base-generator-interpreter</module>
     <module>data-jpa-generator-base-service</module>
+    <module>data-jpa-generator-base-modules</module>
   </modules>
 
   <dependencyManagement>
@@ -62,7 +66,7 @@
       <dependency>
         <groupId>io.github.fsixteen</groupId>
         <artifactId>common-response-structure</artifactId>
-        <version>[1.0.2,)</version>
+        <version>1.0.4</version>
       </dependency>
       <dependency>
         <groupId>io.swagger</groupId>
@@ -72,12 +76,12 @@
       <dependency>
         <groupId>io.swagger.core.v3</groupId>
         <artifactId>swagger-annotations</artifactId>
-        <version>2.2.8</version>
+        <version>2.2.10</version>
       </dependency>
       <dependency>
         <groupId>org.apache.tomcat.embed</groupId>
         <artifactId>tomcat-embed-core</artifactId>
-        <version>9.0.73</version>
+        <version>9.0.75</version>
       </dependency>
       <dependency>
         <groupId>jakarta.persistence</groupId>
@@ -95,19 +99,34 @@
         <version>5.6.15.Final</version>
       </dependency>
       <dependency>
-        <groupId>org.springframework.data</groupId>
-        <artifactId>spring-data-jpa</artifactId>
-        <version>2.7.10</version>
-      </dependency>
-      <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-web</artifactId>
-        <version>5.3.27</version>
+        <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
-        <version>5.3.27</version>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jdbc</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot</artifactId>
+        <version>${spring.boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-autoconfigure</artifactId>
+        <version>${spring.boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-jpa</artifactId>
+        <version>${spring.boot.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -119,48 +138,21 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.10.1</version>
+          <configuration>
+            <encoding>${encoding}</encoding>
+          </configuration>
           <executions>
             <execution>
-              <id>default</id>
               <goals>
                 <goal>compile</goal>
               </goals>
               <configuration>
                 <source>${java.version}</source>
-                <target>${java.version}</target>
+                <target>1.8</target>
+                <release>8</release>
                 <excludes>
-                  <exclude>module-info.java</exclude>
+                  <exclude>**/module-info.java</exclude>
                 </excludes>
-              </configuration>
-            </execution>
-            <execution>
-              <id>jdk11</id>
-              <goals>
-                <goal>compile</goal>
-              </goals>
-              <configuration>
-                <release>11</release>
-                <multiReleaseOutput>true</multiReleaseOutput>
-              </configuration>
-            </execution>
-            <execution>
-              <id>jdk15</id>
-              <goals>
-                <goal>compile</goal>
-              </goals>
-              <configuration>
-                <release>15</release>
-                <multiReleaseOutput>true</multiReleaseOutput>
-              </configuration>
-            </execution>
-            <execution>
-              <id>jdk17</id>
-              <goals>
-                <goal>compile</goal>
-              </goals>
-              <configuration>
-                <release>17</release>
-                <multiReleaseOutput>true</multiReleaseOutput>
               </configuration>
             </execution>
           </executions>
@@ -169,6 +161,35 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.3.0</version>
+          <configuration>
+            <archive>
+              <addMavenDescriptor>true</addMavenDescriptor>
+              <index>true</index>
+              <manifest>
+                <addClasspath>true</addClasspath>
+                <addDefaultEntries>true</addDefaultEntries>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                <addBuildEnvironmentEntries>true</addBuildEnvironmentEntries>
+                <addExtensions>true</addExtensions>
+              </manifest>
+              <manifestEntries>
+                <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+              </manifestEntries>
+            </archive>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>2.7.11</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>repackage</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

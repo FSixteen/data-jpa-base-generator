@@ -29,7 +29,7 @@ import io.github.fsixteen.data.jpa.generator.beans.DefaultPageRequest;
  * 通用Service处理类.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializable, S extends Entity & BasePageRequest> {
 
@@ -155,8 +155,10 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
      */
     default Specification<T> selectQuery(Entity args) {
         final AnnotationCollection computer = CollectionCache.getAnnotationCollection(args.getClass());
-        return !computer.isEmpty(BuilderType.SELECTED) ? (root, query, cb) -> computer.toComputerCollection().withArgs(args).withSpecification(root, query, cb)
-                .build(BuilderType.SELECTED).getPredicate(cb) : (root, query, cb) -> cb.and();
+        return !computer.isEmpty(BuilderType.SELECTED)
+            ? (root, query, cb) -> computer.toComputerCollection().withArgs(args).withSpecification(root, query, cb).build(BuilderType.SELECTED)
+                .getPredicate(cb)
+            : (root, query, cb) -> cb.and();
     }
 
     /**

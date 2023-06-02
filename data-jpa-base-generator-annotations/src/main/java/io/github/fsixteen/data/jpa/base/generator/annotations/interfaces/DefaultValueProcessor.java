@@ -13,19 +13,19 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.ValueProce
  * 默认值处理器.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public class DefaultValueProcessor implements ValueProcessor {
 
     @Override
-    public <AN extends Annotation, T> Expression<T> create(final AN anno, final ValueProcessorFunction fun, final Object obj, final Root<?> root,
-            final AbstractQuery<?> query, final CriteriaBuilder cb) {
+    public <A extends Annotation, T> Expression<T> create(final A anno, final ValueProcessorFunction fun, final Object obj, final Root<?> root,
+        final AbstractQuery<?> query, final CriteriaBuilder cb) {
         return null;
     }
 
     @Override
-    public <AN extends Annotation, T> Expression<T>[] biCreate(final AN anno, final ValueProcessorFunction fun, final Object obj, final Root<?> root,
-            final AbstractQuery<?> query, final CriteriaBuilder cb) {
+    public <A extends Annotation, T> Expression<T>[] biCreate(final A anno, final ValueProcessorFunction fun, final Object obj, final Root<?> root,
+        final AbstractQuery<?> query, final CriteriaBuilder cb) {
         return null;
     }
 

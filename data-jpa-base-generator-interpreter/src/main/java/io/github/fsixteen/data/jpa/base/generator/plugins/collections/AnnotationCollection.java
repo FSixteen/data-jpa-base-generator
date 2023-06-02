@@ -27,7 +27,7 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.utils.BeanUtils;
  * 类注解描述信息集合.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public final class AnnotationCollection {
 
@@ -77,7 +77,7 @@ public final class AnnotationCollection {
      * @return AnnotationCollection
      */
     public static AnnotationCollection of(Class<?> clazz, Collection<AnnotationDescriptor<Annotation>> selectAds,
-            Collection<AnnotationDescriptor<Annotation>> existedAds) {
+        Collection<AnnotationDescriptor<Annotation>> existedAds) {
         return new AnnotationCollection(clazz, selectAds, existedAds);
     }
 
@@ -85,7 +85,7 @@ public final class AnnotationCollection {
     }
 
     private AnnotationCollection(Class<?> clazz, Collection<AnnotationDescriptor<Annotation>> selectAds,
-            Collection<AnnotationDescriptor<Annotation>> existedAds) {
+        Collection<AnnotationDescriptor<Annotation>> existedAds) {
         super();
         this.selectAds = selectAds;
         this.existedAds = existedAds;
@@ -285,7 +285,7 @@ public final class AnnotationCollection {
      * {@link AnnotationCollection} 构造器.
      * 
      * @author FSixteen
-     * @since V1.0.0
+     * @since 1.0.0
      */
     public static class Builder {
 

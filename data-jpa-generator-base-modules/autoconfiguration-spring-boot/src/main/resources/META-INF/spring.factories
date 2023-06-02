@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.github.fsixteen.base.autoconfigure.configurations.ConfigurationsAutoConfiguration,\
+io.github.fsixteen.base.autoconfigure.environments.EnvironmentsAutoConfiguration,\
+io.github.fsixteen.base.autoconfigure.dictionaries.DictionariesAutoConfiguration

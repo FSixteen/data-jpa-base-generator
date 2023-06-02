@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * 启用(有效)顺序.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 @Target({ FIELD, METHOD })
 @Retention(RUNTIME)

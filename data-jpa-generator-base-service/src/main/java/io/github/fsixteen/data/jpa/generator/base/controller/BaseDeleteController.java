@@ -19,10 +19,10 @@ import io.swagger.v3.oas.annotations.Operation;
  * 基础删除Controller.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public interface BaseDeleteController<SI extends BaseDeleteService<T, ID, D>, T extends IdEntity<ID>, ID extends Serializable, D extends IdEntity<ID>>
-        extends BaseCommonController {
+    extends BaseCommonController {
 
     public SI getService();
 

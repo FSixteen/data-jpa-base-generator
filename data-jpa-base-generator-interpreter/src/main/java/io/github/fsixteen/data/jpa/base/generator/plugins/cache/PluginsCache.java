@@ -29,22 +29,19 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Unique;
 import io.github.fsixteen.data.jpa.base.generator.plugins.BetweenBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.BuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.ComparableBuilderPlugin;
-import io.github.fsixteen.data.jpa.base.generator.plugins.ComparableBuilderPlugin.ComparableType;
 import io.github.fsixteen.data.jpa.base.generator.plugins.InBuilderPlugin;
-import io.github.fsixteen.data.jpa.base.generator.plugins.InBuilderPlugin.InType;
 import io.github.fsixteen.data.jpa.base.generator.plugins.InTableBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.LikeBuilderPlugin;
-import io.github.fsixteen.data.jpa.base.generator.plugins.LikeBuilderPlugin.LikeType;
 import io.github.fsixteen.data.jpa.base.generator.plugins.NumberBuilderPlugin;
-import io.github.fsixteen.data.jpa.base.generator.plugins.NumberBuilderPlugin.NumberType;
 import io.github.fsixteen.data.jpa.base.generator.plugins.SplitInBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.SplitNotInBuilderPlugin;
+import io.github.fsixteen.data.jpa.base.generator.plugins.constant.ComparableType;
 
 /**
  * 注解及注解对应解析器缓存.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public final class PluginsCache {
 
@@ -54,24 +51,24 @@ public final class PluginsCache {
         PLUGINS.put(Equal.class, new ComparableBuilderPlugin(ComparableType.EQ));
         PLUGINS.put(Between.class, new BetweenBuilderPlugin());
 
-        PLUGINS.put(Lt.class, new NumberBuilderPlugin(NumberType.LT));
-        PLUGINS.put(Lte.class, new NumberBuilderPlugin(NumberType.LTE));
-        PLUGINS.put(Gt.class, new NumberBuilderPlugin(NumberType.GT));
-        PLUGINS.put(Gte.class, new NumberBuilderPlugin(NumberType.GTE));
+        PLUGINS.put(Lt.class, new NumberBuilderPlugin(ComparableType.LT));
+        PLUGINS.put(Lte.class, new NumberBuilderPlugin(ComparableType.LTE));
+        PLUGINS.put(Gt.class, new NumberBuilderPlugin(ComparableType.GT));
+        PLUGINS.put(Gte.class, new NumberBuilderPlugin(ComparableType.GTE));
 
         PLUGINS.put(LessThan.class, new ComparableBuilderPlugin(ComparableType.LT));
         PLUGINS.put(LessThanOrEqualTo.class, new ComparableBuilderPlugin(ComparableType.LTE));
         PLUGINS.put(GreaterThan.class, new ComparableBuilderPlugin(ComparableType.GT));
         PLUGINS.put(GreaterThanOrEqualTo.class, new ComparableBuilderPlugin(ComparableType.GTE));
 
-        PLUGINS.put(Like.class, new LikeBuilderPlugin(LikeType.CENNTER));
-        PLUGINS.put(LeftLike.class, new LikeBuilderPlugin(LikeType.LEFT));
-        PLUGINS.put(RightLike.class, new LikeBuilderPlugin(LikeType.RIGHT));
-        PLUGINS.put(StartWith.class, new LikeBuilderPlugin(LikeType.LEFT));
-        PLUGINS.put(EndWith.class, new LikeBuilderPlugin(LikeType.RIGHT));
+        PLUGINS.put(Like.class, new LikeBuilderPlugin(ComparableType.CONTAINS));
+        PLUGINS.put(LeftLike.class, new LikeBuilderPlugin(ComparableType.LEFT));
+        PLUGINS.put(RightLike.class, new LikeBuilderPlugin(ComparableType.RIGHT));
+        PLUGINS.put(StartWith.class, new LikeBuilderPlugin(ComparableType.LEFT));
+        PLUGINS.put(EndWith.class, new LikeBuilderPlugin(ComparableType.RIGHT));
 
-        PLUGINS.put(In.class, new InBuilderPlugin<In>(InType.IN));
-        PLUGINS.put(NotIn.class, new InBuilderPlugin<NotIn>(InType.IN));
+        PLUGINS.put(In.class, new InBuilderPlugin<In>(ComparableType.IN));
+        PLUGINS.put(NotIn.class, new InBuilderPlugin<NotIn>(ComparableType.NOT_IN));
 
         PLUGINS.put(SplitIn.class, new SplitInBuilderPlugin());
         PLUGINS.put(SplitNotIn.class, new SplitNotInBuilderPlugin());
@@ -99,6 +96,17 @@ public final class PluginsCache {
      */
     public static void register(Class<? extends Annotation> type, BuilderPlugin<? extends Annotation> obj) {
         PLUGINS.put(type, obj);
+    }
+
+    /**
+     * 引用注解解析器.<br>
+     * 
+     * @param type 注解类
+     * @return BuilderPlugin&lt;? extends Annotation>&gt;
+     * @throws ClassNotFoundException If the class cannot be located
+     */
+    public static BuilderPlugin<? extends Annotation> reference(String type) throws ClassNotFoundException {
+        return PLUGINS.get(Class.forName(type));
     }
 
     /**

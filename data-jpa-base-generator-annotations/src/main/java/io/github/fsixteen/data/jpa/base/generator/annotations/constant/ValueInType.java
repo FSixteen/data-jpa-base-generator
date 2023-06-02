@@ -4,7 +4,7 @@ package io.github.fsixteen.data.jpa.base.generator.annotations.constant;
  * IN时, 值参数计算方向.<br>
  *
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public enum ValueInType {
     /**

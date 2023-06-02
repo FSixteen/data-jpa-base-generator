@@ -20,10 +20,10 @@ import io.swagger.v3.oas.annotations.Operation;
  * 基础添加Controller.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 public interface BaseInsertController<SI extends BaseInsertService<T, ID, I>, T extends IdEntity<ID>, ID extends Serializable, I extends Entity>
-        extends BaseCommonController {
+    extends BaseCommonController {
 
     public SI getService();
 

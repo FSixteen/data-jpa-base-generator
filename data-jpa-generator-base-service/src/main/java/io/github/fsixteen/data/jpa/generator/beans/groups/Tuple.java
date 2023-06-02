@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * 包含固定分组统计值.<br>
  * 
  * @author FSixteen
- * @since V1.0.0
+ * @since 1.0.0
  */
 @JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" })
 public class Tuple {
