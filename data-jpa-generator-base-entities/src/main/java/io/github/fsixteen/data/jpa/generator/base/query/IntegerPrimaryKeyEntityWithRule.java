@@ -1,6 +1,6 @@
 package io.github.fsixteen.data.jpa.generator.base.query;
 
-import io.github.fsixteen.data.jpa.generator.base.entities.IdEntity;
+import io.github.fsixteen.data.jpa.generator.rules.NumberAutoIncrementIdRule;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
  */
 @ApiModel(value = "请求实体-单主键请求")
 @Schema(description = "请求实体-单主键请求")
-public class IntegerPrimaryKeyEntity implements IdEntity<Integer> {
+public class IntegerPrimaryKeyEntityWithRule implements NumberAutoIncrementIdRule<Integer> {
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "主键", required = true, requiredMode = RequiredMode.REQUIRED, hidden = false, example = "110", accessMode = AccessMode.AUTO)
@@ -34,7 +34,7 @@ public class IntegerPrimaryKeyEntity implements IdEntity<Integer> {
 
     @Override
     public String toString() {
-        return "IntegerIdEntity [id=" + id + "]";
+        return IntegerPrimaryKeyEntityWithRule.class.getSimpleName() + " [id=" + id + "]";
     }
 
 }

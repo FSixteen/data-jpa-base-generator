@@ -37,8 +37,8 @@ public class DictionariesInfoUpdateQuery extends DictionariesInfoInsertQuery imp
 
     @Override
     public String toString() {
-        return "DictionariesInfoUpdateQuery [id=" + id + ", getEnv()=" + getEnv() + ", getClassify()=" + getClassify() + ", getDictKey()=" + getDictKey()
-            + ", getDictValue()=" + getDictValue() + ", isEnabled()=" + isEnabled() + ", getOrdered()=" + getOrdered() + ", getDescription()="
-            + getDescription() + "]";
+        return DictionariesInfoUpdateQuery.class.getSimpleName() + " [id=" + id + ", getEnv()=" + getEnv() + ", getClassify()=" + getClassify()
+            + ", getDictKey()=" + getDictKey() + ", getDictValue()=" + getDictValue() + ", isEnabled()=" + isEnabled() + ", getOrdered()=" + getOrdered()
+            + ", getDescription()=" + getDescription() + "]";
     }
 }

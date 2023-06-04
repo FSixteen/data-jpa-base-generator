@@ -1,4 +1,4 @@
-package io.github.fsixteen.data.jpa.base.generator.annotations.plugins.utils;
+package io.github.fsixteen.data.jpa.base.generator.plugins.utils;
 
 /**
  * 数组工具.

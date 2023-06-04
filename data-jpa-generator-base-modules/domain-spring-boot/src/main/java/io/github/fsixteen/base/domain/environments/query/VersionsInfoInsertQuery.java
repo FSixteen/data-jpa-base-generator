@@ -106,7 +106,7 @@ public class VersionsInfoInsertQuery implements Entity {
 
     @Override
     public String toString() {
-        return "VersionsInfoInsertQuery [code=" + code + ", description=" + description + ", preVersion=" + preVersion + ", currVersion=" + currVersion
-            + ", postVersion=" + postVersion + ", versionDate=" + versionDate + "]";
+        return VersionsInfoInsertQuery.class.getSimpleName() + " [code=" + code + ", description=" + description + ", preVersion=" + preVersion
+            + ", currVersion=" + currVersion + ", postVersion=" + postVersion + ", versionDate=" + versionDate + "]";
     }
 }

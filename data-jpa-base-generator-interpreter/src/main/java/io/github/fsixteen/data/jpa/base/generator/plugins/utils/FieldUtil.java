@@ -1,4 +1,4 @@
-package io.github.fsixteen.data.jpa.generator.utils;
+package io.github.fsixteen.data.jpa.base.generator.plugins.utils;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;

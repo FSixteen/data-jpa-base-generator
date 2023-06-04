@@ -97,24 +97,31 @@ public abstract class AbstractBaseAggService implements BaseAggService {
     }
 
     @Override
-    public <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, T obj, Function<T, GroupDateTimeUnit> unit,
-        Function<T, Date> st, Function<T, Date> et, Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
+    public <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, T obj, @NotNull GroupResponseType type,
+        Function<T, GroupDateTimeUnit> unit, Function<T, Date> st, Function<T, Date> et, Function<GroupEntity, Object> labelFun,
+        Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
         final String[] timeRange = getTimeArrayByTimeRange(st.apply(obj), et.apply(obj), unit.apply(obj).getLocal(), unit.apply(obj).getOffset());
         CriteriaQuery<GroupEntity> query = this.createCriteriaQuery(clazz, obj, groupColumns);
         List<GroupEntity> rs = this.em.createQuery(query).getResultList();
 
-        Object[][] valueRange = new Object[valueFuns.length][timeRange.length];
-        Arrays.asList(valueRange).forEach(it -> Arrays.fill(it, 0L));
-        Map<Object, GroupEntity> kvs = rs.stream().collect(Collectors.toMap(labelFun::apply, it -> it));
-        for (int index = 0; index < timeRange.length; index++) {
-            for (int findex = 0; findex < valueFuns.length; findex++) {
-                if (kvs.containsKey(timeRange[index])) {
-                    valueRange[findex][index] = valueFuns[findex].apply(kvs.get(timeRange[index]));
-                    valueRange[findex][index] = valueFuns[findex].apply(kvs.get(timeRange[index]));
+        switch (type) {
+            case ECHARTS: {
+                Object[][] valueRange = new Object[valueFuns.length][timeRange.length];
+                Arrays.asList(valueRange).forEach(it -> Arrays.fill(it, 0L));
+                Map<Object, GroupEntity> kvs = rs.stream().collect(Collectors.toMap(labelFun::apply, it -> it));
+                for (int index = 0; index < timeRange.length; index++) {
+                    for (int findex = 0; findex < valueFuns.length; findex++) {
+                        if (kvs.containsKey(timeRange[index])) {
+                            valueRange[findex][index] = valueFuns[findex].apply(kvs.get(timeRange[index]));
+                            valueRange[findex][index] = valueFuns[findex].apply(kvs.get(timeRange[index]));
+                        }
+                    }
                 }
+                return new GroupEntity(timeRange, 1 == valueFuns.length ? valueRange[0] : valueRange).getTuple();
             }
+            default:
+                return rs;
         }
-        return new GroupEntity(timeRange, valueRange).getTuple();
     }
 
 }

@@ -2,7 +2,7 @@ package io.github.fsixteen.base.domain.configurations.query;
 
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitIn;
-import io.github.fsixteen.data.jpa.generator.beans.DefaultPageRequest;
+import io.github.fsixteen.data.jpa.generator.base.query.DefaultPageRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -63,6 +63,6 @@ public class ConfigurationsKeySelectQuery extends DefaultPageRequest {
 
     @Override
     public String toString() {
-        return "ConfigurationsKeySelectQuery [id=" + id + ", scope=" + scope + ", code=" + code + "]";
+        return ConfigurationsKeySelectQuery.class.getSimpleName() + " [id=" + id + ", scope=" + scope + ", code=" + code + "]";
     }
 }

@@ -66,6 +66,6 @@ public class ConfigurationsInfoInsertQuery implements Entity {
 
     @Override
     public String toString() {
-        return "ConfigurationsInfoInsertQuery [env=" + env + ", key=" + key + ", val=" + val + "]";
+        return ConfigurationsInfoInsertQuery.class.getSimpleName() + " [env=" + env + ", key=" + key + ", val=" + val + "]";
     }
 }

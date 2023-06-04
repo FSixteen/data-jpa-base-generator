@@ -22,8 +22,8 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.constant.BuilderType;
 import io.github.fsixteen.data.jpa.generator.base.entities.Entity;
 import io.github.fsixteen.data.jpa.generator.base.entities.IdEntity;
 import io.github.fsixteen.data.jpa.generator.base.jpa.BaseDao;
-import io.github.fsixteen.data.jpa.generator.beans.BasePageRequest;
-import io.github.fsixteen.data.jpa.generator.beans.DefaultPageRequest;
+import io.github.fsixteen.data.jpa.generator.base.query.BasePageRequest;
+import io.github.fsixteen.data.jpa.generator.base.query.DefaultPageRequest;
 
 /**
  * 通用Service处理类.<br>

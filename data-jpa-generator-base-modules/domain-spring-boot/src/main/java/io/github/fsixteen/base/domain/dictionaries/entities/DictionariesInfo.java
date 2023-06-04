@@ -178,8 +178,8 @@ public class DictionariesInfo extends BaseEntity<Integer> {
 
     @Override
     public String toString() {
-        return "DictionariesInfo [id=" + id + ", env=" + env + ", classify=" + classify + ", dictKey=" + dictKey + ", dictValue=" + dictValue + ", deleted="
-            + deleted + ", createTime=" + createTime + ", updateTime=" + updateTime + ", deleteTime=" + deleteTime + ", enabled=" + enabled + ", ordered="
-            + ordered + ", description=" + description + "]";
+        return DictionariesInfo.class.getSimpleName() + " [id=" + id + ", env=" + env + ", classify=" + classify + ", dictKey=" + dictKey + ", dictValue="
+            + dictValue + ", deleted=" + deleted + ", createTime=" + createTime + ", updateTime=" + updateTime + ", deleteTime=" + deleteTime + ", enabled="
+            + enabled + ", ordered=" + ordered + ", description=" + description + "]";
     }
 }

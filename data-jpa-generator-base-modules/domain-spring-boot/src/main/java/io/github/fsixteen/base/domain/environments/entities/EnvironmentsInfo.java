@@ -108,7 +108,7 @@ public class EnvironmentsInfo extends BaseEntity<Integer> {
 
     @Override
     public String toString() {
-        return "EnvironmentsInfo [id=" + id + ", code=" + code + ", description=" + description + ", enabled=" + enabled + ", deleted=" + deleted
-            + ", createTime=" + createTime + ", updateTime=" + updateTime + ", deleteTime=" + deleteTime + "]";
+        return EnvironmentsInfo.class.getSimpleName() + " [id=" + id + ", code=" + code + ", description=" + description + ", enabled=" + enabled + ", deleted="
+            + deleted + ", createTime=" + createTime + ", updateTime=" + updateTime + ", deleteTime=" + deleteTime + "]";
     }
 }

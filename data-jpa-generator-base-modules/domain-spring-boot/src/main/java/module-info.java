@@ -7,7 +7,8 @@ module io.github.fsixteen.base.domain {
     requires static org.hibernate.orm.core;
     requires static com.fasterxml.jackson.annotation;
     requires static io.github.fsixteen.base.annotations;
-    requires static io.github.fsixteen.base.service;
+    requires static io.github.fsixteen.base.plugins;
+    requires static io.github.fsixteen.base.entities;
 
     exports io.github.fsixteen.base.domain.configurations.entities;
     exports io.github.fsixteen.base.domain.configurations.query;

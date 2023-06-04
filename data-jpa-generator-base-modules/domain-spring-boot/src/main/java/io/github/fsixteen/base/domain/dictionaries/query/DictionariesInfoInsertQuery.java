@@ -117,7 +117,7 @@ public class DictionariesInfoInsertQuery implements Entity {
 
     @Override
     public String toString() {
-        return "DictionariesInfoInsertQuery [env=" + env + ", classify=" + classify + ", dictKey=" + dictKey + ", dictValue=" + dictValue + ", enabled="
-            + enabled + ", ordered=" + ordered + ", description=" + description + "]";
+        return DictionariesInfoInsertQuery.class.getSimpleName() + " [env=" + env + ", classify=" + classify + ", dictKey=" + dictKey + ", dictValue="
+            + dictValue + ", enabled=" + enabled + ", ordered=" + ordered + ", description=" + description + "]";
     }
 }

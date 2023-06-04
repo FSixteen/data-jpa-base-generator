@@ -19,10 +19,35 @@ public class ReflectionException extends RuntimeException {
     public ReflectionException() {
     }
 
+    public ReflectionException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
+
+    public ReflectionException(StatusInterface status, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(status.msg(), cause, enableSuppression, writableStackTrace);
+        this.code = status.code();
+        this.msg = status.msg();
+    }
+
+    public ReflectionException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ReflectionException(StatusInterface status, Throwable cause) {
+        this(status, cause, true, true);
+    }
+
+    public ReflectionException(Throwable cause) {
+        super(cause);
+    }
+
     public ReflectionException(StatusInterface status) {
         this(status.code(), status.msg());
     }
 
+    /**
+     * @param msg 提示内容
+     */
     public ReflectionException(String msg) {
         super(msg);
         this.msg = msg;

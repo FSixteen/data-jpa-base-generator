@@ -3,6 +3,7 @@ package io.github.fsixteen.data.jpa.base.generator.plugins;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,13 +64,13 @@ public class InBuilderPlugin<A extends Annotation> extends AbstractComputerBuild
                     .collect(Collectors.toList());
             }
 
-            Optional<Predicate> optional = Optional.ofNullable(fieldValue)
+            Optional<Predicate> optional = Optional.ofNullable(fieldValue).filter(it -> List.class.isInstance(it) && !List.class.cast(it).isEmpty())
                 // 值类型判断
                 .filter(it -> {
                     switch (ad.getValueType()) {
                         case VALUE:
                             return Collection.class.isInstance(it)
-                                && root.getModel().getAttribute(ad.getComputerFieldName()).getJavaType() == ad.getValueField().getType();
+                                && root.getModel().getAttribute(ad.getComputerFieldName()).getJavaType() == List.class.cast(it).get(0).getClass();
                         case FUNCTION:
                             return Objects.nonNull(ad.getValueProcessor()) && DefaultValueProcessor.class != ad.getValueProcessor().processorClass();
                         default:

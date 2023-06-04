@@ -63,7 +63,7 @@ public class DictionariesEnvsInsertQuery implements Entity {
 
     @Override
     public String toString() {
-        return String.format("DictionariesEnvsInsertQuery [code=%s, description=%s, enabled=%s]", code, description, enabled);
+        return DictionariesEnvsInsertQuery.class.getSimpleName() + " [code=" + code + ", description=" + description + ", enabled=" + enabled + "]";
     }
 
 }

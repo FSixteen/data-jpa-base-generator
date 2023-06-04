@@ -1,10 +1,10 @@
 module io.github.fsixteen.tableinit {
 
     requires static java.sql;
-    requires static org.slf4j;
-    requires static spring.boot;
-    requires static spring.beans;
-    requires static spring.jdbc;
+    requires transitive org.slf4j;
+    requires transitive spring.boot;
+    requires transitive spring.beans;
+    requires transitive spring.jdbc;
 
     exports io.github.fsixteen.table.init;
 

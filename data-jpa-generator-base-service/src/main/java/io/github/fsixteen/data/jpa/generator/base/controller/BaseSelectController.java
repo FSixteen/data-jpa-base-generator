@@ -24,8 +24,8 @@ import io.github.fsixteen.common.structure.extend.Ok;
 import io.github.fsixteen.data.jpa.generator.base.entities.Entity;
 import io.github.fsixteen.data.jpa.generator.base.entities.IdEntity;
 import io.github.fsixteen.data.jpa.generator.base.groups.SelectGroup;
+import io.github.fsixteen.data.jpa.generator.base.query.BasePageRequest;
 import io.github.fsixteen.data.jpa.generator.base.service.BaseSelectService;
-import io.github.fsixteen.data.jpa.generator.beans.BasePageRequest;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 

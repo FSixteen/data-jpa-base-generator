@@ -37,8 +37,8 @@ public class ConfigurationsKeyUpdateQuery extends ConfigurationsKeyInsertQuery i
 
     @Override
     public String toString() {
-        return "ConfigurationsKeyUpdateQuery [id=" + id + ", getScope()=" + getScope() + ", getCode()=" + getCode() + ", getDescription()=" + getDescription()
-            + ", getDefaultValue()=" + getDefaultValue() + ", toString()=" + super.toString() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode()
-            + "]";
+        return ConfigurationsKeyUpdateQuery.class.getSimpleName() + " [id=" + id + ", getScope()=" + getScope() + ", getCode()=" + getCode()
+            + ", getDescription()=" + getDescription() + ", getDefaultValue()=" + getDefaultValue() + ", toString()=" + super.toString() + ", getClass()="
+            + getClass() + ", hashCode()=" + hashCode() + "]";
     }
 }

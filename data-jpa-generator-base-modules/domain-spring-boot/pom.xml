@@ -44,7 +44,12 @@
   <dependencies>
     <dependency>
       <groupId>io.github.fsixteen</groupId>
-      <artifactId>data-jpa-generator-base-service</artifactId>
+      <artifactId>data-jpa-base-generator-interpreter</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.fsixteen</groupId>
+      <artifactId>data-jpa-generator-base-entities</artifactId>
       <version>1.0.1</version>
     </dependency>
   </dependencies>

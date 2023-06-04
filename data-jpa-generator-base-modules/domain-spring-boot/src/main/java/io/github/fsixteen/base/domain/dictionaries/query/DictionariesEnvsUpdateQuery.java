@@ -37,7 +37,7 @@ public class DictionariesEnvsUpdateQuery extends DictionariesEnvsInsertQuery imp
 
     @Override
     public String toString() {
-        return "DictionariesEnvsUpdateQuery [id=" + id + ", getCode()=" + getCode() + ", getDescription()=" + getDescription() + ", getEnabled()="
-            + getEnabled() + "]";
+        return DictionariesEnvsUpdateQuery.class.getSimpleName() + " [id=" + id + ", getCode()=" + getCode() + ", getDescription()=" + getDescription()
+            + ", getEnabled()=" + getEnabled() + "]";
     }
 }

@@ -63,7 +63,7 @@ public class EnvironmentsInfoInsertQuery implements Entity {
 
     @Override
     public String toString() {
-        return String.format("EnvironmentsInfoInsertQuery [code=%s, description=%s, enabled=%s]", code, description, enabled);
+        return EnvironmentsInfoInsertQuery.class.getSimpleName() + " [code=" + code + ", description=" + description + ", enabled=" + enabled + "]";
     }
 
 }

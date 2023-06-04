@@ -15,26 +15,26 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
  */
 @ApiModel(value = "请求实体-单主键请求")
 @Schema(description = "请求实体-单主键请求")
-public class StringPrimaryKeyEntity implements IdEntity<Long> {
+public class IntegerPrimaryKeyEntity implements IdEntity<Integer> {
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "主键", required = true, requiredMode = RequiredMode.REQUIRED, hidden = false, example = "110", accessMode = AccessMode.AUTO)
     @ApiModelProperty(value = "主键", required = true, hidden = false, example = "110", accessMode = io.swagger.annotations.ApiModelProperty.AccessMode.AUTO)
-    private Long id;
+    private Integer id;
 
     @Override
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
     @Override
     public String toString() {
-        return "IntegerIdEntity [id=" + id + "]";
+        return IntegerPrimaryKeyEntity.class.getSimpleName() + " [id=" + id + "]";
     }
 
 }

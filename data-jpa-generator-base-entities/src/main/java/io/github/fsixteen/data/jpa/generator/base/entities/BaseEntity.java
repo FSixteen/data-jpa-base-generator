@@ -44,8 +44,8 @@ public abstract class BaseEntity<ID extends Serializable> implements IdEntity<ID
     @Column(name = "create_time", nullable = false, unique = false, insertable = true, updatable = false, length = 0, precision = 3, scale = 0,
         columnDefinition = "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'")
     @Schema(description = "创建时间(提交时忽略该参数)", required = false, requiredMode = RequiredMode.NOT_REQUIRED, hidden = false, example = "2020-01-01 00:00:00",
-        type = "date", format = "yyyy-MM-dd HH:mm:ss", accessMode = AccessMode.AUTO)
-    @ApiModelProperty(value = "创建时间(提交时忽略该参数)", required = false, hidden = false, example = "2020-01-01 00:00:00", dataType = "date",
+        type = "string", format = "yyyy-MM-dd HH:mm:ss", accessMode = AccessMode.AUTO)
+    @ApiModelProperty(value = "创建时间(提交时忽略该参数)", required = false, hidden = false, example = "2020-01-01 00:00:00", dataType = "string",
         accessMode = io.swagger.annotations.ApiModelProperty.AccessMode.AUTO)
     @CreationTimestamp
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -57,8 +57,8 @@ public abstract class BaseEntity<ID extends Serializable> implements IdEntity<ID
     @Column(name = "update_time", nullable = false, unique = false, insertable = false, updatable = true, length = 0, precision = 3, scale = 0,
         columnDefinition = "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后一次更新时间'")
     @Schema(description = "最后一次更新时间(提交时忽略该参数)", required = false, requiredMode = RequiredMode.NOT_REQUIRED, hidden = false, example = "2020-01-01 00:00:00",
-        type = "date", format = "yyyy-MM-dd HH:mm:ss", accessMode = AccessMode.AUTO)
-    @ApiModelProperty(value = "最后一次更新时间(提交时忽略该参数)", required = false, hidden = false, example = "2020-01-01 00:00:00", dataType = "date",
+        type = "string", format = "yyyy-MM-dd HH:mm:ss", accessMode = AccessMode.AUTO)
+    @ApiModelProperty(value = "最后一次更新时间(提交时忽略该参数)", required = false, hidden = false, example = "2020-01-01 00:00:00", dataType = "string",
         accessMode = io.swagger.annotations.ApiModelProperty.AccessMode.AUTO)
     @UpdateTimestamp
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -69,9 +69,9 @@ public abstract class BaseEntity<ID extends Serializable> implements IdEntity<ID
 
     @Column(name = "delete_time", nullable = true, unique = false, insertable = false, updatable = true, length = 0, precision = 3, scale = 0,
         columnDefinition = "datetime DEFAULT NULL COMMENT '删除时间'")
-    @Schema(description = "删除时间", required = false, requiredMode = RequiredMode.NOT_REQUIRED, hidden = false, example = "2020-01-01 00:00:00", type = "date",
+    @Schema(description = "删除时间", required = false, requiredMode = RequiredMode.NOT_REQUIRED, hidden = false, example = "2020-01-01 00:00:00", type = "string",
         format = "yyyy-MM-dd HH:mm:ss", accessMode = AccessMode.AUTO)
-    @ApiModelProperty(value = "删除时间", required = false, hidden = false, example = "2020-01-01 00:00:00", dataType = "date",
+    @ApiModelProperty(value = "删除时间", required = false, hidden = false, example = "2020-01-01 00:00:00", dataType = "string",
         accessMode = io.swagger.annotations.ApiModelProperty.AccessMode.AUTO)
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

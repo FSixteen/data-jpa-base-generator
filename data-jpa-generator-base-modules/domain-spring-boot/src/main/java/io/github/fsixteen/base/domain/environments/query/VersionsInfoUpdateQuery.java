@@ -37,8 +37,8 @@ public class VersionsInfoUpdateQuery extends VersionsInfoInsertQuery implements 
 
     @Override
     public String toString() {
-        return "VersionsInfoUpdateQuery [id=" + id + ", getCode()=" + getCode() + ", getDescription()=" + getDescription() + ", getPreVersion()="
-            + getPreVersion() + ", getCurrVersion()=" + getCurrVersion() + ", getPostVersion()=" + getPostVersion() + ", getVersionDate()=" + getVersionDate()
-            + "]";
+        return VersionsInfoUpdateQuery.class.getSimpleName() + " [id=" + id + ", getCode()=" + getCode() + ", getDescription()=" + getDescription()
+            + ", getPreVersion()=" + getPreVersion() + ", getCurrVersion()=" + getCurrVersion() + ", getPostVersion()=" + getPostVersion()
+            + ", getVersionDate()=" + getVersionDate() + "]";
     }
 }

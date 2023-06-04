@@ -4,7 +4,7 @@
 
   <artifactId>data-jpa-generator-base-service</artifactId>
 
-  <name>Data Jpa Base Generator Service</name>
+  <name>Data Jpa Generator Base Service</name>
   <description>基于类快速生成Jpa Specification的框架工具中的基础框架服务.</description>
   <organization></organization>
   <url>https://github.com/FSixteen/data-jpa-base-generator</url>
@@ -63,6 +63,11 @@
       <version>1.0.1</version>
     </dependency>
     <dependency>
+      <groupId>io.github.fsixteen</groupId>
+      <artifactId>data-jpa-generator-base-entities</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.tomcat.embed</groupId>
       <artifactId>tomcat-embed-core</artifactId>
     </dependency>
@@ -89,6 +94,11 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

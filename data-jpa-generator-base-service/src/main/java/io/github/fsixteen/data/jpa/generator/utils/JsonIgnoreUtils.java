@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
  * @author FSixteen
  * @since 1.0.0
  */
-public class BeanUtils extends org.springframework.beans.BeanUtils {
+public class JsonIgnoreUtils {
 
     /**
      * 获取指定元素对象内忽略的字段.<br>

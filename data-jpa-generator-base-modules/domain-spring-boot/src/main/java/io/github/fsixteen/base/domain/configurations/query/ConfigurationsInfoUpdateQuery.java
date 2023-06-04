@@ -37,6 +37,7 @@ public class ConfigurationsInfoUpdateQuery extends ConfigurationsInfoInsertQuery
 
     @Override
     public String toString() {
-        return "ConfigurationsInfoUpdateQuery [id=" + id + ", getEnv()=" + getEnv() + ", getKey()=" + getKey() + ", getVal()=" + getVal() + "]";
+        return ConfigurationsInfoUpdateQuery.class.getSimpleName() + " [id=" + id + ", getEnv()=" + getEnv() + ", getKey()=" + getKey() + ", getVal()="
+            + getVal() + "]";
     }
 }

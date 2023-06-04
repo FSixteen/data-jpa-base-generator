@@ -47,12 +47,19 @@
     <!-- 依赖版本 -->
     <spring.version>5.3.27</spring.version>
     <spring.boot.version>2.7.11</spring.boot.version>
+    <slf4j.version>1.7.36</slf4j.version>
+    <swagger-v3.version>2.2.10</swagger-v3.version>
+    <tomcat.version>9.0.75</tomcat.version>
+    <jackson.bom.version>2.15.2</jackson.bom.version>
+    <jakarta-persistence.version>2.2.3</jakarta-persistence.version>
+    <jakarta-validation.version>2.0.2</jakarta-validation.version>
   </properties>
 
   <modules>
     <module>data-jpa-base-generator-annotations</module>
     <module>data-jpa-base-generator-interpreter</module>
     <module>data-jpa-generator-base-service</module>
+    <module>data-jpa-generator-base-entities</module>
     <module>data-jpa-generator-base-modules</module>
   </modules>
 
@@ -61,12 +68,12 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>1.7.36</version>
+        <version>${slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>io.github.fsixteen</groupId>
         <artifactId>common-response-structure</artifactId>
-        <version>1.0.4</version>
+        <version>1.0.5</version>
       </dependency>
       <dependency>
         <groupId>io.swagger</groupId>
@@ -76,22 +83,29 @@
       <dependency>
         <groupId>io.swagger.core.v3</groupId>
         <artifactId>swagger-annotations</artifactId>
-        <version>2.2.10</version>
+        <version>${swagger-v3.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.tomcat.embed</groupId>
         <artifactId>tomcat-embed-core</artifactId>
-        <version>9.0.75</version>
+        <version>${tomcat.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>${jackson.bom.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>jakarta.persistence</groupId>
         <artifactId>jakarta.persistence-api</artifactId>
-        <version>2.2.3</version>
+        <version>${jakarta-persistence.version}</version>
       </dependency>
       <dependency>
         <groupId>jakarta.validation</groupId>
         <artifactId>jakarta.validation-api</artifactId>
-        <version>2.0.2</version>
+        <version>${jakarta-validation.version}</version>
       </dependency>
       <dependency>
         <groupId>org.hibernate</groupId>
@@ -127,6 +141,12 @@
         <groupId>org.springframework.data</groupId>
         <artifactId>spring-data-jpa</artifactId>
         <version>${spring.boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.9.3</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -164,14 +184,14 @@
           <configuration>
             <archive>
               <addMavenDescriptor>true</addMavenDescriptor>
-              <index>true</index>
+              <index>false</index>
               <manifest>
-                <addClasspath>true</addClasspath>
+                <addClasspath>false</addClasspath>
                 <addDefaultEntries>true</addDefaultEntries>
                 <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                 <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                <addBuildEnvironmentEntries>true</addBuildEnvironmentEntries>
-                <addExtensions>true</addExtensions>
+                <addBuildEnvironmentEntries>false</addBuildEnvironmentEntries>
+                <addExtensions>false</addExtensions>
               </manifest>
               <manifestEntries>
                 <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
@@ -237,12 +257,12 @@
             <dependency>
               <groupId>io.github.fsixteen</groupId>
               <artifactId>code-formatter-resources</artifactId>
-              <version>[1.0.0,)</version>
+              <version>1.0.1</version>
             </dependency>
           </dependencies>
           <executions>
             <execution>
-              <phase>package</phase>
+              <phase>compile</phase>
               <goals>
                 <goal>check</goal>
               </goals>
@@ -263,7 +283,7 @@
             <dependency>
               <groupId>io.github.fsixteen</groupId>
               <artifactId>code-formatter-resources</artifactId>
-              <version>[1.0.0,)</version>
+              <version>1.0.1</version>
             </dependency>
           </dependencies>
           <configuration>
@@ -299,7 +319,15 @@
           </configuration>
           <executions>
             <execution>
-              <phase>verify</phase>
+              <id>default</id>
+              <phase>compile</phase>
+              <goals>
+                <goal>apply</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>check</id>
+              <phase>compile</phase>
               <goals>
                 <goal>check</goal>
               </goals>

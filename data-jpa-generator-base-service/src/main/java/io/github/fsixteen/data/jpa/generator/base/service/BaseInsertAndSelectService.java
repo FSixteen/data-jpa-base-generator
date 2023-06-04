@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import io.github.fsixteen.data.jpa.generator.base.entities.Entity;
 import io.github.fsixteen.data.jpa.generator.base.entities.IdEntity;
-import io.github.fsixteen.data.jpa.generator.beans.BasePageRequest;
+import io.github.fsixteen.data.jpa.generator.base.query.BasePageRequest;
 
 /**
  * 通用Service处理类.<br>

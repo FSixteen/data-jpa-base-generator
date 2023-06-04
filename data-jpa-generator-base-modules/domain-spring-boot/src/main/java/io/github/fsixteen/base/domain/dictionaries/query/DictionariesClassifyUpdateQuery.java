@@ -37,7 +37,7 @@ public class DictionariesClassifyUpdateQuery extends DictionariesClassifyInsertQ
 
     @Override
     public String toString() {
-        return "DictionariesClassifyUpdateQuery [id=" + id + ", getScope()=" + getScope() + ", getClassify()=" + getClassify() + ", getDescription()="
-            + getDescription() + ", getDefaultKey()=" + getDefaultKey() + "]";
+        return DictionariesClassifyUpdateQuery.class.getSimpleName() + " [id=" + id + ", getScope()=" + getScope() + ", getClassify()=" + getClassify()
+            + ", getDescription()=" + getDescription() + ", getDefaultKey()=" + getDefaultKey() + "]";
     }
 }

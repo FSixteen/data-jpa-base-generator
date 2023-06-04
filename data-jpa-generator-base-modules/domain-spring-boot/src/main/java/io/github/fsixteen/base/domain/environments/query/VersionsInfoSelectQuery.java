@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Between;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal;
-import io.github.fsixteen.data.jpa.generator.beans.DefaultPageRequest;
+import io.github.fsixteen.data.jpa.generator.base.query.DefaultPageRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -80,7 +80,7 @@ public class VersionsInfoSelectQuery extends DefaultPageRequest {
 
     @Override
     public String toString() {
-        return "VersionsInfoSelectQuery [id=" + id + ", code=" + code + ", currVersion=" + currVersion + ", versionDates=" + Arrays.toString(versionDates)
-            + ", getPage()=" + getPage() + ", getSize()=" + getSize() + "]";
+        return VersionsInfoSelectQuery.class.getSimpleName() + " [id=" + id + ", code=" + code + ", currVersion=" + currVersion + ", versionDates="
+            + Arrays.toString(versionDates) + ", getPage()=" + getPage() + ", getSize()=" + getSize() + "]";
     }
 }

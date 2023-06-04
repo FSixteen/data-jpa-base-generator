@@ -125,7 +125,8 @@ public class ConfigurationsKey extends BaseEntity<Integer> {
 
     @Override
     public String toString() {
-        return "ConfigurationsKey [id=" + id + ", scope=" + scope + ", code=" + code + ", description=" + description + ", defaultValue=" + defaultValue
-            + ", deleted=" + deleted + ", createTime=" + createTime + ", updateTime=" + updateTime + ", deleteTime=" + deleteTime + "]";
+        return ConfigurationsKey.class.getSimpleName() + " [id=" + id + ", scope=" + scope + ", code=" + code + ", description=" + description
+            + ", defaultValue=" + defaultValue + ", deleted=" + deleted + ", createTime=" + createTime + ", updateTime=" + updateTime + ", deleteTime="
+            + deleteTime + "]";
     }
 }

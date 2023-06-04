@@ -77,6 +77,7 @@ public class ConfigurationsKeyInsertQuery implements Entity {
 
     @Override
     public String toString() {
-        return "ConfigurationsKeyInsertQuery [scope=" + scope + ", code=" + code + ", description=" + description + ", defaultValue=" + defaultValue + "]";
+        return ConfigurationsKeyInsertQuery.class.getSimpleName() + " [scope=" + scope + ", code=" + code + ", description=" + description + ", defaultValue="
+            + defaultValue + "]";
     }
 }

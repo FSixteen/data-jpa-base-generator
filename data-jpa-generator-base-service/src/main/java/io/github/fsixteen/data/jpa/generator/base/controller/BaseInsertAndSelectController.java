@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import io.github.fsixteen.data.jpa.generator.base.entities.Entity;
 import io.github.fsixteen.data.jpa.generator.base.entities.IdEntity;
+import io.github.fsixteen.data.jpa.generator.base.query.BasePageRequest;
 import io.github.fsixteen.data.jpa.generator.base.service.BaseInsertAndSelectService;
-import io.github.fsixteen.data.jpa.generator.beans.BasePageRequest;
 
 /**
  * 基础添加和查询Controller.<br>

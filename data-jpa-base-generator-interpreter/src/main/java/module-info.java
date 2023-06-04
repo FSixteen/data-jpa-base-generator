@@ -1,9 +1,10 @@
 module io.github.fsixteen.base.plugins {
 
-    requires static org.slf4j;
+    /* AnnotationDescriptor 及 IntrospectionRuntimeException 中 java.beans 使用. */
     requires static java.desktop;
-    requires static java.persistence;
-    requires static io.github.fsixteen.base.annotations;
+    requires static org.slf4j;
+    requires transitive java.persistence;
+    requires transitive io.github.fsixteen.base.annotations;
 
     exports io.github.fsixteen.data.jpa.base.generator.plugins;
     exports io.github.fsixteen.data.jpa.base.generator.plugins.cache;

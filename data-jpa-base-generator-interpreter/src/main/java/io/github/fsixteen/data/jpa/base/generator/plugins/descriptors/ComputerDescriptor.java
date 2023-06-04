@@ -1,11 +1,11 @@
 package io.github.fsixteen.data.jpa.base.generator.plugins.descriptors;
 
-import static io.github.fsixteen.data.jpa.base.generator.annotations.plugins.utils.ArrayUtils.contains;
-
 import java.lang.annotation.Annotation;
 import java.util.Objects;
 
 import javax.persistence.criteria.Predicate;
+
+import io.github.fsixteen.data.jpa.base.generator.plugins.utils.ArrayUtils;
 
 /**
  * 注解逻辑描述信息.
@@ -44,7 +44,7 @@ public final class ComputerDescriptor<A extends Annotation> {
     }
 
     public boolean containsScope(final String scope) {
-        return Objects.nonNull(this.annoDesc) && contains(this.annoDesc.getScope(), scope);
+        return Objects.nonNull(this.annoDesc) && ArrayUtils.contains(this.annoDesc.getScope(), scope);
     }
 
     public boolean isEmpty() {

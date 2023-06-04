@@ -19,10 +19,35 @@ public class DataNonExistException extends RuntimeException {
     public DataNonExistException() {
     }
 
+    public DataNonExistException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
+
+    public DataNonExistException(StatusInterface status, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        this(status.msg(), cause, enableSuppression, writableStackTrace);
+        this.code = status.code();
+        this.msg = status.msg();
+    }
+
+    public DataNonExistException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public DataNonExistException(StatusInterface status, Throwable cause) {
+        this(status, cause, true, true);
+    }
+
+    public DataNonExistException(Throwable cause) {
+        super(cause);
+    }
+
     public DataNonExistException(StatusInterface status) {
         this(status.code(), status.msg());
     }
 
+    /**
+     * @param msg 提示内容
+     */
     public DataNonExistException(String msg) {
         super(msg);
         this.msg = msg;

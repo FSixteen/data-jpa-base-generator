@@ -1,7 +1,7 @@
 package io.github.fsixteen.base.domain.dictionaries.query;
 
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal;
-import io.github.fsixteen.data.jpa.generator.beans.DefaultPageRequest;
+import io.github.fsixteen.data.jpa.generator.base.query.DefaultPageRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -75,6 +75,6 @@ public class DictionariesInfoSelectQuery extends DefaultPageRequest {
 
     @Override
     public String toString() {
-        return "DictionariesInfoSelectQuery [id=" + id + ", env=" + env + ", classify=" + classify + ", enabled=" + enabled + "]";
+        return DictionariesInfoSelectQuery.class.getSimpleName() + " [id=" + id + ", env=" + env + ", classify=" + classify + ", enabled=" + enabled + "]";
     }
 }

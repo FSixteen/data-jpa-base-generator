@@ -1,4 +1,4 @@
-package io.github.fsixteen.data.jpa.generator.beans;
+package io.github.fsixteen.data.jpa.generator.base.query;
 
 import java.io.Serializable;
 

@@ -37,7 +37,7 @@ public class EnvironmentsInfoUpdateQuery extends EnvironmentsInfoInsertQuery imp
 
     @Override
     public String toString() {
-        return "EnvironmentsInfoUpdateQuery [id=" + id + ", getCode()=" + getCode() + ", getDescription()=" + getDescription() + ", getEnabled()="
-            + getEnabled() + "]";
+        return EnvironmentsInfoUpdateQuery.class.getSimpleName() + " [id=" + id + ", getCode()=" + getCode() + ", getDescription()=" + getDescription()
+            + ", getEnabled()=" + getEnabled() + "]";
     }
 }

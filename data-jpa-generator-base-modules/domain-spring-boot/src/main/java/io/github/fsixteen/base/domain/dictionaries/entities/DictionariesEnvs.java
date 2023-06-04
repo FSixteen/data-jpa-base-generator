@@ -108,7 +108,7 @@ public class DictionariesEnvs extends BaseEntity<Integer> {
 
     @Override
     public String toString() {
-        return "DictionariesEnvs [id=" + id + ", code=" + code + ", description=" + description + ", enabled=" + enabled + ", deleted=" + deleted
-            + ", createTime=" + createTime + ", updateTime=" + updateTime + ", deleteTime=" + deleteTime + "]";
+        return DictionariesEnvs.class.getSimpleName() + " [id=" + id + ", code=" + code + ", description=" + description + ", enabled=" + enabled + ", deleted="
+            + deleted + ", createTime=" + createTime + ", updateTime=" + updateTime + ", deleteTime=" + deleteTime + "]";
     }
 }

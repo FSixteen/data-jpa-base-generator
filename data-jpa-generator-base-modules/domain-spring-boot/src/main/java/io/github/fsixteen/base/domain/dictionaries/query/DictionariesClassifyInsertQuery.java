@@ -76,7 +76,7 @@ public class DictionariesClassifyInsertQuery implements Entity {
 
     @Override
     public String toString() {
-        return "DictionariesClassifyInsertQuery [scope=" + scope + ", classify=" + classify + ", description=" + description + ", defaultKey=" + defaultKey
-            + "]";
+        return DictionariesClassifyInsertQuery.class.getSimpleName() + " [scope=" + scope + ", classify=" + classify + ", description=" + description
+            + ", defaultKey=" + defaultKey + "]";
     }
 }

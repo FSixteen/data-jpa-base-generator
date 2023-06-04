@@ -86,6 +86,7 @@ public interface BaseAggService {
      * @param request      见{@link javax.servlet.http.HttpServletRequest}
      * @param response     见{@link javax.servlet.http.HttpServletResponse}
      * @param clazz        请求实体类
+     * @param type         数据应答类型
      * @param unit         时间单位
      * @param st           开始时间(含)
      * @param et           结束时间(含)
@@ -93,68 +94,72 @@ public interface BaseAggService {
      * @param groupColumns 分组字段
      * @return Object
      */
-    default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, GroupDateTimeUnit unit, Date st, Date et,
+    default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, @NotNull GroupResponseType type,
+        GroupDateTimeUnit unit, Date st, Date et, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
+        return this.dateRangeGroup(request, response, clazz, null, type, (ele) -> unit, (ele) -> st, (ele) -> et, GroupEntity::getKey, valueFuns, groupColumns);
+    }
+
+    /**
+     * 通用绘图分组.
+     *
+     * @param <T>          条件实体类
+     * @param request      见{@link javax.servlet.http.HttpServletRequest}
+     * @param response     见{@link javax.servlet.http.HttpServletResponse}
+     * @param clazz        请求实体类
+     * @param type         数据应答类型
+     * @param unit         时间单位
+     * @param st           开始时间(含)
+     * @param et           结束时间(含)
+     * @param valueFuns    值获取函数(数组)
+     * @param groupColumns 分组字段
+     * @return Object
+     */
+    default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, @NotNull GroupResponseType type,
+        Function<T, GroupDateTimeUnit> unit, Function<T, Date> st, Function<T, Date> et, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
+        return this.dateRangeGroup(request, response, clazz, null, type, unit, st, et, GroupEntity::getKey, valueFuns, groupColumns);
+    }
+
+    /**
+     * 通用绘图分组.
+     *
+     * @param <T>          条件实体类
+     * @param request      见{@link javax.servlet.http.HttpServletRequest}
+     * @param response     见{@link javax.servlet.http.HttpServletResponse}
+     * @param clazz        请求实体类
+     * @param type         数据应答类型
+     * @param unit         时间单位
+     * @param st           开始时间(含)
+     * @param et           结束时间(含)
+     * @param labelFun     标题获取函数
+     * @param valueFuns    值获取函数(数组)
+     * @param groupColumns 分组字段
+     * @return Object
+     */
+    default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, @NotNull GroupResponseType type,
+        GroupDateTimeUnit unit, Date st, Date et, Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
+        return this.dateRangeGroup(request, response, clazz, null, type, (ele) -> unit, (ele) -> st, (ele) -> et, labelFun, valueFuns, groupColumns);
+    }
+
+    /**
+     * 通用绘图分组.
+     *
+     * @param <T>          条件实体类
+     * @param request      见{@link javax.servlet.http.HttpServletRequest}
+     * @param response     见{@link javax.servlet.http.HttpServletResponse}
+     * @param clazz        请求实体类
+     * @param type         数据应答类型
+     * @param unit         时间单位
+     * @param st           开始时间(含)
+     * @param et           结束时间(含)
+     * @param labelFun     标题获取函数
+     * @param valueFuns    值获取函数(数组)
+     * @param groupColumns 分组字段
+     * @return Object
+     */
+    default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, @NotNull GroupResponseType type,
+        Function<T, GroupDateTimeUnit> unit, Function<T, Date> st, Function<T, Date> et, Function<GroupEntity, Object> labelFun,
         Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
-        return this.dateRangeGroup(request, response, clazz, null, (ele) -> unit, (ele) -> st, (ele) -> et, GroupEntity::getKey, valueFuns, groupColumns);
-    }
-
-    /**
-     * 通用绘图分组.
-     *
-     * @param <T>          条件实体类
-     * @param request      见{@link javax.servlet.http.HttpServletRequest}
-     * @param response     见{@link javax.servlet.http.HttpServletResponse}
-     * @param clazz        请求实体类
-     * @param unit         时间单位
-     * @param st           开始时间(含)
-     * @param et           结束时间(含)
-     * @param valueFuns    值获取函数(数组)
-     * @param groupColumns 分组字段
-     * @return Object
-     */
-    default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, Function<T, GroupDateTimeUnit> unit,
-        Function<T, Date> st, Function<T, Date> et, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
-        return this.dateRangeGroup(request, response, clazz, null, unit, st, et, GroupEntity::getKey, valueFuns, groupColumns);
-    }
-
-    /**
-     * 通用绘图分组.
-     *
-     * @param <T>          条件实体类
-     * @param request      见{@link javax.servlet.http.HttpServletRequest}
-     * @param response     见{@link javax.servlet.http.HttpServletResponse}
-     * @param clazz        请求实体类
-     * @param unit         时间单位
-     * @param st           开始时间(含)
-     * @param et           结束时间(含)
-     * @param labelFun     标题获取函数
-     * @param valueFuns    值获取函数(数组)
-     * @param groupColumns 分组字段
-     * @return Object
-     */
-    default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, GroupDateTimeUnit unit, Date st, Date et,
-        Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
-        return this.dateRangeGroup(request, response, clazz, null, (ele) -> unit, (ele) -> st, (ele) -> et, labelFun, valueFuns, groupColumns);
-    }
-
-    /**
-     * 通用绘图分组.
-     *
-     * @param <T>          条件实体类
-     * @param request      见{@link javax.servlet.http.HttpServletRequest}
-     * @param response     见{@link javax.servlet.http.HttpServletResponse}
-     * @param clazz        请求实体类
-     * @param unit         时间单位
-     * @param st           开始时间(含)
-     * @param et           结束时间(含)
-     * @param labelFun     标题获取函数
-     * @param valueFuns    值获取函数(数组)
-     * @param groupColumns 分组字段
-     * @return Object
-     */
-    default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, Function<T, GroupDateTimeUnit> unit,
-        Function<T, Date> st, Function<T, Date> et, Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
-        return this.dateRangeGroup(request, response, clazz, null, unit, st, et, labelFun, valueFuns, groupColumns);
+        return this.dateRangeGroup(request, response, clazz, null, type, unit, st, et, labelFun, valueFuns, groupColumns);
     }
 
     /**
@@ -165,6 +170,7 @@ public interface BaseAggService {
      * @param response     见{@link javax.servlet.http.HttpServletResponse}
      * @param clazz        请求实体类
      * @param obj          请求实体
+     * @param type         数据应答类型
      * @param unit         时间单位
      * @param st           开始时间(含)
      * @param et           结束时间(含)
@@ -172,9 +178,9 @@ public interface BaseAggService {
      * @param groupColumns 分组字段
      * @return Object
      */
-    default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, T obj, GroupDateTimeUnit unit, Date st, Date et,
-        Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
-        return this.dateRangeGroup(request, response, clazz, obj, (ele) -> unit, (ele) -> st, (ele) -> et, GroupEntity::getKey, valueFuns, groupColumns);
+    default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, T obj, @NotNull GroupResponseType type,
+        GroupDateTimeUnit unit, Date st, Date et, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
+        return this.dateRangeGroup(request, response, clazz, obj, type, (ele) -> unit, (ele) -> st, (ele) -> et, GroupEntity::getKey, valueFuns, groupColumns);
     }
 
     /**
@@ -185,6 +191,7 @@ public interface BaseAggService {
      * @param response     见{@link javax.servlet.http.HttpServletResponse}
      * @param clazz        请求实体类
      * @param obj          请求实体
+     * @param type         数据应答类型
      * @param unit         时间单位
      * @param st           开始时间(含)
      * @param et           结束时间(含)
@@ -193,9 +200,9 @@ public interface BaseAggService {
      * @param groupColumns 分组字段
      * @return Object
      */
-    default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, T obj, GroupDateTimeUnit unit, Date st, Date et,
-        Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
-        return this.dateRangeGroup(request, response, clazz, obj, (ele) -> unit, (ele) -> st, (ele) -> et, labelFun, valueFuns, groupColumns);
+    default <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, T obj, @NotNull GroupResponseType type,
+        GroupDateTimeUnit unit, Date st, Date et, Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns, String... groupColumns) {
+        return this.dateRangeGroup(request, response, clazz, obj, type, (ele) -> unit, (ele) -> st, (ele) -> et, labelFun, valueFuns, groupColumns);
     }
 
     /**
@@ -206,6 +213,7 @@ public interface BaseAggService {
      * @param response     见{@link javax.servlet.http.HttpServletResponse}
      * @param clazz        请求实体类
      * @param obj          请求实体
+     * @param type         数据应答类型
      * @param unit         时间单位
      * @param st           开始时间(含)
      * @param et           结束时间(含)
@@ -214,7 +222,8 @@ public interface BaseAggService {
      * @param groupColumns 分组字段
      * @return Object
      */
-    public <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, T obj, Function<T, GroupDateTimeUnit> unit,
-        Function<T, Date> st, Function<T, Date> et, Function<GroupEntity, Object> labelFun, Function<GroupEntity, Object>[] valueFuns, String... groupColumns);
+    public <T> Object dateRangeGroup(HttpServletRequest request, HttpServletResponse response, Class<?> clazz, T obj, @NotNull GroupResponseType type,
+        Function<T, GroupDateTimeUnit> unit, Function<T, Date> st, Function<T, Date> et, Function<GroupEntity, Object> labelFun,
+        Function<GroupEntity, Object>[] valueFuns, String... groupColumns);
 
 }

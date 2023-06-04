@@ -199,6 +199,22 @@ public class GroupColumnUtils {
             return this.toTupleElement(root, cb);
         }
 
+        public GroupColumnType getType() {
+            return type;
+        }
+
+        public boolean isReadOnly() {
+            return readOnly;
+        }
+
+        public String getFieldOrFun() {
+            return fieldOrFun;
+        }
+
+        public Column[] getArgs() {
+            return args;
+        }
+
         @Override
         public String toString() {
             StringBuilder out = new StringBuilder();

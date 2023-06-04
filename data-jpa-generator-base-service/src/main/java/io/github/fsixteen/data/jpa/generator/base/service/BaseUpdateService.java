@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 
 import io.github.fsixteen.common.structure.StatusInterface;
 import io.github.fsixteen.common.structure.extend.Status;
@@ -22,7 +23,6 @@ import io.github.fsixteen.data.jpa.generator.base.jpa.BaseDao;
 import io.github.fsixteen.data.jpa.generator.exception.AccessDeniedException;
 import io.github.fsixteen.data.jpa.generator.exception.DataExistedException;
 import io.github.fsixteen.data.jpa.generator.exception.DataNonExistException;
-import io.github.fsixteen.data.jpa.generator.utils.BeanUtils;
 
 /**
  * 通用Service处理类.<br>

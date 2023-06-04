@@ -19,6 +19,28 @@ public class AccessDeniedException extends RuntimeException {
     public AccessDeniedException() {
     }
 
+    public AccessDeniedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
+
+    public AccessDeniedException(StatusInterface status, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        this(status.msg(), cause, enableSuppression, writableStackTrace);
+        this.code = status.code();
+        this.msg = status.msg();
+    }
+
+    public AccessDeniedException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public AccessDeniedException(StatusInterface status, Throwable cause) {
+        this(status, cause, true, true);
+    }
+
+    public AccessDeniedException(Throwable cause) {
+        super(cause);
+    }
+
     public AccessDeniedException(StatusInterface status) {
         this(status.code(), status.msg());
     }

@@ -159,8 +159,8 @@ public class VersionsInfo extends BaseEntity<Integer> {
 
     @Override
     public String toString() {
-        return "FsnVersionsInfo [id=" + id + ", code=" + code + ", description=" + description + ", preVersion=" + preVersion + ", currVersion=" + currVersion
-            + ", postVersion=" + postVersion + ", versionDate=" + versionDate + ", deleted=" + deleted + ", createTime=" + createTime + ", updateTime="
-            + updateTime + ", deleteTime=" + deleteTime + "]";
+        return VersionsInfo.class.getSimpleName() + " [id=" + id + ", code=" + code + ", description=" + description + ", preVersion=" + preVersion
+            + ", currVersion=" + currVersion + ", postVersion=" + postVersion + ", versionDate=" + versionDate + ", deleted=" + deleted + ", createTime="
+            + createTime + ", updateTime=" + updateTime + ", deleteTime=" + deleteTime + "]";
     }
 }

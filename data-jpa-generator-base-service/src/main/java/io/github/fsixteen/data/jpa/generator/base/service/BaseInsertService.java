@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.domain.Specification;
 
+import io.github.fsixteen.common.structure.StatusInterface;
 import io.github.fsixteen.common.structure.extend.Status;
 import io.github.fsixteen.data.jpa.base.generator.plugins.cache.CollectionCache;
 import io.github.fsixteen.data.jpa.base.generator.plugins.collections.AnnotationCollection;
@@ -40,11 +41,20 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
 
     /**
      * 元素存在时提示内容.<br>
-     * 
+     *
+     * @return StatusInterface
+     */
+    default StatusInterface insertExistedExceptionStatus() {
+        return Status.EXISTED_ERROR.get();
+    }
+
+    /**
+     * 元素存在时提示内容.<br>
+     *
      * @return String
      */
     default String insertExistedExceptionMessage() {
-        return Status.EXISTED_ERROR.get().msg();
+        return this.insertExistedExceptionStatus().msg();
     }
 
     /**
@@ -53,7 +63,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      * @return RuntimeException
      */
     default RuntimeException insertExistedException() {
-        return new DataExistedException(Status.EXISTED_ERROR.get().code(), this.insertExistedExceptionMessage());
+        return new DataExistedException(this.insertExistedExceptionStatus().code(), this.insertExistedExceptionMessage());
     }
 
     /**

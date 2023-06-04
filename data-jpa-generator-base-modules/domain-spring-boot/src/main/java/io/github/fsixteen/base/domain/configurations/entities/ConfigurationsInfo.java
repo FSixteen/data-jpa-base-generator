@@ -112,7 +112,7 @@ public class ConfigurationsInfo extends BaseEntity<Integer> {
 
     @Override
     public String toString() {
-        return "ConfigurationsInfo [id=" + id + ", env=" + env + ", key=" + key + ", val=" + val + ", deleted=" + deleted + ", createTime=" + createTime
-            + ", updateTime=" + updateTime + ", deleteTime=" + deleteTime + "]";
+        return ConfigurationsInfo.class.getSimpleName() + " [id=" + id + ", env=" + env + ", key=" + key + ", val=" + val + ", deleted=" + deleted
+            + ", createTime=" + createTime + ", updateTime=" + updateTime + ", deleteTime=" + deleteTime + "]";
     }
 }

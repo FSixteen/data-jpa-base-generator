@@ -18,9 +18,9 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.Existed;
 import io.github.fsixteen.data.jpa.base.generator.annotations.GroupComputerType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.GroupComputerType.Type;
 import io.github.fsixteen.data.jpa.base.generator.annotations.Selectable;
-import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.utils.ArrayUtils;
 import io.github.fsixteen.data.jpa.base.generator.plugins.constant.BuilderType;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.AnnotationDescriptor;
+import io.github.fsixteen.data.jpa.base.generator.plugins.utils.ArrayUtils;
 import io.github.fsixteen.data.jpa.base.generator.plugins.utils.BeanUtils;
 
 /**

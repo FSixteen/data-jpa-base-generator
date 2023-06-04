@@ -5,8 +5,6 @@ import java.util.Objects;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import org.springframework.lang.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
@@ -67,37 +65,30 @@ public class GroupEntity {
         return this.tuple.getKey();
     }
 
-    @Nullable
     public Object getKey2() {
         return Tuple2.class.isInstance(this.tuple) ? Tuple2.class.cast(this.tuple).getKey2() : null;
     }
 
-    @Nullable
     public Object getKey3() {
         return Tuple3.class.isInstance(this.tuple) ? Tuple3.class.cast(this.tuple).getKey3() : null;
     }
 
-    @Nullable
     public Object getKey4() {
         return Tuple4.class.isInstance(this.tuple) ? Tuple4.class.cast(this.tuple).getKey4() : null;
     }
 
-    @Nullable
     public Object getKey5() {
         return Tuple5.class.isInstance(this.tuple) ? Tuple5.class.cast(this.tuple).getKey5() : null;
     }
 
-    @Nullable
     public Object getKey6() {
         return Tuple6.class.isInstance(this.tuple) ? Tuple6.class.cast(this.tuple).getKey6() : null;
     }
 
-    @Nullable
     public Object getKey7() {
         return Tuple7.class.isInstance(this.tuple) ? Tuple7.class.cast(this.tuple).getKey7() : null;
     }
 
-    @Nullable
     public Object getKey8() {
         return Tuple8.class.isInstance(this.tuple) ? Tuple8.class.cast(this.tuple).getKey8() : null;
     }

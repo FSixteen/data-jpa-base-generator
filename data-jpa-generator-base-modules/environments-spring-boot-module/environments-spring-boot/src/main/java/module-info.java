@@ -1,25 +1,26 @@
 module io.github.fsixteen.base.modules.environments {
 
-    requires static java.persistence;
-    requires static java.validation;
-    requires static java.transaction;
-    requires static org.apache.tomcat.embed.core;
-    requires static io.swagger.v3.oas.annotations;
-    requires static io.swagger.annotations;
-    requires static spring.context;
-    requires static spring.beans;
-    requires static spring.core;
-    requires static spring.data.commons;
-    requires static spring.data.jpa;
-    requires static spring.web;
-    requires static org.hibernate.orm.core;
-    requires static com.fasterxml.jackson.annotation;
-    requires static io.github.fsixteen.common.response.structure;
-    requires static io.github.fsixteen.tableinit;
-    requires static io.github.fsixteen.base.annotations;
-    requires static io.github.fsixteen.base.plugins;
-    requires static io.github.fsixteen.base.service;
-    requires static io.github.fsixteen.base.domain;
+    requires transitive java.persistence;
+    requires transitive java.validation;
+    requires transitive java.transaction;
+    requires transitive org.apache.tomcat.embed.core;
+    requires transitive io.swagger.v3.oas.annotations;
+    requires transitive io.swagger.annotations;
+    requires transitive spring.context;
+    requires transitive spring.beans;
+    requires transitive spring.core;
+    requires transitive spring.data.commons;
+    requires transitive spring.data.jpa;
+    requires transitive spring.web;
+    requires transitive org.hibernate.orm.core;
+    requires transitive com.fasterxml.jackson.annotation;
+    requires transitive io.github.fsixteen.common.response.structure;
+    requires transitive io.github.fsixteen.tableinit;
+    requires transitive io.github.fsixteen.base.annotations;
+    requires transitive io.github.fsixteen.base.plugins;
+    requires transitive io.github.fsixteen.base.entities;
+    requires transitive io.github.fsixteen.base.service;
+    requires transitive io.github.fsixteen.base.domain;
 
     exports io.github.fsixteen.base.modules.environments.controller;
     exports io.github.fsixteen.base.modules.environments.dao;

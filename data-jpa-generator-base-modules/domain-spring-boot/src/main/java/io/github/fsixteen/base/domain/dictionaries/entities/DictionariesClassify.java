@@ -125,7 +125,8 @@ public class DictionariesClassify extends BaseEntity<Integer> {
 
     @Override
     public String toString() {
-        return "DictionariesClassify [id=" + id + ", scope=" + scope + ", classify=" + classify + ", description=" + description + ", defaultKey=" + defaultKey
-            + ", deleted=" + deleted + ", createTime=" + createTime + ", updateTime=" + updateTime + ", deleteTime=" + deleteTime + "]";
+        return DictionariesClassify.class.getSimpleName() + " [id=" + id + ", scope=" + scope + ", classify=" + classify + ", description=" + description
+            + ", defaultKey=" + defaultKey + ", deleted=" + deleted + ", createTime=" + createTime + ", updateTime=" + updateTime + ", deleteTime=" + deleteTime
+            + "]";
     }
 }

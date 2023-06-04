@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.github.fsixteen.data.jpa.generator.base.jpa.BaseDao;
-import io.github.fsixteen.data.jpa.generator.utils.BeanUtils;
+import io.github.fsixteen.data.jpa.generator.utils.JsonIgnoreUtils;
 
 /**
  * 通用Service处理类.<br>
@@ -129,7 +129,7 @@ public final class BaseCommonService {
         if (CLASS_IGNORE_FIELDS_SET.containsKey(ele.getClass())) {
             return CLASS_IGNORE_FIELDS_SET.get(ele.getClass());
         } else {
-            String[] ignoreSet = BeanUtils.jsonIgnoreProperties(ele);
+            String[] ignoreSet = JsonIgnoreUtils.jsonIgnoreProperties(ele);
             CLASS_IGNORE_FIELDS_SET.put(ele.getClass(), ignoreSet);
             return ignoreSet;
         }
