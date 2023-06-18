@@ -41,40 +41,45 @@ public final class AnnotationDescriptor<A extends Annotation> {
     private PropertyDescriptor valueFieldPd;
 
     /**
+     * 正则表达式. 条件计算使用.
+     */
+    private String regexp;
+
+    /**
+     * Predicate的实现类.
+     */
+    private Class<?> testClass;
+
+    /**
+     * 参与条件计算的字段. 不指定默认为 {@link #field()} 参数字段.<br>
+     */
+    private String testField;
+
+    /**
      * 范围查询分组.<br>
      * 默认同在一组范围查询内.<br>
-     * 
-     * @return String[]
      */
     private String[] scope;
 
     /**
      * 条件查询分组, 默认独立组<code>@GroupInfo("default", 0)</code>. <br>
      * 当<code>groups</code>值大于<code>1</code>组时, 该条件可以被多条件查询分组复用.
-     *
-     * @return GroupInfo[]
      */
     private GroupInfo[] groups;
 
     /**
      * 参与计算的最终字段. 不指定默认为当前参数字段.<br>
-     *
-     * @return String
      */
     private String field;
 
     /**
      * 参数字段指向的值类型, 默认为静态数值.<br>
-     *
-     * @return ValueType
      */
     private ValueType valueType;
 
     /**
      * 值函数.<br>
      * 当且仅当<code>valueType = ValueType.FUNCTION</code>时有效.<br>
-     *
-     * @return Function
      */
     private ValueProcessorFunction valueProcessor;
 
@@ -86,15 +91,11 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * - 为<code>false</code>时, 根据{@link #ignoreNull()}, {@link #ignoreEmpty()},
      * {@link
      * #ignoreBlank()}则机参与计算.<br>
-     *
-     * @return boolean
      */
     private boolean required;
 
     /**
      * 逻辑反向.<br>
-     *
-     * @return boolean
      */
     private boolean not = false;
 
@@ -102,8 +103,6 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * 忽略空值.<br>
      * 当元素为集合, 判断每个元素, 忽略空值.<br>
      * 当且仅当<code>required = false</code>时有效.<br>
-     *
-     * @return boolean
      */
     private boolean ignoreNull = true;
 
@@ -112,8 +111,6 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * 当元素为集合, 判断每个元素, 忽略空字符串值.<br>
      * 当且仅当<code>required = false</code>时有效.<br>
      * 当且仅当参与计算值类型或函数返回值类型为{@code java.lang.String}时有效.<br>
-     *
-     * @return boolean
      */
     private boolean ignoreEmpty = true;
 
@@ -122,8 +119,6 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * 当元素为集合, 判断每个元素, 忽略空白字符值.<br>
      * 当且仅当<code>required = false</code>时有效.<br>
      * 当且仅当参与计算值类型或函数返回值类型为{@code java.lang.String}时有效.<br>
-     *
-     * @return boolean
      */
     private boolean ignoreBlank = true;
 
@@ -132,8 +127,6 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * 当元素为集合, 判断每个元素, 删除所有前导和尾随空白字符.<br>
      * 当且仅当<code>required = false</code>时有效.<br>
      * 当且仅当参与计算值类型或函数返回值类型为{@code java.lang.String}时有效.<br>
-     *
-     * @return boolean
      */
     private boolean trim = true;
 
@@ -154,6 +147,9 @@ public final class AnnotationDescriptor<A extends Annotation> {
         super();
         this.objClass = objClass;
         this.anno = anno;
+        this.regexp = this.stringFieldValue(anno, "regexp");
+        this.testClass = this.fieldValue(anno, "testClass");
+        this.testField = this.stringFieldValue(anno, "testField");
         this.scope = this.fieldValue(anno, "scope");
         this.groups = this.fieldValue(anno, "groups");
         this.field = this.stringFieldValue(anno, FIELD);
@@ -270,6 +266,35 @@ public final class AnnotationDescriptor<A extends Annotation> {
      */
     public PropertyDescriptor getValueFieldPd() {
         return valueFieldPd;
+    }
+
+    /**
+     * 正则表达式.<br>
+     * 存在 {@link #regexp()} 时, 以 {@link #regexp()} 为主, 不存在 {@link #regexp()} 时,
+     * 尝试 {@link #testClass()}.<br>
+     * 
+     * @return 正则表达式
+     */
+    public String getRegexp() {
+        return regexp;
+    }
+
+    /**
+     * Predicate的实现类.<br>
+     * 
+     * @return Class&lt;?&gt;
+     */
+    public Class<?> getTestClass() {
+        return testClass;
+    }
+
+    /**
+     * 参与条件计算的字段. 不指定默认为 {@link #field()} 参数字段.<br>
+     *
+     * @return String
+     */
+    public String getTestField() {
+        return testField;
     }
 
     /**

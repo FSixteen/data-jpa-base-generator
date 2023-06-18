@@ -28,3 +28,7 @@ CREATE TABLE IF NOT EXISTS `fsn_configurations_info` (
   CONSTRAINT `fk_188749050f4` FOREIGN KEY (`env`) REFERENCES `fsn_environments_info` (`code`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_18874906cf6` FOREIGN KEY (`key`) REFERENCES `fsn_configurations_key` (`code`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='系统配置信息-系统参数';
+
+INSERT INTO `fsn_versions_info`(`code`, `description`, `pre_version`, `curr_version`, `post_version`, `version_date`, `deleted`, `create_time`, `update_time`, `delete_time`) 
+SELECT 'FSN_CONFIGURATIONS_INFO', '系统配置信息-系统参数', 'unknown', '1.0.1', 'unknown', '1685462400000', 0, NOW(), NOW(), NULL FROM DUAL
+WHERE NOT EXISTS ( SELECT `id` FROM `fsn_versions_info` WHERE `code` = 'FSN_CONFIGURATIONS_INFO' AND `curr_version` = '1.0.1' AND `deleted` = false AND `delete_time` IS NULL ); 

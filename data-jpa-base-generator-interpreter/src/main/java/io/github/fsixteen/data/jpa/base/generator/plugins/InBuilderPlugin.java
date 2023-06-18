@@ -38,10 +38,22 @@ public class InBuilderPlugin<A extends Annotation> extends AbstractComputerBuild
     }
 
     Object transition(AnnotationDescriptor<A> ad, Object fieldValue) {
-        if (null != fieldValue && fieldValue.getClass().isArray()) {
-            return Arrays.asList((Object[]) fieldValue);
+        if (null == fieldValue) {
+            return null;
         }
-        return fieldValue;
+        if (fieldValue instanceof Collection<?>) {
+            return fieldValue;
+        } else if (fieldValue.getClass().isArray()) {
+            return Arrays.asList((Object[]) fieldValue);
+        } else if (fieldValue instanceof Comparable<?>) {
+            return Arrays.asList(fieldValue);
+        } else {
+            return fieldValue;
+        }
+    }
+
+    java.util.function.Predicate<Object> getTestPredicate(AnnotationDescriptor<A> ad) throws ReflectiveOperationException {
+        return (e) -> true;
     }
 
     @SuppressWarnings("unchecked")
@@ -61,7 +73,7 @@ public class InBuilderPlugin<A extends Annotation> extends AbstractComputerBuild
                     .filter(ele -> !(ad.isIgnoreNull() && Objects.isNull(ele)
                         || ad.isIgnoreEmpty() && String.class.isInstance(ele) && String.class.cast(ele).isEmpty()
                         || ad.isIgnoreBlank() && String.class.isInstance(ele) && String.class.cast(ele).trim().isEmpty()))
-                    .collect(Collectors.toList());
+                    .filter(this.getTestPredicate(ad)).collect(Collectors.toList());
             }
 
             Optional<Predicate> optional = Optional.ofNullable(fieldValue).filter(it -> List.class.isInstance(it) && !List.class.cast(it).isEmpty())

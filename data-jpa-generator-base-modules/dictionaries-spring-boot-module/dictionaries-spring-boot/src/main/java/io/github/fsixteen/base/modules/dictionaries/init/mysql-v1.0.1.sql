@@ -46,6 +46,10 @@ CREATE TABLE IF NOT EXISTS `fsn_dictionaries_info` (
   CONSTRAINT `fk_1886faf38d4` FOREIGN KEY (`classify`) REFERENCES `fsn_dictionaries_classify` (`classify`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='系统字典信息-系统字典';
 
+INSERT INTO `fsn_versions_info`(`code`, `description`, `pre_version`, `curr_version`, `post_version`, `version_date`, `deleted`, `create_time`, `update_time`, `delete_time`) 
+SELECT 'FSN_DICTIONARIES_INFO', '系统字典信息-系统字典', 'unknown', '1.0.1', 'unknown', '1685462400000', 0, NOW(), NOW(), NULL FROM DUAL
+WHERE NOT EXISTS ( SELECT `id` FROM `fsn_versions_info` WHERE `code` = 'FSN_DICTIONARIES_INFO' AND `curr_version` = '1.0.1' AND `deleted` = false AND `delete_time` IS NULL ); 
+
 INSERT INTO `fsn_dictionaries_envs` ( `code`, `description`, `enabled`, `deleted`, `create_time`, `update_time`, `delete_time` )
 SELECT 'DEFAULT', '默认环境', 0, 0, NOW(), NOW(), NULL FROM DUAL
 WHERE NOT EXISTS ( SELECT `id` FROM `fsn_dictionaries_envs` WHERE `code` = 'DEFAULT' AND `deleted` = false AND `delete_time` IS NULL );

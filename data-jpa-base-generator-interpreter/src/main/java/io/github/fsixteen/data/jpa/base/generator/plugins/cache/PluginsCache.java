@@ -8,6 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Between;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.EndWith;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.FilterIn;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.FilterNotIn;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.GreaterThan;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.GreaterThanOrEqualTo;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Gt;
@@ -29,6 +31,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Unique;
 import io.github.fsixteen.data.jpa.base.generator.plugins.BetweenBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.BuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.ComparableBuilderPlugin;
+import io.github.fsixteen.data.jpa.base.generator.plugins.FilterInBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.InBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.InTableBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.LikeBuilderPlugin;
@@ -69,6 +72,8 @@ public final class PluginsCache {
 
         PLUGINS.put(In.class, new InBuilderPlugin<In>(ComparableType.IN));
         PLUGINS.put(NotIn.class, new InBuilderPlugin<NotIn>(ComparableType.NOT_IN));
+        PLUGINS.put(FilterIn.class, new FilterInBuilderPlugin<FilterIn>(ComparableType.IN));
+        PLUGINS.put(FilterNotIn.class, new FilterInBuilderPlugin<FilterNotIn>(ComparableType.NOT_IN));
 
         PLUGINS.put(SplitIn.class, new SplitInBuilderPlugin());
         PLUGINS.put(SplitNotIn.class, new SplitNotInBuilderPlugin());

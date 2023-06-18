@@ -18,6 +18,13 @@ public class StringIdEntity implements IdEntity<String> {
     @ApiModelProperty(value = "主键", required = false, hidden = false, example = "110", accessMode = io.swagger.annotations.ApiModelProperty.AccessMode.AUTO)
     public String id;
 
+    public StringIdEntity() {
+    }
+
+    public StringIdEntity(String id) {
+        this.id = id;
+    }
+
     public String getId() {
         return id;
     }

@@ -22,6 +22,13 @@ public class LongPrimaryKeyEntity implements IdEntity<Long> {
     @ApiModelProperty(value = "主键", required = true, hidden = false, example = "110", accessMode = io.swagger.annotations.ApiModelProperty.AccessMode.AUTO)
     private Long id;
 
+    public LongPrimaryKeyEntity() {
+    }
+
+    public LongPrimaryKeyEntity(Long id) {
+        this.id = id;
+    }
+
     @Override
     public Long getId() {
         return id;

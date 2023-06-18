@@ -22,6 +22,13 @@ public class StringPrimaryKeyEntity implements IdEntity<String> {
     @ApiModelProperty(value = "主键", required = true, hidden = false, example = "110", accessMode = io.swagger.annotations.ApiModelProperty.AccessMode.AUTO)
     private String id;
 
+    public StringPrimaryKeyEntity() {
+    }
+
+    public StringPrimaryKeyEntity(String id) {
+        this.id = id;
+    }
+
     @Override
     public String getId() {
         return id;

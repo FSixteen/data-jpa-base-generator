@@ -22,6 +22,13 @@ public class IntegerPrimaryKeyEntityWithRule implements NumberAutoIncrementIdRul
     @ApiModelProperty(value = "主键", required = true, hidden = false, example = "110", accessMode = io.swagger.annotations.ApiModelProperty.AccessMode.AUTO)
     private Integer id;
 
+    public IntegerPrimaryKeyEntityWithRule() {
+    }
+
+    public IntegerPrimaryKeyEntityWithRule(Integer id) {
+        this.id = id;
+    }
+
     @Override
     public Integer getId() {
         return id;

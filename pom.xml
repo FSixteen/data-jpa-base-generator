@@ -56,6 +56,7 @@
   </properties>
 
   <modules>
+    <module>data-jpa-generator-bom</module>
     <module>data-jpa-base-generator-annotations</module>
     <module>data-jpa-base-generator-interpreter</module>
     <module>data-jpa-generator-base-service</module>

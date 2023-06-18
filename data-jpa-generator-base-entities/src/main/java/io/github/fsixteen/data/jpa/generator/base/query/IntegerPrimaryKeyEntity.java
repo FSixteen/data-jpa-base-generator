@@ -22,6 +22,13 @@ public class IntegerPrimaryKeyEntity implements IdEntity<Integer> {
     @ApiModelProperty(value = "主键", required = true, hidden = false, example = "110", accessMode = io.swagger.annotations.ApiModelProperty.AccessMode.AUTO)
     private Integer id;
 
+    public IntegerPrimaryKeyEntity() {
+    }
+
+    public IntegerPrimaryKeyEntity(Integer id) {
+        this.id = id;
+    }
+
     @Override
     public Integer getId() {
         return id;
