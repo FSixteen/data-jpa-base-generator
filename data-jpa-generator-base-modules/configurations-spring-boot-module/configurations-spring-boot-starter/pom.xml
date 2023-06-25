@@ -44,6 +44,11 @@
   <dependencies>
     <dependency>
       <groupId>io.github.fsixteen.modules</groupId>
+      <artifactId>environments-spring-boot-starter</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.fsixteen.modules</groupId>
       <artifactId>configurations-spring-boot</artifactId>
       <version>1.0.1</version>
     </dependency>

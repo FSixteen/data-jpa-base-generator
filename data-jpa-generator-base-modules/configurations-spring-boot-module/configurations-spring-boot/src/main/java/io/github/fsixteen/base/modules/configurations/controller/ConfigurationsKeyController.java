@@ -2,8 +2,8 @@ package io.github.fsixteen.base.modules.configurations.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import io.github.fsixteen.base.domain.configurations.entities.ConfigurationsKey;
 import io.github.fsixteen.base.domain.configurations.query.ConfigurationsKeyInsertQuery;
@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  * @since 1.0.1
  */
 @Lazy
-@Controller
+@RestController
 @RequestMapping("/api/common/config/key/info")
 @Tag(name = "Fsn-Configurations-Key-Info", description = ConfigurationsKey.TABLE_DESC)
 @Api(tags = { ConfigurationsKey.TABLE_DESC })

@@ -12,6 +12,7 @@ module io.github.fsixteen.base.modules.configurations {
     requires transitive spring.data.commons;
     requires transitive spring.data.jpa;
     requires transitive spring.web;
+    requires transitive spring.boot.autoconfigure;
     requires transitive org.hibernate.orm.core;
     requires transitive com.fasterxml.jackson.annotation;
     requires transitive io.github.fsixteen.common.response.structure;

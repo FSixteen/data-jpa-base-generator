@@ -7,8 +7,9 @@ import java.sql.SQLException;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
-import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 import io.github.fsixteen.base.domain.environments.entities.EnvironmentsInfo;
 import io.github.fsixteen.base.domain.environments.entities.VersionsInfo;
@@ -21,8 +22,8 @@ import io.github.fsixteen.table.init.SQLExecutor;
  * @author FSixteen
  * @since 1.0.1
  */
-@Component("io.github.fsixteen.base.modules.environments.init.InitDatabaseTables")
-@DependsOnDatabaseInitialization
+@Order(value = Ordered.HIGHEST_PRECEDENCE)
+@Configuration(value = "io.github.fsixteen.base.modules.environments.init.InitDatabaseTables", proxyBeanMethods = false)
 public class InitDatabaseTables extends SQLExecutor {
 
     static {

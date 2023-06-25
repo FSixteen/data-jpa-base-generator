@@ -12,6 +12,7 @@ module io.github.fsixteen.base.modules.environments {
     requires transitive spring.data.commons;
     requires transitive spring.data.jpa;
     requires transitive spring.web;
+    requires transitive spring.boot.autoconfigure;
     requires transitive org.hibernate.orm.core;
     requires transitive com.fasterxml.jackson.annotation;
     requires transitive io.github.fsixteen.common.response.structure;
@@ -24,6 +25,7 @@ module io.github.fsixteen.base.modules.environments {
 
     exports io.github.fsixteen.base.modules.environments.controller;
     exports io.github.fsixteen.base.modules.environments.dao;
+    exports io.github.fsixteen.base.modules.environments.init;
     exports io.github.fsixteen.base.modules.environments.service;
     exports io.github.fsixteen.base.modules.environments.service.impl;
 

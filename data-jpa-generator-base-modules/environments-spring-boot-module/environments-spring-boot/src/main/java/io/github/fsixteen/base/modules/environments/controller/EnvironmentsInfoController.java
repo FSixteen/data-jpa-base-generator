@@ -2,8 +2,8 @@ package io.github.fsixteen.base.modules.environments.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import io.github.fsixteen.base.domain.environments.entities.EnvironmentsInfo;
 import io.github.fsixteen.base.domain.environments.query.EnvironmentsInfoInsertQuery;
@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  * @since 1.0.1
  */
 @Lazy
-@Controller
+@RestController
 @RequestMapping("/api/common/envs/info")
 @Tag(name = "Fsn-Environments-Info", description = EnvironmentsInfo.TABLE_DESC)
 @Api(tags = { EnvironmentsInfo.TABLE_DESC })

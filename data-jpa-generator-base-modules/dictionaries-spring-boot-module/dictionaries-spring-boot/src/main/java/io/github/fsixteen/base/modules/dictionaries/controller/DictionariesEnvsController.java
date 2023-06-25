@@ -2,8 +2,8 @@ package io.github.fsixteen.base.modules.dictionaries.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import io.github.fsixteen.base.domain.dictionaries.entities.DictionariesEnvs;
 import io.github.fsixteen.base.domain.dictionaries.query.DictionariesEnvsInsertQuery;
@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  * @since 1.0.1
  */
 @Lazy
-@Controller
+@RestController
 @RequestMapping("/api/common/dict/envs/info")
 @Tag(name = "Fsn-Dictionaries-Environments-Info", description = DictionariesEnvs.TABLE_DESC)
 @Api(tags = { DictionariesEnvs.TABLE_DESC })

@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
  * @author FSixteen
  * @since 1.0.1
  */
-@AutoConfiguration
+@AutoConfiguration(value = "io.github.fsixteen.base.autoconfigure.common.CommonAutoConfiguration")
 public class CommonAutoConfiguration {
 
 }
