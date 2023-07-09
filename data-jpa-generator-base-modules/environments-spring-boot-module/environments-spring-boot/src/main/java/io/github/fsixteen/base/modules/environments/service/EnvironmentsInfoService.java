@@ -14,5 +14,5 @@ import io.github.fsixteen.data.jpa.generator.base.service.BaseService;
  * @since 1.0.1
  */
 public interface EnvironmentsInfoService extends
-    BaseService<EnvironmentsInfo, Integer, EnvironmentsInfoInsertQuery, EnvironmentsInfoUpdateQuery, IntegerPrimaryKeyEntity, EnvironmentsInfoSelectQuery> {
+    BaseService<EnvironmentsInfo, Integer, EnvironmentsInfoInsertQuery, IntegerPrimaryKeyEntity, EnvironmentsInfoUpdateQuery, EnvironmentsInfoSelectQuery> {
 }

@@ -1,14 +1,21 @@
 package io.github.fsixteen.base.domain.configurations.entities;
 
 import javax.persistence.Column;
+import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -34,7 +41,7 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 @org.hibernate.annotations.Table(appliesTo = ConfigurationsInfo.TABLE_NAME, comment = ConfigurationsInfo.TABLE_DESC)
 @ApiModel(value = ConfigurationsInfo.TABLE_DESC)
 @Schema(description = ConfigurationsInfo.TABLE_DESC)
-@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" })
+@JsonIgnoreProperties(ignoreUnknown = true, value = { "hibernateLazyInitializer", "handler" })
 @Where(clause = "deleted = false")
 public class ConfigurationsInfo extends BaseEntity<Integer> {
     private static final long serialVersionUID = 1L;
@@ -76,6 +83,13 @@ public class ConfigurationsInfo extends BaseEntity<Integer> {
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     private String val;
 
+    @NotFound(action = NotFoundAction.IGNORE)
+    @OneToOne(targetEntity = ConfigurationsKey.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "[key]", referencedColumnName = "[code]", insertable = false, updatable = false,
+        foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+    @JsonInclude
+    private ConfigurationsKey keyInfo;
+
     @Override
     public Integer getId() {
         return id;
@@ -108,6 +122,14 @@ public class ConfigurationsInfo extends BaseEntity<Integer> {
 
     public void setVal(String val) {
         this.val = val;
+    }
+
+    public ConfigurationsKey getKeyInfo() {
+        return keyInfo;
+    }
+
+    public void setKeyInfo(ConfigurationsKey keyInfo) {
+        this.keyInfo = keyInfo;
     }
 
     @Override

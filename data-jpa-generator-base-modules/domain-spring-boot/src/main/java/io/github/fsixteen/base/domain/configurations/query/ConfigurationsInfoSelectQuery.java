@@ -1,5 +1,7 @@
 package io.github.fsixteen.base.domain.configurations.query;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Like;
 import io.github.fsixteen.data.jpa.generator.base.query.DefaultPageRequest;
@@ -17,6 +19,7 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
  */
 @ApiModel(value = "请求查询实体-系统配置信息-系统参数")
 @Schema(description = "请求查询实体-系统配置信息-系统参数")
+@JsonIgnoreProperties(ignoreUnknown = true, value = { "hibernateLazyInitializer", "handler" })
 public class ConfigurationsInfoSelectQuery extends DefaultPageRequest {
     private static final long serialVersionUID = 1L;
 

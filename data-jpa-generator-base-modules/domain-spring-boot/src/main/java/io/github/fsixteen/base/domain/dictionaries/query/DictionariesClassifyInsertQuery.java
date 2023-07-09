@@ -2,6 +2,8 @@ package io.github.fsixteen.base.domain.dictionaries.query;
 
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Unique;
 import io.github.fsixteen.data.jpa.generator.base.entities.Entity;
 import io.swagger.annotations.ApiModel;
@@ -18,6 +20,7 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
  */
 @ApiModel(value = "请求添加实体-系统字典信息-系统字典分类编码")
 @Schema(description = "请求添加实体-系统字典信息-系统字典分类编码")
+@JsonIgnoreProperties(ignoreUnknown = true, value = { "hibernateLazyInitializer", "handler" })
 public class DictionariesClassifyInsertQuery implements Entity {
     private static final long serialVersionUID = 1L;
 

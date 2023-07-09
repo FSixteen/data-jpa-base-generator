@@ -32,7 +32,7 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 @org.hibernate.annotations.Table(appliesTo = EnvironmentsInfo.TABLE_NAME, comment = EnvironmentsInfo.TABLE_DESC)
 @ApiModel(value = EnvironmentsInfo.TABLE_DESC)
 @Schema(description = EnvironmentsInfo.TABLE_DESC)
-@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" })
+@JsonIgnoreProperties(ignoreUnknown = true, value = { "hibernateLazyInitializer", "handler" })
 @Where(clause = "deleted = false")
 public class EnvironmentsInfo extends BaseEntity<Integer> {
     private static final long serialVersionUID = 1L;

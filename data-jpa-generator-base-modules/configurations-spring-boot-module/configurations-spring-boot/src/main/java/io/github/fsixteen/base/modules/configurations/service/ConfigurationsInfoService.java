@@ -13,6 +13,6 @@ import io.github.fsixteen.data.jpa.generator.base.service.BaseService;
  * @author FSixteen
  * @since 1.0.1
  */
-public interface ConfigurationsInfoService extends BaseService<ConfigurationsInfo, Integer, ConfigurationsInfoInsertQuery, ConfigurationsInfoUpdateQuery,
-    IntegerPrimaryKeyEntity, ConfigurationsInfoSelectQuery> {
+public interface ConfigurationsInfoService extends BaseService<ConfigurationsInfo, Integer, ConfigurationsInfoInsertQuery, IntegerPrimaryKeyEntity,
+    ConfigurationsInfoUpdateQuery, ConfigurationsInfoSelectQuery> {
 }

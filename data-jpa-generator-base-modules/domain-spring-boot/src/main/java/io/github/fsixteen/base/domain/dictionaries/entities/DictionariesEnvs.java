@@ -32,7 +32,7 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 @org.hibernate.annotations.Table(appliesTo = DictionariesEnvs.TABLE_NAME, comment = DictionariesEnvs.TABLE_DESC)
 @ApiModel(value = DictionariesEnvs.TABLE_DESC)
 @Schema(description = DictionariesEnvs.TABLE_DESC)
-@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" })
+@JsonIgnoreProperties(ignoreUnknown = true, value = { "hibernateLazyInitializer", "handler" })
 @Where(clause = "deleted = false")
 public class DictionariesEnvs extends BaseEntity<Integer> {
     private static final long serialVersionUID = 1L;

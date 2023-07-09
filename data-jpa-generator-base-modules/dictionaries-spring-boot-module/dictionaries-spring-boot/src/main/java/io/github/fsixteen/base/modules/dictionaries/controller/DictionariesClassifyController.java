@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Fsn-Dictionaries-Classify-Info", description = DictionariesClassify.TABLE_DESC)
 @Api(tags = { DictionariesClassify.TABLE_DESC })
 public class DictionariesClassifyController implements BaseController<DictionariesClassifyService, DictionariesClassify, Integer,
-    DictionariesClassifyInsertQuery, DictionariesClassifyUpdateQuery, IntegerPrimaryKeyEntity, DictionariesClassifySelectQuery> {
+    DictionariesClassifyInsertQuery, IntegerPrimaryKeyEntity, DictionariesClassifyUpdateQuery, DictionariesClassifySelectQuery> {
 
     @Autowired
     private DictionariesClassifyService service;

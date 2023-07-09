@@ -1,6 +1,7 @@
 package io.github.fsixteen.data.jpa.generator.base.service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,6 +19,9 @@ import org.springframework.beans.BeanUtils;
 
 import io.github.fsixteen.common.structure.StatusInterface;
 import io.github.fsixteen.common.structure.extend.Status;
+import io.github.fsixteen.data.jpa.base.generator.plugins.cache.CollectionCache;
+import io.github.fsixteen.data.jpa.base.generator.plugins.collections.AnnotationCollection;
+import io.github.fsixteen.data.jpa.base.generator.plugins.constant.BuilderType;
 import io.github.fsixteen.data.jpa.generator.base.entities.IdEntity;
 import io.github.fsixteen.data.jpa.generator.base.jpa.BaseDao;
 import io.github.fsixteen.data.jpa.generator.exception.AccessDeniedException;
@@ -100,12 +104,35 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
+     * 指定校验元素是否不包含主键ID.<br>
+     *
+     * @return boolean
+     */
+    default boolean checkExistedWithNotEqualToId() {
+        return Boolean.TRUE;
+    }
+
+    /**
      * 校验元素是否允许被更新处理器.<br>
      *
      * @return BiPredicate&lt;U, BaseDao&lt;T, ID&gt;&gt;
      */
     default BiPredicate<U, BaseDao<T, ID>> checkExistedBeforUpdate() {
-        return (args, dao) -> Boolean.FALSE;
+        return (args, dao) -> {
+            AnnotationCollection computer = CollectionCache.getAnnotationCollection(args.getClass());
+            if (!computer.isEmpty(BuilderType.EXISTS)) {
+                return dao.exists((root, query, cb) -> {
+                    List<javax.persistence.criteria.Predicate> list = new ArrayList<>();
+                    if (this.checkExistedWithNotEqualToId()) {
+                        list.add(cb.notEqual(root.get(root.getModel().getId(root.getModel().getIdType().getJavaType())), args.getId()));
+                    }
+                    list.add(computer.toComputerCollection().withArgs(args).withSpecification(root, query, cb).build(BuilderType.EXISTS).getPredicate(cb));
+                    return cb.and(list.toArray(new javax.persistence.criteria.Predicate[list.size()]));
+                });
+            } else {
+                return Boolean.FALSE;
+            }
+        };
     }
 
     /**

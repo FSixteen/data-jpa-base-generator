@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.github.fsixteen.data.jpa.base.generator.annotations.Existed;
+import io.github.fsixteen.data.jpa.base.generator.annotations.Selectable;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Between;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.EndWith;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal;
@@ -51,6 +53,9 @@ public final class PluginsCache {
     private static final Map<Class<? extends Annotation>, BuilderPlugin<? extends Annotation>> PLUGINS = new ConcurrentHashMap<>();
 
     static {
+        PLUGINS.put(Existed.class, new ComparableBuilderPlugin(ComparableType.EQ));
+        PLUGINS.put(Selectable.class, new ComparableBuilderPlugin(ComparableType.EQ));
+
         PLUGINS.put(Equal.class, new ComparableBuilderPlugin(ComparableType.EQ));
         PLUGINS.put(Between.class, new BetweenBuilderPlugin());
 

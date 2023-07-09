@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Fsn-Dictionaries-Info", description = DictionariesInfo.TABLE_DESC)
 @Api(tags = { DictionariesInfo.TABLE_DESC })
 public class DictionariesInfoController implements BaseController<DictionariesInfoService, DictionariesInfo, Integer, DictionariesInfoInsertQuery,
-    DictionariesInfoUpdateQuery, IntegerPrimaryKeyEntity, DictionariesInfoSelectQuery> {
+    IntegerPrimaryKeyEntity, DictionariesInfoUpdateQuery, DictionariesInfoSelectQuery> {
 
     @Autowired
     private DictionariesInfoService service;

@@ -23,6 +23,7 @@ module io.github.fsixteen.base.service {
     exports io.github.fsixteen.data.jpa.generator.base.controller;
     exports io.github.fsixteen.data.jpa.generator.base.jpa;
     exports io.github.fsixteen.data.jpa.generator.base.service;
+    exports io.github.fsixteen.data.jpa.generator.config;
     exports io.github.fsixteen.data.jpa.generator.constants;
     exports io.github.fsixteen.data.jpa.generator.exception;
     exports io.github.fsixteen.data.jpa.generator.utils;

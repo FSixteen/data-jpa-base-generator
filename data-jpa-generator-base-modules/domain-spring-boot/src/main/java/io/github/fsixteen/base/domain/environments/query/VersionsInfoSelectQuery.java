@@ -2,6 +2,8 @@ package io.github.fsixteen.base.domain.environments.query;
 
 import java.util.Arrays;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Between;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal;
 import io.github.fsixteen.data.jpa.generator.base.query.DefaultPageRequest;
@@ -19,6 +21,7 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
  */
 @ApiModel(value = "请求查询实体-系统配置信息-模块版本信息")
 @Schema(description = "请求查询实体-系统配置信息-模块版本信息")
+@JsonIgnoreProperties(ignoreUnknown = true, value = { "hibernateLazyInitializer", "handler" })
 public class VersionsInfoSelectQuery extends DefaultPageRequest {
     private static final long serialVersionUID = 1L;
 

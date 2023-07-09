@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Fsn-Configurations-Key-Info", description = ConfigurationsKey.TABLE_DESC)
 @Api(tags = { ConfigurationsKey.TABLE_DESC })
 public class ConfigurationsKeyController implements BaseController<ConfigurationsKeyService, ConfigurationsKey, Integer, ConfigurationsKeyInsertQuery,
-    ConfigurationsKeyUpdateQuery, IntegerPrimaryKeyEntity, ConfigurationsKeySelectQuery> {
+    IntegerPrimaryKeyEntity, ConfigurationsKeyUpdateQuery, ConfigurationsKeySelectQuery> {
 
     @Autowired
     private ConfigurationsKeyService service;

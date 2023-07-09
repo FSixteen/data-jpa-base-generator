@@ -2,6 +2,8 @@ package io.github.fsixteen.base.domain.environments.query;
 
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import io.github.fsixteen.data.jpa.generator.base.entities.IdEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,6 +19,7 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
  */
 @ApiModel(value = "请求更新实体-系统配置信息-模块版本信息")
 @Schema(description = "请求更新实体-系统配置信息-模块版本信息")
+@JsonIgnoreProperties(ignoreUnknown = true, value = { "hibernateLazyInitializer", "handler" })
 public class VersionsInfoUpdateQuery extends VersionsInfoInsertQuery implements IdEntity<Integer> {
     private static final long serialVersionUID = 1L;
 

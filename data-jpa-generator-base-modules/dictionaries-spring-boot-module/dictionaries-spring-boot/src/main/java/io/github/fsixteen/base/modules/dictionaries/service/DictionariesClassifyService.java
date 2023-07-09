@@ -13,6 +13,6 @@ import io.github.fsixteen.data.jpa.generator.base.service.BaseService;
  * @author FSixteen
  * @since 1.0.1
  */
-public interface DictionariesClassifyService extends BaseService<DictionariesClassify, Integer, DictionariesClassifyInsertQuery,
-    DictionariesClassifyUpdateQuery, IntegerPrimaryKeyEntity, DictionariesClassifySelectQuery> {
+public interface DictionariesClassifyService extends BaseService<DictionariesClassify, Integer, DictionariesClassifyInsertQuery, IntegerPrimaryKeyEntity,
+    DictionariesClassifyUpdateQuery, DictionariesClassifySelectQuery> {
 }

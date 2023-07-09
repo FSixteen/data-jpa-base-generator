@@ -26,8 +26,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("/api/common/versions/info")
 @Tag(name = "Fsn-Versions-Info", description = VersionsInfo.TABLE_DESC)
 @Api(tags = { VersionsInfo.TABLE_DESC })
-public class VersionsInfoController implements BaseController<VersionsInfoService, VersionsInfo, Integer, VersionsInfoInsertQuery, VersionsInfoUpdateQuery,
-    IntegerPrimaryKeyEntity, VersionsInfoSelectQuery> {
+public class VersionsInfoController implements BaseController<VersionsInfoService, VersionsInfo, Integer, VersionsInfoInsertQuery, IntegerPrimaryKeyEntity,
+    VersionsInfoUpdateQuery, VersionsInfoSelectQuery> {
 
     @Autowired
     private VersionsInfoService service;

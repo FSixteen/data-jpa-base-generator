@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Fsn-Dictionaries-Environments-Info", description = DictionariesEnvs.TABLE_DESC)
 @Api(tags = { DictionariesEnvs.TABLE_DESC })
 public class DictionariesEnvsController implements BaseController<DictionariesEnvsService, DictionariesEnvs, Integer, DictionariesEnvsInsertQuery,
-    DictionariesEnvsUpdateQuery, IntegerPrimaryKeyEntity, DictionariesEnvsSelectQuery> {
+    IntegerPrimaryKeyEntity, DictionariesEnvsUpdateQuery, DictionariesEnvsSelectQuery> {
 
     @Autowired
     private DictionariesEnvsService service;

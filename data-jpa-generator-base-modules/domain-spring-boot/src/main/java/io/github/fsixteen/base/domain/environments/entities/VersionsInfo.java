@@ -32,7 +32,7 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 @org.hibernate.annotations.Table(appliesTo = VersionsInfo.TABLE_NAME, comment = VersionsInfo.TABLE_DESC)
 @ApiModel(value = VersionsInfo.TABLE_DESC)
 @Schema(description = VersionsInfo.TABLE_DESC)
-@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" })
+@JsonIgnoreProperties(ignoreUnknown = true, value = { "hibernateLazyInitializer", "handler" })
 @Where(clause = "deleted = false")
 public class VersionsInfo extends BaseEntity<Integer> {
     private static final long serialVersionUID = 1L;

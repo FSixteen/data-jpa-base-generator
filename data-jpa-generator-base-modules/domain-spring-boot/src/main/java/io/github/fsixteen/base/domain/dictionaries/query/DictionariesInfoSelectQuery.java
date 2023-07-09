@@ -1,6 +1,9 @@
 package io.github.fsixteen.base.domain.dictionaries.query;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitIn;
 import io.github.fsixteen.data.jpa.generator.base.query.DefaultPageRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,6 +19,7 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
  */
 @ApiModel(value = "请求查询实体-系统字典信息-系统字典")
 @Schema(description = "请求查询实体-系统字典信息-系统字典")
+@JsonIgnoreProperties(ignoreUnknown = true, value = { "hibernateLazyInitializer", "handler" })
 public class DictionariesInfoSelectQuery extends DefaultPageRequest {
     private static final long serialVersionUID = 1L;
 
@@ -33,7 +37,7 @@ public class DictionariesInfoSelectQuery extends DefaultPageRequest {
     @Schema(description = "字典分类编码", required = false, requiredMode = RequiredMode.NOT_REQUIRED, hidden = false, example = "GENDER",
         accessMode = AccessMode.AUTO)
     @ApiModelProperty(value = "字典分类编码", required = false, hidden = false, example = "GENDER")
-    @Equal
+    @SplitIn
     private String classify;
 
     @Schema(description = "启用状态", required = false, requiredMode = RequiredMode.NOT_REQUIRED, hidden = false, example = "false", accessMode = AccessMode.AUTO)

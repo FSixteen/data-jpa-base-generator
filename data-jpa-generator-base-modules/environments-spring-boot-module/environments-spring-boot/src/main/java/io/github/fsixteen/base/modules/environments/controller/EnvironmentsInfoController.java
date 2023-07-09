@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Fsn-Environments-Info", description = EnvironmentsInfo.TABLE_DESC)
 @Api(tags = { EnvironmentsInfo.TABLE_DESC })
 public class EnvironmentsInfoController implements BaseController<EnvironmentsInfoService, EnvironmentsInfo, Integer, EnvironmentsInfoInsertQuery,
-    EnvironmentsInfoUpdateQuery, IntegerPrimaryKeyEntity, EnvironmentsInfoSelectQuery> {
+    IntegerPrimaryKeyEntity, EnvironmentsInfoUpdateQuery, EnvironmentsInfoSelectQuery> {
 
     @Autowired
     private EnvironmentsInfoService service;

@@ -14,5 +14,5 @@ import io.github.fsixteen.data.jpa.generator.base.service.BaseService;
  * @since 1.0.1
  */
 public interface VersionsInfoService
-    extends BaseService<VersionsInfo, Integer, VersionsInfoInsertQuery, VersionsInfoUpdateQuery, IntegerPrimaryKeyEntity, VersionsInfoSelectQuery> {
+    extends BaseService<VersionsInfo, Integer, VersionsInfoInsertQuery, IntegerPrimaryKeyEntity, VersionsInfoUpdateQuery, VersionsInfoSelectQuery> {
 }

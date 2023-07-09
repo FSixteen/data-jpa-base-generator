@@ -14,5 +14,5 @@ import io.github.fsixteen.data.jpa.generator.base.service.BaseService;
  * @since 1.0.1
  */
 public interface DictionariesInfoService extends
-    BaseService<DictionariesInfo, Integer, DictionariesInfoInsertQuery, DictionariesInfoUpdateQuery, IntegerPrimaryKeyEntity, DictionariesInfoSelectQuery> {
+    BaseService<DictionariesInfo, Integer, DictionariesInfoInsertQuery, IntegerPrimaryKeyEntity, DictionariesInfoUpdateQuery, DictionariesInfoSelectQuery> {
 }

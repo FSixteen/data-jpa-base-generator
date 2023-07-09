@@ -206,7 +206,9 @@ public final class AnnotationCollection {
      * @param ad 注解描述信息
      */
     public void addSelectAd(AnnotationDescriptor<Annotation> ad) {
-        Optional.ofNullable(ad).filter(it -> it.getAnno().annotationType().isAnnotationPresent(Selectable.class)).ifPresent(this.selectAds::add);
+        Optional.ofNullable(ad)
+            .filter(it -> it.getAnno().annotationType().isAnnotationPresent(Selectable.class) || it.getAnno().annotationType() == Selectable.class)
+            .ifPresent(this.selectAds::add);
     }
 
     /**
@@ -233,7 +235,8 @@ public final class AnnotationCollection {
      * @param ad 注解描述信息
      */
     public void addExistedAd(AnnotationDescriptor<Annotation> ad) {
-        Optional.ofNullable(ad).filter(it -> it.getAnno().annotationType().isAnnotationPresent(Existed.class)).ifPresent(this.existedAds::add);
+        Optional.ofNullable(ad).filter(it -> it.getAnno().annotationType().isAnnotationPresent(Existed.class) || it.getAnno().annotationType() == Existed.class)
+            .ifPresent(this.existedAds::add);
     }
 
     /**
@@ -334,7 +337,8 @@ public final class AnnotationCollection {
         }
 
         private boolean verifyAnnotation(Class<?> clazz) {
-            return clazz.isAnnotation() && clazz.isAnnotationPresent(Selectable.class) || clazz.isAnnotationPresent(Existed.class);
+            return clazz.isAnnotation() && (clazz == Selectable.class || clazz.isAnnotationPresent(Selectable.class) || clazz == Existed.class
+                || clazz.isAnnotationPresent(Existed.class));
         }
 
         public AnnotationCollection build() {

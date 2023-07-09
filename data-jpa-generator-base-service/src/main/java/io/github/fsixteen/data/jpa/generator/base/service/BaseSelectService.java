@@ -2,10 +2,13 @@ package io.github.fsixteen.data.jpa.generator.base.service;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +22,13 @@ import org.springframework.lang.Nullable;
 import io.github.fsixteen.data.jpa.base.generator.plugins.cache.CollectionCache;
 import io.github.fsixteen.data.jpa.base.generator.plugins.collections.AnnotationCollection;
 import io.github.fsixteen.data.jpa.base.generator.plugins.constant.BuilderType;
+import io.github.fsixteen.data.jpa.generator.base.config.DataJpaGeneratorConfig;
 import io.github.fsixteen.data.jpa.generator.base.entities.Entity;
 import io.github.fsixteen.data.jpa.generator.base.entities.IdEntity;
 import io.github.fsixteen.data.jpa.generator.base.jpa.BaseDao;
 import io.github.fsixteen.data.jpa.generator.base.query.BasePageRequest;
 import io.github.fsixteen.data.jpa.generator.base.query.DefaultPageRequest;
+import io.github.fsixteen.data.jpa.generator.utils.AppContextInitializer;
 
 /**
  * 通用Service处理类.<br>
@@ -34,6 +39,20 @@ import io.github.fsixteen.data.jpa.generator.base.query.DefaultPageRequest;
 public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializable, S extends Entity & BasePageRequest> {
 
     static final Logger log = LoggerFactory.getLogger(BaseSelectService.class);
+    static Container<Supplier<Sort>> DEFAULT_SORT_COLUMNS = new Container<>(() -> Sort.unsorted());
+    static Container<Supplier<Sort>> CUSTOM_SORT_COLUMNS = new Container<>();
+
+    @PostConstruct
+    default void init() {
+        DataJpaGeneratorConfig config = AppContextInitializer.getBean(DataJpaGeneratorConfig.class, false);
+        if (Objects.nonNull(config)) {
+            if (Objects.nonNull(config.getDefaultSortColumns())) {
+                CUSTOM_SORT_COLUMNS.setSort(config.getDefaultSortColumns());
+            }
+        } else {
+            log.debug("DataJpaGeneratorConfig is not initialized.");
+        }
+    }
 
     public BaseDao<T, ID> getDao();
 
@@ -43,7 +62,7 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
      * @return Supplier&lt;Sort&gt;
      */
     default Supplier<Sort> defaultSort() {
-        return () -> Sort.unsorted();
+        return CUSTOM_SORT_COLUMNS.isNull() ? DEFAULT_SORT_COLUMNS.getSort() : CUSTOM_SORT_COLUMNS.getSort();
     }
 
     /**
