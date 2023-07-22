@@ -51,6 +51,11 @@ public class ConfigurationsInfoInsertQuery implements Entity {
         this.env = env;
     }
 
+    public ConfigurationsInfoInsertQuery withEnv(String env) {
+        this.env = env;
+        return this;
+    }
+
     public String getKey() {
         return key;
     }
@@ -59,12 +64,22 @@ public class ConfigurationsInfoInsertQuery implements Entity {
         this.key = key;
     }
 
+    public ConfigurationsInfoInsertQuery withKey(String key) {
+        this.key = key;
+        return this;
+    }
+
     public String getVal() {
         return val;
     }
 
     public void setVal(String val) {
         this.val = val;
+    }
+
+    public ConfigurationsInfoInsertQuery withVal(String val) {
+        this.val = val;
+        return this;
     }
 
     @Override

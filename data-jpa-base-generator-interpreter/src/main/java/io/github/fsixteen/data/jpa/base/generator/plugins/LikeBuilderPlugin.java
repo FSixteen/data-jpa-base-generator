@@ -12,7 +12,6 @@ import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.fsixteen.data.jpa.base.generator.annotations.interfaces.DefaultValueProcessor;
 import io.github.fsixteen.data.jpa.base.generator.plugins.constant.ComparableType;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.AnnotationDescriptor;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
@@ -65,7 +64,7 @@ public class LikeBuilderPlugin extends AbstractComputerBuilderPlugin<Annotation>
                         case COLUMN:
                             return String.class.isInstance(it);
                         case FUNCTION:
-                            return Objects.nonNull(ad.getValueProcessor()) && DefaultValueProcessor.class != ad.getValueProcessor().processorClass();
+                            return this.checkValueProcessor(ad);
                         default:
                             return false;
                     }
@@ -102,13 +101,13 @@ public class LikeBuilderPlugin extends AbstractComputerBuilderPlugin<Annotation>
                                 switch (this.type) {
                                     case LEFT:
                                     case START_WITH:
-                                        return cb.concat(this.<String>applyValueProcessor(ad, obj, root, query, cb), "%");
+                                        return cb.concat(this.<String>applyValueProcessor(ad, obj, it, root, query, cb), "%");
                                     case RIGHT:
                                     case END_WITH:
-                                        return cb.concat("%", this.<String>applyValueProcessor(ad, obj, root, query, cb));
+                                        return cb.concat("%", this.<String>applyValueProcessor(ad, obj, it, root, query, cb));
                                     case CONTAINS:
                                     default:
-                                        return cb.concat("%", cb.concat(this.<String>applyValueProcessor(ad, obj, root, query, cb), "%"));
+                                        return cb.concat("%", cb.concat(this.<String>applyValueProcessor(ad, obj, it, root, query, cb), "%"));
                                 }
                             } catch (ReflectiveOperationException e) {
                                 log.error(e.getMessage(), e);

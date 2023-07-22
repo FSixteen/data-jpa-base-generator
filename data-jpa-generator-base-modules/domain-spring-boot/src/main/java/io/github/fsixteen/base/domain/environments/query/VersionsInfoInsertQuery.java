@@ -67,12 +67,22 @@ public class VersionsInfoInsertQuery implements Entity {
         this.code = code;
     }
 
+    public VersionsInfoInsertQuery withCode(String code) {
+        this.code = code;
+        return this;
+    }
+
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public VersionsInfoInsertQuery withDescription(String description) {
+        this.description = description;
+        return this;
     }
 
     public String getPreVersion() {
@@ -83,12 +93,22 @@ public class VersionsInfoInsertQuery implements Entity {
         this.preVersion = preVersion;
     }
 
+    public VersionsInfoInsertQuery withPreVersion(String preVersion) {
+        this.preVersion = preVersion;
+        return this;
+    }
+
     public String getCurrVersion() {
         return currVersion;
     }
 
     public void setCurrVersion(String currVersion) {
         this.currVersion = currVersion;
+    }
+
+    public VersionsInfoInsertQuery withCurrVersion(String currVersion) {
+        this.currVersion = currVersion;
+        return this;
     }
 
     public String getPostVersion() {
@@ -99,12 +119,22 @@ public class VersionsInfoInsertQuery implements Entity {
         this.postVersion = postVersion;
     }
 
+    public VersionsInfoInsertQuery withPostVersion(String postVersion) {
+        this.postVersion = postVersion;
+        return this;
+    }
+
     public Long getVersionDate() {
         return versionDate;
     }
 
     public void setVersionDate(Long versionDate) {
         this.versionDate = versionDate;
+    }
+
+    public VersionsInfoInsertQuery withVersionDate(Long versionDate) {
+        this.versionDate = versionDate;
+        return this;
     }
 
     @Override

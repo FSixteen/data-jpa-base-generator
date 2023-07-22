@@ -38,6 +38,11 @@ public class ConfigurationsKeyUpdateQuery extends ConfigurationsKeyInsertQuery i
         this.id = id;
     }
 
+    public ConfigurationsKeyUpdateQuery withId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
     @Override
     public String toString() {
         return ConfigurationsKeyUpdateQuery.class.getSimpleName() + " [id=" + id + ", getScope()=" + getScope() + ", getCode()=" + getCode()

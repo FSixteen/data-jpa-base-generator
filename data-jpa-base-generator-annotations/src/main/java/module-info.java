@@ -1,4 +1,4 @@
-module io.github.fsixteen.base.annotations {
+open module io.github.fsixteen.base.annotations {
 
     requires transitive java.persistence;
 

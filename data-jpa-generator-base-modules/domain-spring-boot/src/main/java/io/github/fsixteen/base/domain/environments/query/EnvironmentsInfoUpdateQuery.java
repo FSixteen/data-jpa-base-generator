@@ -38,6 +38,11 @@ public class EnvironmentsInfoUpdateQuery extends EnvironmentsInfoInsertQuery imp
         this.id = id;
     }
 
+    public EnvironmentsInfoUpdateQuery withId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
     @Override
     public String toString() {
         return EnvironmentsInfoUpdateQuery.class.getSimpleName() + " [id=" + id + ", getCode()=" + getCode() + ", getDescription()=" + getDescription()

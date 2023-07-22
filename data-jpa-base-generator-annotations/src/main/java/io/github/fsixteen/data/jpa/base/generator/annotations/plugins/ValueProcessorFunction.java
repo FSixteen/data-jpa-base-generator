@@ -22,9 +22,33 @@ public @interface ValueProcessorFunction {
 
     /**
      * 值函数执行类.<br>
+     * <p>
+     * 当存在 {@link #processorClassName()} 时, 以 {@link #processorClassName()} 计算,
+     * 放弃 {@link #processorClass()}.<br>
+     * 当不存在 {@link #processorClassName()} 时, 以 {@link #processorClass()} 计算,
+     * 放弃 {@link #processorClassName()}.<br>
+     * <p>
+     * 当存在 {@link #processorClassName()}, 但实例化失败时, 重新以 {@link #processorClass()}
+     * 计算, 放弃 {@link #processorClassName()}.<br>
      * 
+     * @see #processorClassName()
      * @return Class&lt;? extends ValueProcessor&gt;
      */
     Class<? extends ValueProcessor> processorClass() default DefaultValueProcessor.class;
+
+    /**
+     * 值函数执行类名.<br>
+     * <p>
+     * 当存在 {@link #processorClassName()} 时, 以 {@link #processorClassName()} 计算,
+     * 放弃 {@link #processorClass()}.<br>
+     * 当不存在 {@link #processorClassName()} 时, 以 {@link #processorClass()} 计算,
+     * 放弃 {@link #processorClassName()}.<br>
+     * <p>
+     * 当存在 {@link #processorClassName()}, 但实例化失败时, 重新以 {@link #processorClass()}
+     * 计算, 放弃 {@link #processorClassName()}.<br>
+     * 
+     * @return String
+     */
+    String processorClassName() default "";
 
 }

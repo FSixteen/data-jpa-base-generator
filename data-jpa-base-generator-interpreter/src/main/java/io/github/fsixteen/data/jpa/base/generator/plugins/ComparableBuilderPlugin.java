@@ -12,7 +12,6 @@ import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.fsixteen.data.jpa.base.generator.annotations.interfaces.DefaultValueProcessor;
 import io.github.fsixteen.data.jpa.base.generator.plugins.constant.ComparableType;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.AnnotationDescriptor;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
@@ -66,7 +65,7 @@ public class ComparableBuilderPlugin extends AbstractComputerBuilderPlugin<Annot
                         case COLUMN:
                             return String.class.isInstance(it);
                         case FUNCTION:
-                            return Objects.nonNull(ad.getValueProcessor()) && DefaultValueProcessor.class != ad.getValueProcessor().processorClass();
+                            return this.checkValueProcessor(ad);
                         default:
                             return false;
                     }
@@ -80,7 +79,7 @@ public class ComparableBuilderPlugin extends AbstractComputerBuilderPlugin<Annot
                             return root.<Comparable<?>>get(String.class.cast(it));
                         case FUNCTION:
                             try {
-                                return this.<Comparable<?>>applyValueProcessor(ad, obj, root, query, cb);
+                                return this.<Comparable<?>>applyValueProcessor(ad, obj, it, root, query, cb);
                             } catch (ReflectiveOperationException e) {
                                 log.error(e.getMessage(), e);
                                 return null;

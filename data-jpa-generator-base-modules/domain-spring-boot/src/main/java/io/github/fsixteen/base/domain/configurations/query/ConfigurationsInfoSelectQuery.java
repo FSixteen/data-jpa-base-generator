@@ -49,6 +49,11 @@ public class ConfigurationsInfoSelectQuery extends DefaultPageRequest {
         this.id = id;
     }
 
+    public ConfigurationsInfoSelectQuery withId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
     public String getEnv() {
         return env;
     }
@@ -57,12 +62,22 @@ public class ConfigurationsInfoSelectQuery extends DefaultPageRequest {
         this.env = env;
     }
 
+    public ConfigurationsInfoSelectQuery withEnv(String env) {
+        this.env = env;
+        return this;
+    }
+
     public String getKey() {
         return key;
     }
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public ConfigurationsInfoSelectQuery withKey(String key) {
+        this.key = key;
+        return this;
     }
 
     @Override

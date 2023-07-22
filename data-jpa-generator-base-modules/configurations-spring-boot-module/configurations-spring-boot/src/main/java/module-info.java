@@ -1,4 +1,4 @@
-module io.github.fsixteen.base.modules.configurations {
+open module io.github.fsixteen.base.modules.configurations {
 
     requires transitive java.persistence;
     requires transitive java.validation;

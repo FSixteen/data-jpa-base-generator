@@ -38,6 +38,11 @@ public class DictionariesEnvsUpdateQuery extends DictionariesEnvsInsertQuery imp
         this.id = id;
     }
 
+    public DictionariesEnvsUpdateQuery withId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
     @Override
     public String toString() {
         return DictionariesEnvsUpdateQuery.class.getSimpleName() + " [id=" + id + ", getCode()=" + getCode() + ", getDescription()=" + getDescription()

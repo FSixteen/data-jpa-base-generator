@@ -46,6 +46,11 @@ public class DictionariesClassifySelectQuery extends DefaultPageRequest {
         this.id = id;
     }
 
+    public DictionariesClassifySelectQuery withId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
     public String getScope() {
         return scope;
     }
@@ -54,12 +59,22 @@ public class DictionariesClassifySelectQuery extends DefaultPageRequest {
         this.scope = scope;
     }
 
+    public DictionariesClassifySelectQuery withScope(String scope) {
+        this.scope = scope;
+        return this;
+    }
+
     public String getClassify() {
         return classify;
     }
 
     public void setClassify(String classify) {
         this.classify = classify;
+    }
+
+    public DictionariesClassifySelectQuery withClassify(String classify) {
+        this.classify = classify;
+        return this;
     }
 
     @Override

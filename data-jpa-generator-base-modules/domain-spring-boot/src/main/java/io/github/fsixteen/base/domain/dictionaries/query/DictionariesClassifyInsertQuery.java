@@ -53,12 +53,22 @@ public class DictionariesClassifyInsertQuery implements Entity {
         this.scope = scope;
     }
 
+    public DictionariesClassifyInsertQuery withScope(String scope) {
+        this.scope = scope;
+        return this;
+    }
+
     public String getClassify() {
         return classify;
     }
 
     public void setClassify(String classify) {
         this.classify = classify;
+    }
+
+    public DictionariesClassifyInsertQuery withClassify(String classify) {
+        this.classify = classify;
+        return this;
     }
 
     public String getDescription() {
@@ -69,12 +79,22 @@ public class DictionariesClassifyInsertQuery implements Entity {
         this.description = description;
     }
 
+    public DictionariesClassifyInsertQuery withDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
     public String getDefaultKey() {
         return defaultKey;
     }
 
     public void setDefaultKey(String defaultKey) {
         this.defaultKey = defaultKey;
+    }
+
+    public DictionariesClassifyInsertQuery withDefaultKey(String defaultKey) {
+        this.defaultKey = defaultKey;
+        return this;
     }
 
     @Override

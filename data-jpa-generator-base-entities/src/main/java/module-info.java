@@ -1,4 +1,4 @@
-module io.github.fsixteen.base.entities {
+open module io.github.fsixteen.base.entities {
 
     requires transitive java.logging;
     requires transitive java.persistence;

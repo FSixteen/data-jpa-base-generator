@@ -1,4 +1,4 @@
-module io.github.fsixteen.base.service {
+open module io.github.fsixteen.base.service {
 
     requires transitive org.slf4j;
     requires transitive java.persistence;

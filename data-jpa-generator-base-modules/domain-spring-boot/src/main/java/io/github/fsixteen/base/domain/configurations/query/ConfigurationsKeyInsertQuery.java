@@ -54,12 +54,22 @@ public class ConfigurationsKeyInsertQuery implements Entity {
         this.scope = scope;
     }
 
+    public ConfigurationsKeyInsertQuery withScope(String scope) {
+        this.scope = scope;
+        return this;
+    }
+
     public String getCode() {
         return code;
     }
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public ConfigurationsKeyInsertQuery withCode(String code) {
+        this.code = code;
+        return this;
     }
 
     public String getDescription() {
@@ -70,12 +80,22 @@ public class ConfigurationsKeyInsertQuery implements Entity {
         this.description = description;
     }
 
+    public ConfigurationsKeyInsertQuery withDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
     public String getDefaultValue() {
         return defaultValue;
     }
 
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
+    }
+
+    public ConfigurationsKeyInsertQuery withDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+        return this;
     }
 
     @Override

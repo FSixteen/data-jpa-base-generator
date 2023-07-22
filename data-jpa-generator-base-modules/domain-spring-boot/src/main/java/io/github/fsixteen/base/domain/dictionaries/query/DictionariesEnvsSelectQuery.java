@@ -45,6 +45,11 @@ public class DictionariesEnvsSelectQuery extends DefaultPageRequest {
         this.id = id;
     }
 
+    public DictionariesEnvsSelectQuery withId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
     public String getCode() {
         return code;
     }
@@ -53,12 +58,22 @@ public class DictionariesEnvsSelectQuery extends DefaultPageRequest {
         this.code = code;
     }
 
+    public DictionariesEnvsSelectQuery withCode(String code) {
+        this.code = code;
+        return this;
+    }
+
     public Boolean getEnabled() {
         return enabled;
     }
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public DictionariesEnvsSelectQuery withEnabled(Boolean enabled) {
+        this.enabled = enabled;
+        return this;
     }
 
     @Override

@@ -13,7 +13,6 @@ import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.fsixteen.data.jpa.base.generator.annotations.interfaces.DefaultValueProcessor;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Between;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.AnnotationDescriptor;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
@@ -52,7 +51,7 @@ public class BetweenBuilderPlugin extends AbstractComputerBuilderPlugin<Between>
                         case VALUE:
                             return it.getClass().isArray() && 2 == ((Object[]) it).length;
                         case FUNCTION:
-                            return Objects.nonNull(ad.getValueProcessor()) && DefaultValueProcessor.class != ad.getValueProcessor().processorClass();
+                            return this.checkValueProcessor(ad);
                         default:
                             return false;
                     }
@@ -64,7 +63,7 @@ public class BetweenBuilderPlugin extends AbstractComputerBuilderPlugin<Between>
                             return cb.between(root.get(ad.getComputerFieldName()), ((Comparable[]) it)[0], ((Comparable[]) it)[1]);
                         case FUNCTION:
                             try {
-                                Expression<Comparable>[] args = this.applyBiValueProcessor(ad, obj, root, query, cb);
+                                Expression<Comparable>[] args = this.applyBiValueProcessor(ad, obj, it, root, query, cb);
                                 return cb.between(root.get(ad.getComputerFieldName()), args[0], args[1]);
                             } catch (ReflectiveOperationException e) {
                                 log.error(e.getMessage(), e);

@@ -48,6 +48,11 @@ public class EnvironmentsInfoInsertQuery implements Entity {
         this.code = code;
     }
 
+    public EnvironmentsInfoInsertQuery withCode(String code) {
+        this.code = code;
+        return this;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -56,12 +61,22 @@ public class EnvironmentsInfoInsertQuery implements Entity {
         this.description = description;
     }
 
+    public EnvironmentsInfoInsertQuery withDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
     public Boolean getEnabled() {
         return enabled;
     }
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public EnvironmentsInfoInsertQuery withEnabled(Boolean enabled) {
+        this.enabled = enabled;
+        return this;
     }
 
     @Override

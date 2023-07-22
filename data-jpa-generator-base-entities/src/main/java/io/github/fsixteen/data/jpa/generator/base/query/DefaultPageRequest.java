@@ -45,12 +45,22 @@ public class DefaultPageRequest implements BasePageRequest, Entity {
         this.page = page;
     }
 
+    public DefaultPageRequest withPage(int page) {
+        this.page = page;
+        return this;
+    }
+
     public int getSize() {
         return size;
     }
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public DefaultPageRequest withSize(int size) {
+        this.size = size;
+        return this;
     }
 
 }

@@ -70,12 +70,22 @@ public class DictionariesInfoInsertQuery implements Entity {
         this.env = env;
     }
 
+    public DictionariesInfoInsertQuery withEnv(String env) {
+        this.env = env;
+        return this;
+    }
+
     public String getClassify() {
         return classify;
     }
 
     public void setClassify(String classify) {
         this.classify = classify;
+    }
+
+    public DictionariesInfoInsertQuery withClassify(String classify) {
+        this.classify = classify;
+        return this;
     }
 
     public String getDictKey() {
@@ -86,12 +96,22 @@ public class DictionariesInfoInsertQuery implements Entity {
         this.dictKey = dictKey;
     }
 
+    public DictionariesInfoInsertQuery withDictKey(String dictKey) {
+        this.dictKey = dictKey;
+        return this;
+    }
+
     public String getDictValue() {
         return dictValue;
     }
 
     public void setDictValue(String dictValue) {
         this.dictValue = dictValue;
+    }
+
+    public DictionariesInfoInsertQuery withDictValue(String dictValue) {
+        this.dictValue = dictValue;
+        return this;
     }
 
     public boolean isEnabled() {
@@ -102,6 +122,11 @@ public class DictionariesInfoInsertQuery implements Entity {
         this.enabled = enabled;
     }
 
+    public DictionariesInfoInsertQuery withEnabled(boolean enabled) {
+        this.enabled = enabled;
+        return this;
+    }
+
     public int getOrdered() {
         return ordered;
     }
@@ -110,12 +135,22 @@ public class DictionariesInfoInsertQuery implements Entity {
         this.ordered = ordered;
     }
 
+    public DictionariesInfoInsertQuery withOrdered(int ordered) {
+        this.ordered = ordered;
+        return this;
+    }
+
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public DictionariesInfoInsertQuery withDescription(String description) {
+        this.description = description;
+        return this;
     }
 
     @Override

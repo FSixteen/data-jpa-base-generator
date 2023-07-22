@@ -1,4 +1,4 @@
-module io.github.fsixteen.base.modules.environments {
+open module io.github.fsixteen.base.modules.environments {
 
     requires transitive java.persistence;
     requires transitive java.validation;

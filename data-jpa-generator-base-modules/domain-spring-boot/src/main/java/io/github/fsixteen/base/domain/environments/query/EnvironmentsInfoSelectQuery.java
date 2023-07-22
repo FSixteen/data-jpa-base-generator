@@ -45,6 +45,11 @@ public class EnvironmentsInfoSelectQuery extends DefaultPageRequest {
         this.id = id;
     }
 
+    public EnvironmentsInfoSelectQuery withId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
     public String getCode() {
         return code;
     }
@@ -53,12 +58,22 @@ public class EnvironmentsInfoSelectQuery extends DefaultPageRequest {
         this.code = code;
     }
 
+    public EnvironmentsInfoSelectQuery withCode(String code) {
+        this.code = code;
+        return this;
+    }
+
     public Boolean getEnabled() {
         return enabled;
     }
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public EnvironmentsInfoSelectQuery withEnabled(Boolean enabled) {
+        this.enabled = enabled;
+        return this;
     }
 
     @Override

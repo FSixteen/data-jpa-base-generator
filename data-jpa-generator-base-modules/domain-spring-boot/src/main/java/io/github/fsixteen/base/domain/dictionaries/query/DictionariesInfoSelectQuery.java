@@ -53,12 +53,22 @@ public class DictionariesInfoSelectQuery extends DefaultPageRequest {
         this.id = id;
     }
 
+    public DictionariesInfoSelectQuery withId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
     public String getEnv() {
         return env;
     }
 
     public void setEnv(String env) {
         this.env = env;
+    }
+
+    public DictionariesInfoSelectQuery withEnv(String env) {
+        this.env = env;
+        return this;
     }
 
     public String getClassify() {
@@ -69,12 +79,22 @@ public class DictionariesInfoSelectQuery extends DefaultPageRequest {
         this.classify = classify;
     }
 
+    public DictionariesInfoSelectQuery withClassify(String classify) {
+        this.classify = classify;
+        return this;
+    }
+
     public Boolean getEnabled() {
         return enabled;
     }
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public DictionariesInfoSelectQuery withEnabled(Boolean enabled) {
+        this.enabled = enabled;
+        return this;
     }
 
     @Override

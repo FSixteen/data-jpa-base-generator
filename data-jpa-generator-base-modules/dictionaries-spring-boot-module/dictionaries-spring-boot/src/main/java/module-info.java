@@ -1,4 +1,4 @@
-module io.github.fsixteen.base.modules.dictionaries {
+open module io.github.fsixteen.base.modules.dictionaries {
 
     requires transitive java.persistence;
     requires transitive java.validation;

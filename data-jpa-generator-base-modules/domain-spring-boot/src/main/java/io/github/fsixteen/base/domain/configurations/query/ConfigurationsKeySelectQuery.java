@@ -48,6 +48,11 @@ public class ConfigurationsKeySelectQuery extends DefaultPageRequest {
         this.id = id;
     }
 
+    public ConfigurationsKeySelectQuery withId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
     public String getScope() {
         return scope;
     }
@@ -56,12 +61,22 @@ public class ConfigurationsKeySelectQuery extends DefaultPageRequest {
         this.scope = scope;
     }
 
+    public ConfigurationsKeySelectQuery withScope(String scope) {
+        this.scope = scope;
+        return this;
+    }
+
     public String getCode() {
         return code;
     }
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public ConfigurationsKeySelectQuery withCode(String code) {
+        this.code = code;
+        return this;
     }
 
     @Override

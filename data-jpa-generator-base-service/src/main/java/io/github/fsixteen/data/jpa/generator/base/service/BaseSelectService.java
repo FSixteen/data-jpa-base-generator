@@ -1,6 +1,7 @@
 package io.github.fsixteen.data.jpa.generator.base.service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.criteria.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +57,16 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     public BaseDao<T, ID> getDao();
+
+    /**
+     * 查询固定条件, 不受注解影响.<br>
+     *
+     * @return Specification&lt;T&gt;
+     * @since 1.0.1
+     */
+    default Specification<T> selectFixedPredicate() {
+        return (root, query, criteriaBuilder) -> null;
+    }
 
     /**
      * 查询排序规则.<br>
@@ -174,10 +186,17 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
      */
     default Specification<T> selectQuery(Entity args) {
         final AnnotationCollection computer = CollectionCache.getAnnotationCollection(args.getClass());
-        return !computer.isEmpty(BuilderType.SELECTED)
-            ? (root, query, cb) -> computer.toComputerCollection().withArgs(args).withSpecification(root, query, cb).build(BuilderType.SELECTED)
-                .getPredicate(cb)
-            : (root, query, cb) -> cb.and();
+        return (root, query, cb) -> {
+            List<Predicate> list = new ArrayList<>();
+            if (!computer.isEmpty(BuilderType.SELECTED)) {
+                list.add(computer.toComputerCollection().withArgs(args).withSpecification(root, query, cb).build(BuilderType.SELECTED).getPredicate(cb));
+            }
+            Predicate predicate = this.selectFixedPredicate().toPredicate(root, query, cb);
+            if (Objects.nonNull(predicate)) {
+                list.add(predicate);
+            }
+            return cb.and(list.toArray(new Predicate[list.size()]));
+        };
     }
 
     /**

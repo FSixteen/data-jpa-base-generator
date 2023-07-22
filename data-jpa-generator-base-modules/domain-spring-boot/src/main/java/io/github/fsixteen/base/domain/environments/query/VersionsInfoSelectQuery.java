@@ -57,12 +57,22 @@ public class VersionsInfoSelectQuery extends DefaultPageRequest {
         this.id = id;
     }
 
+    public VersionsInfoSelectQuery withId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
     public String getCode() {
         return code;
     }
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public VersionsInfoSelectQuery withCode(String code) {
+        this.code = code;
+        return this;
     }
 
     public String getCurrVersion() {
@@ -73,12 +83,22 @@ public class VersionsInfoSelectQuery extends DefaultPageRequest {
         this.currVersion = currVersion;
     }
 
+    public VersionsInfoSelectQuery withCurrVersion(String currVersion) {
+        this.currVersion = currVersion;
+        return this;
+    }
+
     public Long[] getVersionDates() {
         return versionDates;
     }
 
     public void setVersionDates(Long[] versionDates) {
         this.versionDates = versionDates;
+    }
+
+    public VersionsInfoSelectQuery withVersionDates(Long[] versionDates) {
+        this.versionDates = versionDates;
+        return this;
     }
 
     @Override

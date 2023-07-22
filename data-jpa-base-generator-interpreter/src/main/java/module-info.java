@@ -1,4 +1,4 @@
-module io.github.fsixteen.base.plugins {
+open module io.github.fsixteen.base.plugins {
 
     /* AnnotationDescriptor 及 IntrospectionRuntimeException 中 java.beans 使用. */
     requires static java.desktop;

@@ -38,6 +38,11 @@ public class VersionsInfoUpdateQuery extends VersionsInfoInsertQuery implements 
         this.id = id;
     }
 
+    public VersionsInfoUpdateQuery withId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
     @Override
     public String toString() {
         return VersionsInfoUpdateQuery.class.getSimpleName() + " [id=" + id + ", getCode()=" + getCode() + ", getDescription()=" + getDescription()

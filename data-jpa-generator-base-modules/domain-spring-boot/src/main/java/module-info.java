@@ -1,4 +1,4 @@
-module io.github.fsixteen.base.domain {
+open module io.github.fsixteen.base.domain {
 
     requires static java.persistence;
     requires static java.validation;

@@ -38,6 +38,11 @@ public class DictionariesClassifyUpdateQuery extends DictionariesClassifyInsertQ
         this.id = id;
     }
 
+    public DictionariesClassifyUpdateQuery withId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
     @Override
     public String toString() {
         return DictionariesClassifyUpdateQuery.class.getSimpleName() + " [id=" + id + ", getScope()=" + getScope() + ", getClassify()=" + getClassify()

@@ -48,6 +48,11 @@ public class DictionariesEnvsInsertQuery implements Entity {
         this.code = code;
     }
 
+    public DictionariesEnvsInsertQuery withCode(String code) {
+        this.code = code;
+        return this;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -56,12 +61,22 @@ public class DictionariesEnvsInsertQuery implements Entity {
         this.description = description;
     }
 
+    public DictionariesEnvsInsertQuery withDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
     public Boolean getEnabled() {
         return enabled;
     }
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public DictionariesEnvsInsertQuery withEnabled(Boolean enabled) {
+        this.enabled = enabled;
+        return this;
     }
 
     @Override

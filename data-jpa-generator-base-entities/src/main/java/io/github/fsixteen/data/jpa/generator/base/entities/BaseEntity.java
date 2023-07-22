@@ -94,16 +94,16 @@ public abstract class BaseEntity<ID extends Serializable> implements IdEntity<ID
         return createTime;
     }
 
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
     public Date getUpdateTime() {
         return updateTime;
     }
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
     }
 
     public Date getDeleteTime() {

@@ -2,12 +2,16 @@ package io.github.fsixteen.common.utils;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 public class EncodingUtils {
     private static final Logger LOGGER = Logger.getLogger(EncodingUtils.class.getName());
@@ -98,10 +102,21 @@ public class EncodingUtils {
      * @return String
      */
     public static String toHex(String data) {
+        return toHex(data, DEFAULT_CHARSET);
+    }
+
+    /**
+     * 转十六进制.
+     *
+     * @param data    数据
+     * @param charset 编码方式
+     * @return String
+     */
+    public static String toHex(String data, Charset charset) {
         if (Objects.isNull(data) || data.isEmpty()) {
             return data;
         }
-        return toHex(data.getBytes(DEFAULT_CHARSET));
+        return toHex(data.getBytes(charset));
     }
 
     /**
@@ -132,10 +147,21 @@ public class EncodingUtils {
      * @return String
      */
     public static String toBase64(String data) {
+        return toBase64(data, DEFAULT_CHARSET);
+    }
+
+    /**
+     * 转 BASE64.
+     *
+     * @param data    数据
+     * @param charset 编码方式
+     * @return String
+     */
+    public static String toBase64(String data, Charset charset) {
         if (Objects.isNull(data) || data.isEmpty()) {
             return data;
         }
-        return new String(toBase64(data.getBytes(DEFAULT_CHARSET)), DEFAULT_CHARSET);
+        return new String(toBase64(data.getBytes(charset)), DEFAULT_CHARSET);
     }
 
     /**
@@ -149,5 +175,56 @@ public class EncodingUtils {
             return data;
         }
         return Base64.getEncoder().encode(data);
+    }
+
+    /**
+     * 转 AES加密.
+     * 
+     * @param data 数据
+     * @param key  密钥
+     * @return byte 数组
+     * @throws GeneralSecurityException
+     */
+    public static byte[] toAES(final String data, final byte[] key) throws GeneralSecurityException {
+        return toAES(data.getBytes(DEFAULT_CHARSET), key);
+    }
+
+    /**
+     * 转 AES加密.
+     * 
+     * @param data 数据
+     * @param key  密钥
+     * @return byte 数组
+     * @throws GeneralSecurityException
+     */
+    public static byte[] toAES(final byte[] data, final byte[] key) throws GeneralSecurityException {
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+        return cipher.doFinal(data);
+    }
+
+    /**
+     * 转 AES加密.
+     * 
+     * @param data 数据
+     * @param key  密钥
+     * @return String
+     * @throws GeneralSecurityException
+     */
+    public static String toAESString(final String data, final byte[] key) throws GeneralSecurityException {
+        return toAESString(data.getBytes(DEFAULT_CHARSET), key);
+    }
+
+    /**
+     * 转 AES加密.
+     * 
+     * @param data 数据
+     * @param key  密钥
+     * @return String
+     * @throws GeneralSecurityException
+     */
+    public static String toAESString(final byte[] data, final byte[] key) throws GeneralSecurityException {
+        return new String(toBase64(toAES(data, key)), DEFAULT_CHARSET);
     }
 }

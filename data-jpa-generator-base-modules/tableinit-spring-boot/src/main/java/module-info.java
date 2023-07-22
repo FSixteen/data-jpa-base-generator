@@ -1,4 +1,4 @@
-module io.github.fsixteen.tableinit {
+open module io.github.fsixteen.tableinit {
 
     requires static java.sql;
     requires transitive org.slf4j;
