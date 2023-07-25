@@ -1,10 +1,14 @@
 package io.github.fsixteen.data.jpa.generator.base.service;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -105,6 +109,19 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
+     * 元素删除后置处理器.<br>
+     *
+     * @return Consumer&lt;T&gt;
+     */
+    default Consumer<Collection<T>> deleteAllPostprocessor() {
+        return (args) -> {
+            if (Objects.nonNull(args) && !args.isEmpty()) {
+                args.forEach(it -> this.deletePostprocessor().accept(it));
+            }
+        };
+    }
+
+    /**
      * 删除逻辑.<br>
      *
      * @param args 删除实体实例
@@ -166,16 +183,88 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default T deleteById(ID id, Predicate<T> filter, Consumer<T> processor, Consumer<T> postprocessor) {
-        T ele = this.getDao().findById(id).filter(filter::test).orElseThrow(this::deleteNonDataException);
+        return this.deleteAllByIds(Arrays.asList(id), filter, processor, (args) -> {
+            if (Objects.nonNull(postprocessor) && Objects.nonNull(args) && !args.isEmpty()) {
+                args.forEach(it -> postprocessor.accept(it));
+            }
+        }).get(0);
+    }
+
+    /**
+     * 删除逻辑.<br>
+     *
+     * @param args 删除实体实例
+     * @see #deleteAllByIds(Serializable, Predicate, Consumer, Consumer)
+     * @return List&lt;T&gt;
+     */
+    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    default List<T> deleteAll(Collection<D> args) {
+        return this.deleteAllByIds(args.stream().map(IdEntity::getId).collect(Collectors.toSet()));
+    }
+
+    /**
+     * 删除逻辑.<br>
+     *
+     * @param ids 删除实体主键ID
+     * @see #deleteAllByIds(Serializable, Predicate, Consumer, Consumer)
+     * @return List&lt;T&gt;
+     */
+    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    default List<T> deleteAllByIds(Collection<ID> ids) {
+        return this.deleteAllByIds(ids, this.deleteTest());
+    }
+
+    /**
+     * 删除逻辑.<br>
+     *
+     * @param ids    删除实体主键ID
+     * @param filter 校验元素是否允许被删除处理器
+     * @see #deleteAllByIds(Serializable, Predicate, Consumer, Consumer)
+     * @return List&lt;T&gt;
+     */
+    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    default List<T> deleteAllByIds(Collection<ID> ids, Predicate<T> filter) {
+        return this.deleteAllByIds(ids, filter, this.deleteProcessor());
+    }
+
+    /**
+     * 删除逻辑.<br>
+     *
+     * @param ids       删除实体主键ID
+     * @param filter    校验元素是否允许被删除处理器
+     * @param processor 删除处理器
+     * @see #deleteAllByIds(Serializable, Predicate, Consumer, Consumer)
+     * @return List&lt;T&gt;
+     */
+    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    default List<T> deleteAllByIds(Collection<ID> ids, Predicate<T> filter, Consumer<T> processor) {
+        return this.deleteAllByIds(ids, filter, this.deleteProcessor(), this.deleteAllPostprocessor());
+    }
+
+    /**
+     * 删除逻辑.<br>
+     *
+     * @param ids           主键
+     * @param filter        校验元素是否允许被删除处理器
+     * @param processor     删除处理器
+     * @param postprocessor 删除后置处理器
+     * @return List&lt;T&gt;
+     */
+    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    default List<T> deleteAllByIds(Collection<ID> ids, Predicate<T> filter, Consumer<T> processor, Consumer<Collection<T>> postprocessor) {
+        List<T> ele = this.getDao().findAllById(ids).stream().filter(filter::test).collect(Collectors.toList());
+        if (ele.isEmpty()) {
+            throw this.deleteNonDataException();
+        }
         switch (this.deleteType()) {
             case HARD:
-                this.getDao().deleteById(id);
+                this.getDao().deleteAllInBatch(ele);
                 break;
             case SOFT:
                 if (Objects.nonNull(processor)) {
-                    processor.accept(ele);
+                    ele.forEach(e -> processor.accept(e));
                 }
-                ele = this.getDao().save(ele);
+                ele = this.getDao().saveAll(ele);
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected value: " + this.deleteType());
@@ -185,5 +274,4 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
         }
         return ele;
     }
-
 }

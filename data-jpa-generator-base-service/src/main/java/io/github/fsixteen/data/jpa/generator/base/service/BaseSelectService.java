@@ -2,6 +2,7 @@ package io.github.fsixteen.data.jpa.generator.base.service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -176,6 +177,16 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
      */
     default List<T> findAll(@Nullable Specification<T> spec, Sort sort) {
         return this.getDao().findAll(spec, sort);
+    }
+
+    /**
+     * 信息查询.<br>
+     * 
+     * @param ids 查询实体主键
+     * @return List&lt;T&gt;
+     */
+    default List<T> findAllByIds(Collection<ID> ids) {
+        return this.getDao().findAllById(ids);
     }
 
     /**
