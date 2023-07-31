@@ -133,7 +133,7 @@ public interface BuilderPlugin<A extends Annotation> {
         this.checkValueProcessor(ad);
         ValueProcessor processor = VALUE_PROCESSOR_CACHE.getOrDefault(ad.getValueProcessor().processorClassName(),
             VALUE_PROCESSOR_CACHE.get(ad.getValueProcessor().processorClass()));
-        return processor.<A, T>create(ad.getAnno(), ad.getValueProcessor(), obj, root, query, cb);
+        return processor.<A, T>create(ad.getAnno(), ad.getValueProcessor(), obj, fieldValue, root, query, cb);
     }
 
     /**
@@ -154,7 +154,7 @@ public interface BuilderPlugin<A extends Annotation> {
         this.checkValueProcessor(ad);
         ValueProcessor processor = VALUE_PROCESSOR_CACHE.getOrDefault(ad.getValueProcessor().processorClassName(),
             VALUE_PROCESSOR_CACHE.get(ad.getValueProcessor().processorClass()));
-        return processor.<A, T>biCreate(ad.getAnno(), ad.getValueProcessor(), obj, root, query, cb);
+        return processor.<A, T>biCreate(ad.getAnno(), ad.getValueProcessor(), obj, fieldValue, root, query, cb);
     }
 
     /**
