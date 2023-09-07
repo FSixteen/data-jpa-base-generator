@@ -38,6 +38,7 @@
   </parent>
 
   <properties>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
     <automatic.module.name>io.github.fsixteen.data.jpa.generator.modules.configurations.starter</automatic.module.name>
   </properties>
 

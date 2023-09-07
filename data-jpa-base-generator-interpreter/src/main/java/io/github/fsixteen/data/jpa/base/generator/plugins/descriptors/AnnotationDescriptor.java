@@ -270,8 +270,8 @@ public final class AnnotationDescriptor<A extends Annotation> {
 
     /**
      * 正则表达式.<br>
-     * 存在 {@link #regexp()} 时, 以 {@link #regexp()} 为主, 不存在 {@link #regexp()} 时,
-     * 尝试 {@link #testClass()}.<br>
+     * 存在 {@link #getRegexp()} 时, 以 {@link #getRegexp()} 为主, 不存在
+     * {@link #getRegexp()} 时, 尝试 {@link #getTestClass()}.<br>
      * 
      * @return 正则表达式
      */
@@ -289,7 +289,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
     }
 
     /**
-     * 参与条件计算的字段. 不指定默认为 {@link #field()} 参数字段.<br>
+     * 参与条件计算的字段. 不指定默认为 {@link #getField()} 参数字段.<br>
      *
      * @return String
      */

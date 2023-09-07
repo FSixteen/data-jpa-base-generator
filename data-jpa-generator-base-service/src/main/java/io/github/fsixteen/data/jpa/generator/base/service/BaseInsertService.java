@@ -229,7 +229,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
             String[] ignoreSet = BaseCommonService.jsonIgnoreProperties(args);
             BeanUtils.copyProperties(args, news, ignoreSet);
             Optional.ofNullable(processor).ifPresent(it -> it.accept(news, args));
-            T savedEle = this.getDao().save(news);
+            T savedEle = this.getDao().saveAndFlush(news);
             Optional.ofNullable(postprocessor).ifPresent(it -> it.accept(savedEle, args));
             return savedEle;
         } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {

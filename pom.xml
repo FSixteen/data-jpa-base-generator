@@ -59,6 +59,7 @@
     <module>data-jpa-generator-bom</module>
     <module>data-jpa-base-generator-annotations</module>
     <module>data-jpa-base-generator-interpreter</module>
+    <module>data-jpa-generator-base-common</module>
     <module>data-jpa-generator-base-service</module>
     <module>data-jpa-generator-base-entities</module>
     <module>data-jpa-generator-base-modules</module>
@@ -245,6 +246,7 @@
           </executions>
           <configuration>
             <!-- <doclint>all,-syntax</doclint> -->
+            <!-- <doclint>none</doclint> -->
             <doclint>all,-syntax</doclint>
             <charset>${encoding}</charset>
             <encoding>${encoding}</encoding>

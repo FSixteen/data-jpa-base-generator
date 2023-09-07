@@ -294,6 +294,11 @@ public final class AnnotationCollection {
 
         private AnnotationCollection ac = AnnotationCollection.of();
 
+        /**
+         * 创建一个全新空实例.<br>
+         * 
+         * @return Builder
+         */
         public static Builder of() {
             return new Builder();
         }
@@ -341,6 +346,11 @@ public final class AnnotationCollection {
                 || clazz.isAnnotationPresent(Existed.class));
         }
 
+        /**
+         * 获取类注解描述信息集合.<br>
+         * 
+         * @return AnnotationCollection
+         */
         public AnnotationCollection build() {
             return this.ac;
         }

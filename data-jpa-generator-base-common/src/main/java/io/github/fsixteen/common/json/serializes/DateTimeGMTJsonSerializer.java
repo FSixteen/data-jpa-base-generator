@@ -1,0 +1,28 @@
+package io.github.fsixteen.common.json.serializes;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
+
+import com.fasterxml.jackson.databind.JsonSerializer;
+
+/**
+ * {@link Long} 或 {@link Date} 或 {@link LocalDateTime} 或 {@link LocalDate} 类型数据
+ * {@link JsonSerializer} 序列化模版.<br>
+ * 
+ * @see io.github.fsixteen.common.json.serializes.AbstractDateTimeJsonSerializer
+ * @author FSixteen
+ * @since 1.0.1
+ */
+public class DateTimeGMTJsonSerializer extends AbstractDateTimeJsonSerializer {
+    private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("EE, dd MMM yyyy HH:mm:ss z", Locale.getDefault()).withZone(ZoneId.of("GMT"));
+
+    @Override
+    public DateTimeFormatter formater() {
+        return DTF;
+    }
+
+}

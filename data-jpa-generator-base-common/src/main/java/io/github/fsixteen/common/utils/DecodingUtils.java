@@ -21,7 +21,7 @@ public class DecodingUtils {
     /**
      * 从 十六进制 转回.
      *
-     * @param data
+     * @param data Hex 数据
      * @return String
      */
     public static String fromHex(String data) {
@@ -45,7 +45,7 @@ public class DecodingUtils {
     /**
      * 从 十六进制 转回.
      *
-     * @param data
+     * @param data Hex BYTE 数据
      * @return byte数组
      */
     public static byte[] fromHex(byte[] data) {
@@ -62,7 +62,7 @@ public class DecodingUtils {
     /**
      * 从 BASE64 转回.
      *
-     * @param data
+     * @param data BASE64 数据
      * @return byte数组
      */
     public static String fromBase64(String data) {
@@ -75,7 +75,7 @@ public class DecodingUtils {
     /**
      * 从 BASE64 转回.
      *
-     * @param data
+     * @param data BASE64 BYTE 数据
      * @return byte数组
      */
     public static byte[] fromBase64(byte[] data) {
@@ -91,7 +91,7 @@ public class DecodingUtils {
      * @param data 数据
      * @param key  密钥
      * @return byte 数组
-     * @throws GeneralSecurityException
+     * @throws GeneralSecurityException {@link javax.crypto.Cipher#doFinal(byte[])}
      */
     public static byte[] fromAES(final String data, final byte[] key) throws GeneralSecurityException {
         return fromAES(fromBase64(data.getBytes(DEFAULT_CHARSET)), key);
@@ -103,7 +103,7 @@ public class DecodingUtils {
      * @param data 数据
      * @param key  密钥
      * @return byte 数组
-     * @throws GeneralSecurityException
+     * @throws GeneralSecurityException {@link javax.crypto.Cipher#doFinal(byte[])}
      */
     public static byte[] fromAES(final byte[] data, final byte[] key) throws GeneralSecurityException {
         SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
@@ -118,7 +118,7 @@ public class DecodingUtils {
      * @param data 数据
      * @param key  密钥
      * @return String
-     * @throws GeneralSecurityException
+     * @throws GeneralSecurityException {@link javax.crypto.Cipher#doFinal(byte[])}
      */
     public static String fromAESString(final String data, final byte[] key) throws GeneralSecurityException {
         return fromAESString(fromBase64(data.getBytes(DEFAULT_CHARSET)), key);
@@ -130,7 +130,7 @@ public class DecodingUtils {
      * @param data 数据
      * @param key  密钥
      * @return String
-     * @throws GeneralSecurityException
+     * @throws GeneralSecurityException {@link javax.crypto.Cipher#doFinal(byte[])}
      */
     public static String fromAESString(final byte[] data, final byte[] key) throws GeneralSecurityException {
         return new String(fromAES(data, key), DEFAULT_CHARSET);

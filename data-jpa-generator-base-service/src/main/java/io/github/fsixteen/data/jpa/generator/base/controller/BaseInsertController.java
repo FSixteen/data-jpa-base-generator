@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -12,6 +13,7 @@ import io.github.fsixteen.common.structure.Response.SimpleResponse;
 import io.github.fsixteen.common.structure.extend.Ok;
 import io.github.fsixteen.data.jpa.generator.base.entities.Entity;
 import io.github.fsixteen.data.jpa.generator.base.entities.IdEntity;
+import io.github.fsixteen.data.jpa.generator.base.groups.InsertGroup;
 import io.github.fsixteen.data.jpa.generator.base.service.BaseInsertService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,7 +32,8 @@ public interface BaseInsertController<SI extends BaseInsertService<T, ID, I>, T 
     @ApiOperation(value = "添加内容", notes = "添加内容")
     @Operation(summary = "添加内容", description = "添加内容")
     @PostMapping(value = "insert")
-    default SimpleResponse<T> insert(HttpServletRequest request, HttpServletResponse response, @RequestBody final I data) {
+    default SimpleResponse<T> insert(HttpServletRequest request, HttpServletResponse response,
+        @Validated(value = { InsertGroup.class }) @RequestBody final I data) {
         return Ok.insert(this.getService().insert(data));
     }
 

@@ -153,10 +153,10 @@ public class GroupColumnUtils {
                 this.args = args.toArray(new Column[args.size()]);
                 this.type = GroupColumnType.FUNCTION;
             } else if (columnTemp.startsWith(ARG_PREFIX) && columnTemp.endsWith(ARG_POSTFIX)) {
-                this.fieldOrFun = columnTemp;
+                this.fieldOrFun = columnTemp.substring(ARG_PREFIX_LENGTH, columnTemp.length() - ARG_POSTFIX_LENGTH);
                 this.type = GroupColumnType.FIELD;
             } else {
-                this.fieldOrFun = columnTemp.substring(ARG_PREFIX_LENGTH, columnTemp.length() - ARG_POSTFIX_LENGTH);
+                this.fieldOrFun = columnTemp;
                 this.type = GroupColumnType.VALUE;
             }
         }

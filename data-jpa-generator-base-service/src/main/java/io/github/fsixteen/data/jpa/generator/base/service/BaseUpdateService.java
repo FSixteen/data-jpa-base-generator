@@ -347,7 +347,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
         String[] ignoreSet = BaseCommonService.jsonIgnoreProperties(args);
         BeanUtils.copyProperties(args, ele, ignoreSet);
         Optional.ofNullable(processor).ifPresent(it -> it.accept(ele, args));
-        T savedEle = this.getDao().save(ele);
+        T savedEle = this.getDao().saveAndFlush(ele);
         Optional.ofNullable(postprocessor).ifPresent(it -> it.accept(savedEle, args));
         return savedEle;
     }
@@ -356,7 +356,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * 更新逻辑.<br>
      * 
      * @param args 更新实体实例
-     * @see #update(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @see #updateAll(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return List&lt;T&gt;
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
@@ -369,7 +369,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * 
      * @param args         更新实体实例
      * @param preprocessor 更新前置处理器
-     * @see #update(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @see #updateAll(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return List&lt;T&gt;
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
@@ -383,7 +383,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @param args         更新实体实例
      * @param preprocessor 更新前置处理器
      * @param filter       更新判断器
-     * @see #update(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @see #updateAll(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return List&lt;T&gt;
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
@@ -397,7 +397,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @param args      更新实体实例
      * @param filter    更新判断器
      * @param processor 更新处理器
-     * @see #update(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @see #updateAll(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return List&lt;T&gt;
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
@@ -411,7 +411,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @param args      更新实体实例
      * @param filter    更新判断器
      * @param processor 更新处理器
-     * @see #update(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @see #updateAll(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return List&lt;T&gt;
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
@@ -426,7 +426,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @param preprocessor 更新前置处理器
      * @param filter       更新判断器
      * @param processor    更新处理器
-     * @see #update(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
+     * @see #updateAll(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return List&lt;T&gt;
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })

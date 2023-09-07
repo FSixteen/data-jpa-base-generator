@@ -24,20 +24,17 @@ public class EncodingUtils {
     /**
      * 转 MD5.
      *
-     * @param data
+     * @param data 原始字符串内容
      * @return String
      */
     public static String toMd5(String data) {
-        if (Objects.isNull(data)) {
-            return null;
-        }
-        return toMd5(data.getBytes(DEFAULT_CHARSET));
+        return Objects.nonNull(data) ? toMd5(data.getBytes(DEFAULT_CHARSET)) : null;
     }
 
     /**
      * 转 MD5.
      *
-     * @param data
+     * @param data 数据
      * @return String
      */
     public static String toMd5(byte[] data) {
@@ -65,20 +62,17 @@ public class EncodingUtils {
     /**
      * 转 SHA256.
      *
-     * @param data
+     * @param data 数据
      * @return String
      */
     public static String toSHA256(String data) {
-        if (Objects.isNull(data)) {
-            return null;
-        }
-        return toHex(toSHA256(data.getBytes(DEFAULT_CHARSET)));
+        return Objects.nonNull(data) ? toHex(toSHA256(data.getBytes(DEFAULT_CHARSET))) : null;
     }
 
     /**
      * 转 SHA256.
      *
-     * @param data
+     * @param data 数据
      * @return byte数组
      */
     public static byte[] toSHA256(byte[] data) {
@@ -98,7 +92,7 @@ public class EncodingUtils {
     /**
      * 转十六进制.
      *
-     * @param data
+     * @param data 数据
      * @return String
      */
     public static String toHex(String data) {
@@ -122,7 +116,7 @@ public class EncodingUtils {
     /**
      * 转十六进制.
      *
-     * @param data
+     * @param data 数据
      * @return String
      */
     public static String toHex(byte[] data) {
@@ -143,7 +137,7 @@ public class EncodingUtils {
     /**
      * 转 BASE64.
      *
-     * @param data
+     * @param data 数据
      * @return String
      */
     public static String toBase64(String data) {
@@ -167,7 +161,7 @@ public class EncodingUtils {
     /**
      * 转 BASE64.
      *
-     * @param data
+     * @param data 数据
      * @return byte数组
      */
     public static byte[] toBase64(byte[] data) {
@@ -183,7 +177,7 @@ public class EncodingUtils {
      * @param data 数据
      * @param key  密钥
      * @return byte 数组
-     * @throws GeneralSecurityException
+     * @throws GeneralSecurityException {@link javax.crypto.Cipher#doFinal(byte[])}
      */
     public static byte[] toAES(final String data, final byte[] key) throws GeneralSecurityException {
         return toAES(data.getBytes(DEFAULT_CHARSET), key);
@@ -195,7 +189,7 @@ public class EncodingUtils {
      * @param data 数据
      * @param key  密钥
      * @return byte 数组
-     * @throws GeneralSecurityException
+     * @throws GeneralSecurityException {@link javax.crypto.Cipher#doFinal(byte[])}
      */
     public static byte[] toAES(final byte[] data, final byte[] key) throws GeneralSecurityException {
         SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
@@ -210,7 +204,7 @@ public class EncodingUtils {
      * @param data 数据
      * @param key  密钥
      * @return String
-     * @throws GeneralSecurityException
+     * @throws GeneralSecurityException {@link javax.crypto.Cipher#doFinal(byte[])}
      */
     public static String toAESString(final String data, final byte[] key) throws GeneralSecurityException {
         return toAESString(data.getBytes(DEFAULT_CHARSET), key);
@@ -222,7 +216,7 @@ public class EncodingUtils {
      * @param data 数据
      * @param key  密钥
      * @return String
-     * @throws GeneralSecurityException
+     * @throws GeneralSecurityException {@link javax.crypto.Cipher#doFinal(byte[])}
      */
     public static String toAESString(final byte[] data, final byte[] key) throws GeneralSecurityException {
         return new String(toBase64(toAES(data, key)), DEFAULT_CHARSET);

@@ -27,9 +27,11 @@ public @interface ValueProcessorFunction {
      * 放弃 {@link #processorClass()}.<br>
      * 当不存在 {@link #processorClassName()} 时, 以 {@link #processorClass()} 计算,
      * 放弃 {@link #processorClassName()}.<br>
+     * </p>
      * <p>
      * 当存在 {@link #processorClassName()}, 但实例化失败时, 重新以 {@link #processorClass()}
      * 计算, 放弃 {@link #processorClassName()}.<br>
+     * </p>
      * 
      * @see #processorClassName()
      * @return Class&lt;? extends ValueProcessor&gt;
@@ -43,9 +45,11 @@ public @interface ValueProcessorFunction {
      * 放弃 {@link #processorClass()}.<br>
      * 当不存在 {@link #processorClassName()} 时, 以 {@link #processorClass()} 计算,
      * 放弃 {@link #processorClassName()}.<br>
+     * </p>
      * <p>
      * 当存在 {@link #processorClassName()}, 但实例化失败时, 重新以 {@link #processorClass()}
      * 计算, 放弃 {@link #processorClassName()}.<br>
+     * </p>
      * 
      * @return String
      */

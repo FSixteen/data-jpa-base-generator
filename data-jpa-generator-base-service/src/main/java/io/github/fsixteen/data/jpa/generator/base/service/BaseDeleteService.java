@@ -194,7 +194,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      * 删除逻辑.<br>
      *
      * @param args 删除实体实例
-     * @see #deleteAllByIds(Serializable, Predicate, Consumer, Consumer)
+     * @see #deleteAllByIds(Collection)
      * @return List&lt;T&gt;
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
@@ -206,7 +206,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      * 删除逻辑.<br>
      *
      * @param ids 删除实体主键ID
-     * @see #deleteAllByIds(Serializable, Predicate, Consumer, Consumer)
+     * @see #deleteAllByIds(Collection, Predicate)
      * @return List&lt;T&gt;
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
@@ -219,7 +219,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      *
      * @param ids    删除实体主键ID
      * @param filter 校验元素是否允许被删除处理器
-     * @see #deleteAllByIds(Serializable, Predicate, Consumer, Consumer)
+     * @see #deleteAllByIds(Collection, Predicate, Consumer)
      * @return List&lt;T&gt;
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
@@ -233,7 +233,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      * @param ids       删除实体主键ID
      * @param filter    校验元素是否允许被删除处理器
      * @param processor 删除处理器
-     * @see #deleteAllByIds(Serializable, Predicate, Consumer, Consumer)
+     * @see #deleteAllByIds(Collection, Predicate, Consumer, Consumer)
      * @return List&lt;T&gt;
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
