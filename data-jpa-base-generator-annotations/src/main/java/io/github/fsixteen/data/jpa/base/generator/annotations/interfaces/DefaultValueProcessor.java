@@ -16,6 +16,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.ValueProce
  * @since 1.0.0
  */
 public class DefaultValueProcessor implements ValueProcessor {
+    private static final long serialVersionUID = 1L;
 
     @Override
     public <A extends Annotation, T> Expression<T> create(A anno, ValueProcessorFunction fun, Object obj, Root<?> root, AbstractQuery<?> query,

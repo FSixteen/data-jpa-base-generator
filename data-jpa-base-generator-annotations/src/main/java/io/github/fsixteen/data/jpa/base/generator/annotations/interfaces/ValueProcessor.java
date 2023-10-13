@@ -1,5 +1,6 @@
 package io.github.fsixteen.data.jpa.base.generator.annotations.interfaces;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
 import javax.persistence.criteria.AbstractQuery;
@@ -15,7 +16,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.ValueProce
  * @author FSixteen
  * @since 1.0.0
  */
-public interface ValueProcessor {
+public interface ValueProcessor extends Serializable {
 
     /**
      * 单值处理器.<br>

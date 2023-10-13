@@ -45,8 +45,8 @@
     <maven.compiler.encoding>${encoding}</maven.compiler.encoding>
     <argLine>-Dfile.encoding=${encoding}</argLine>
     <!-- 依赖版本 -->
-    <spring.version>5.3.27</spring.version>
-    <spring.boot.version>2.7.11</spring.boot.version>
+    <spring.version>5.3.30</spring.version>
+    <spring.boot.version>2.7.16</spring.boot.version>
     <slf4j.version>1.7.36</slf4j.version>
     <swagger-v3.version>2.2.10</swagger-v3.version>
     <tomcat.version>9.0.75</tomcat.version>
@@ -56,13 +56,13 @@
   </properties>
 
   <modules>
-    <module>data-jpa-generator-bom</module>
+    <module>data-jpa-base-generator-common-utils</module>
     <module>data-jpa-base-generator-annotations</module>
     <module>data-jpa-base-generator-interpreter</module>
-    <module>data-jpa-generator-base-common</module>
-    <module>data-jpa-generator-base-service</module>
-    <module>data-jpa-generator-base-entities</module>
-    <module>data-jpa-generator-base-modules</module>
+    <module>data-jpa-base-generator-entities</module>
+    <module>data-jpa-base-generator-service</module>
+    <module>data-jpa-base-generator-controller</module>
+    <module>data-jpa-base-generator-bom</module>
   </modules>
 
   <dependencyManagement>
@@ -153,7 +153,7 @@
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.9.3</version>
+        <version>5.10.0</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -165,7 +165,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.10.1</version>
+          <version>3.11.0</version>
           <configuration>
             <encoding>${encoding}</encoding>
           </configuration>
@@ -210,7 +210,7 @@
         <plugin>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
-          <version>2.7.11</version>
+          <version>${spring.boot.version}</version>
           <executions>
             <execution>
               <goals>
@@ -222,7 +222,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.2.1</version>
+          <version>3.3.0</version>
           <executions>
             <execution>
               <phase>package</phase>
@@ -235,7 +235,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.5.0</version>
+          <version>3.6.0</version>
           <executions>
             <execution>
               <phase>package</phase>
@@ -256,7 +256,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>3.2.1</version>
+          <version>3.3.0</version>
           <dependencies>
             <dependency>
               <groupId>com.puppycrawl.tools</groupId>

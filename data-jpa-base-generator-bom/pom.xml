@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>data-jpa-base-generator-bom</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Data Jpa Generator Bom</name>
+  <description>Data Jpa Generator Bom</description>
+  <organization></organization>
+  <url>https://github.com/FSixteen/data-jpa-base-generator</url>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>FSixteen</name>
+    </developer>
+  </developers>
+
+  <scm>
+    <url>https://github.com/FSixteen/data-jpa-base-generator</url>
+    <connection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</connection>
+    <developerConnection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</developerConnection>
+    <tag>V1.0.1</tag>
+  </scm>
+
+  <parent>
+    <groupId>io.github.fsixteen</groupId>
+    <artifactId>data-jpa-base-generator-parent</artifactId>
+    <version>1.0.1</version>
+    <relativePath>..</relativePath>
+  </parent>
+
+  <properties>
+    <automatic.module.name>io.github.fsixteen.base.bom</automatic.module.name>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-annotations</artifactId>
+        <version>1.6.11</version>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger.core.v3</groupId>
+        <artifactId>swagger-annotations</artifactId>
+        <version>2.2.11</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-ui</artifactId>
+        <version>1.7.0</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.fsixteen</groupId>
+        <artifactId>common-response-structure</artifactId>
+        <version>1.0.5</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.fsixteen</groupId>
+        <artifactId>data-jpa-base-generator-common-utils</artifactId>
+        <version>1.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.fsixteen</groupId>
+        <artifactId>data-jpa-base-generator-annotations</artifactId>
+        <version>1.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.fsixteen</groupId>
+        <artifactId>data-jpa-base-generator-interpreter</artifactId>
+        <version>1.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.fsixteen</groupId>
+        <artifactId>data-jpa-base-generator-entities</artifactId>
+        <version>1.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.fsixteen</groupId>
+        <artifactId>data-jpa-base-generator-service</artifactId>
+        <version>1.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.fsixteen</groupId>
+        <artifactId>data-jpa-base-generator-controller</artifactId>
+        <version>1.0.1</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>

@@ -8,16 +8,23 @@ package io.github.fsixteen.data.jpa.base.generator.annotations.constant;
  */
 public enum ValueInType {
     /**
-     * select * from table_name1 as t1 where t1.column_name in ( select column_name
-     * from table_name2 )
-     * and t1.column_name = 'xxx';
+     * <pre>
+     * SELECT * FROM table_name1 AS t1
+     *   WHERE
+     *     t1.column_name IN ( SELECT column_name FROM table_name2 )
+     *     AND t1.column_name = 'xxx';
+     * </pre>
      */
     SOURCE,
 
     /**
-     * select * from table_name1 as t1 where t1.column_name in ( select column_name
-     * from table_name2
-     * as t2 where t2.column_name = 'xxx' );
+     * <pre>
+     * SELECT * FROM table_name1 AS t1
+     * WHERE
+     *   t1.column_name IN (
+     *     SELECT column_name FROM table_name2 AS t2 WHERE t2.column_name = 'xxx'
+     *   );
+     * </pre>
      */
     TARGET;
 }

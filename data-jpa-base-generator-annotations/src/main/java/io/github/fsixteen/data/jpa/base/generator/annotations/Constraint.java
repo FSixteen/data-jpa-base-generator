@@ -9,8 +9,6 @@ import java.lang.annotation.Target;
 
 /**
  * 该注解类用于指定特定逻辑注解标识类的逻辑处理器执行实现类.<br>
- * The annotation class is used to specify the logical processor execution class
- * for a specific annotation class flag.<br>
  * 使用示例 eg:<br>
  * 
  * <pre>

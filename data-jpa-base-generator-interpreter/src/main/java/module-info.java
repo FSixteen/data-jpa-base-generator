@@ -1,8 +1,12 @@
 open module io.github.fsixteen.base.plugins {
 
-    /* AnnotationDescriptor 及 IntrospectionRuntimeException 中 java.beans 使用. */
-    requires static java.desktop;
-    requires static org.slf4j;
+    requires java.base;
+    /*
+     * AnnotationDescriptor 及 IntrospectionRuntimeException 中使用了 java.beans.*,
+     * 该内容存在于 java.desktop 模块中.
+     */
+    requires java.desktop;
+    requires transitive org.slf4j;
     requires transitive java.persistence;
     requires transitive io.github.fsixteen.base.annotations;
 
