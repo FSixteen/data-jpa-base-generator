@@ -1,36 +1,29 @@
-package io.github.fsixteen.data.jpa.base.generator.annotations.plugins;
-
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+package io.github.fsixteen.data.jpa.base.generator;
 
 import java.lang.annotation.Documented;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import io.github.fsixteen.data.jpa.base.generator.annotations.GroupInfo;
-import io.github.fsixteen.data.jpa.base.generator.annotations.Selectable;
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.FieldType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ValueType;
-import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal.List;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.FieldProcessorFunction;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Function;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.ValueProcessorFunction;
 
 /**
- * 等值条件(select * from table_name where column_name = 'abc').<br>
- * 当且仅当参与计算值类型或函数返回值类型为{@code java.lang.Comparable}时有效.<br>
+ * JPA 操作注解类模板.<br>
+ * 用于标记可参与查询的注解类, 字段, 方法等.<br>
  *
  * @author FSixteen
- * @since 1.0.0
+ * @since 1.0.2
  */
-@Target({ FIELD, METHOD })
-@Retention(RUNTIME)
-@Repeatable(List.class)
+@Target({})
+@Retention(RetentionPolicy.SOURCE)
 @Documented
-@Selectable
-@Inherited
-public @interface Equal {
+public @interface Template {
 
     /**
      * 范围查询分组.<br>
@@ -165,25 +158,5 @@ public @interface Equal {
      * @return boolean
      */
     boolean trim() default true;
-
-    /**
-     * Defines several {@link Equal} annotations on the same element.
-     *
-     * @see Equal
-     */
-    @Target({ FIELD, METHOD })
-    @Retention(RUNTIME)
-    @Documented
-    @Inherited
-    @interface List {
-
-        /**
-         * {@link Equal} 集合.<br>
-         * 
-         * @return {@link Equal}[]
-         */
-        Equal[] value();
-
-    }
 
 }

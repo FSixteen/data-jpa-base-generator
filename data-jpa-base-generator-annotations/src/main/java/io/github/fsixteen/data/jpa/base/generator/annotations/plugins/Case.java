@@ -13,6 +13,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.Selectable;
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
 
 /**
+ * TODO :: 规划中.<br>
  * 分支条件(select * from table_name where (xxxxxx)).<br>
  * 用于根据 {@link #value()} 条件, 组装条件.<br>
  *
@@ -58,14 +59,14 @@ public @interface Case {
     /**
      * 范围查询分组.<br>
      * 默认同在一组范围查询内.<br>
-     * 
+     *
      * @return String[]
      */
     String[] scope() default Constant.DEFAULT;
 
     /**
-     * 条件查询分组, 默认独立组<code>@GroupInfo("default", 0)</code>. <br>
-     * 当<code>groups</code>值大于<code>1</code>组时, 该条件可以被多条件查询分组复用.
+     * 条件查询分组, 默认独立组 {@code @GroupInfo("default", 0)}. <br>
+     * 当 {@link #groups()} 值大于 {@code 1} 组时, 该条件可以被多条件查询分组复用.
      *
      * @return GroupInfo[]
      */

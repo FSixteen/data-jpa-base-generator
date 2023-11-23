@@ -1,12 +1,12 @@
 package io.github.fsixteen.data.jpa.base.generator.annotations.constant;
 
 /**
- * 值类型.<br>
+ * 字段(列)类型.<br>
  *
  * @author FSixteen
- * @since 1.0.0
+ * @since 1.0.2
  */
-public enum ValueType {
+public enum FieldType {
 
     /**
      * 默认值, 即{@link #COLUMN}.

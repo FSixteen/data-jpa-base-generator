@@ -3,6 +3,7 @@ package io.github.fsixteen.data.jpa.base.generator.annotations;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -17,6 +18,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
 @Target({})
 @Retention(RUNTIME)
 @Documented
+@Inherited
 public @interface GroupInfo {
 
     /**

@@ -1,51 +1,41 @@
 package io.github.fsixteen.data.jpa.base.generator.annotations.plugins;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
-import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import io.github.fsixteen.data.jpa.base.generator.annotations.Selectable;
-import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Function.List;
-
 /**
- * 函数条件(select * from table_name where column_name = fun_name( args1, args2,
- * ...... )).<br>
- * 参与计算值类型或函数返回值类型为任意类型时有效.<br>
+ * 自定义函数计算.<br>
  *
  * @author FSixteen
  * @since 1.0.0
  */
-@Target({ FIELD, METHOD })
+@Target({})
 @Retention(RUNTIME)
-@Repeatable(List.class)
 @Documented
-@Selectable
 public @interface Function {
 
-    // TODO :: 扩展内容
+    /**
+     * 自定义函数名称.
+     * 
+     * @return String
+     */
+    String value() default "";
 
     /**
-     * Defines several {@link Function} annotations on the same element.
-     *
-     * @see Function
+     * 自定义函数返回值类型, 默认 {@link java.lang.String} .
+     * 
+     * @return Class
      */
-    @Target({ FIELD, METHOD })
-    @Retention(RUNTIME)
-    @Documented
-    @interface List {
+    Class<?> type() default String.class;
 
-        /**
-         * {@link Function} 集体.<br>
-         * 
-         * @return {@link Function}[]
-         */
-        Function[] value();
-
-    }
+    /**
+     * 自定义函数传入参数.
+     * 
+     * @return FunctionArgs[]
+     */
+    Args[] args() default {};
 
 }
