@@ -26,13 +26,13 @@
     <url>https://github.com/FSixteen/data-jpa-base-generator</url>
     <connection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</connection>
     <developerConnection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</developerConnection>
-    <tag>V1.0.1</tag>
+    <tag>V1.0.2</tag>
   </scm>
 
   <parent>
     <groupId>io.github.fsixteen</groupId>
     <artifactId>data-jpa-base-generator-parent</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <relativePath>..</relativePath>
   </parent>
 
@@ -72,7 +72,7 @@
     <dependency>
       <groupId>io.github.fsixteen</groupId>
       <artifactId>data-jpa-base-generator-common-utils</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
