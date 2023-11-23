@@ -13,13 +13,14 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.Annotation
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
 
 /**
+ * TODO :: 规划中.
  * 分支条件(select * from table_name where (xxxxxx)).<br>
  *
  * @author FSixteen
  * @since 1.0.1
  */
 public class CaseWhenBuilderPlugin<A extends Annotation> extends AbstractComputerBuilderPlugin<A> {
-    private static final Logger log = LoggerFactory.getLogger(ComparableBuilderPlugin.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ComparableBuilderPlugin.class);
 
     @Override
     public ComputerDescriptor<A> toPredicate(AnnotationDescriptor<A> ad, Object obj, Root<?> root, AbstractQuery<?> query, CriteriaBuilder cb) {

@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.0.1
  */
 public class EncodingUtils {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EncodingUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EncodingUtils.class);
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private static final char[] HEX_CODE = "0123456789abcdef".toCharArray();
 
@@ -61,7 +61,7 @@ public class EncodingUtils {
             }
             return out.toString();
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             return null;
         }
     }
@@ -91,7 +91,7 @@ public class EncodingUtils {
             messageDigest.update(data);
             return messageDigest.digest();
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             return null;
         }
     }

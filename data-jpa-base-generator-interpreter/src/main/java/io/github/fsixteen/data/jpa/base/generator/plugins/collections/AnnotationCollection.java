@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -64,32 +65,11 @@ public final class AnnotationCollection {
      * 
      * @return AnnotationCollection
      */
-    public static AnnotationCollection of() {
+    private static AnnotationCollection of() {
         return new AnnotationCollection();
     }
 
-    /**
-     * 获取指定Class类类注解描述信息集合.<br>
-     * 
-     * @param clazz      参与计算的实体类
-     * @param selectAds  查询类注解描述信息
-     * @param existedAds 判断已存在(Existed)类注解描述信息
-     * @return AnnotationCollection
-     */
-    public static AnnotationCollection of(Class<?> clazz, Collection<AnnotationDescriptor<Annotation>> selectAds,
-        Collection<AnnotationDescriptor<Annotation>> existedAds) {
-        return new AnnotationCollection(clazz, selectAds, existedAds);
-    }
-
     private AnnotationCollection() {
-    }
-
-    private AnnotationCollection(Class<?> clazz, Collection<AnnotationDescriptor<Annotation>> selectAds,
-        Collection<AnnotationDescriptor<Annotation>> existedAds) {
-        super();
-        this.selectAds = selectAds;
-        this.existedAds = existedAds;
-        this.setClazz(clazz);
     }
 
     /**
@@ -106,7 +86,7 @@ public final class AnnotationCollection {
      * 
      * @param clazz 参与计算的实体类
      */
-    public void setClazz(Class<?> clazz) {
+    private void setClazz(Class<?> clazz) {
         this.clazz = clazz;
         this.computerTypes = this.clazz.getAnnotationsByType(GroupComputerType.class);
         this.conputerTypeMap.clear();
@@ -192,20 +172,11 @@ public final class AnnotationCollection {
     }
 
     /**
-     * 重置查询类注解描述信息.<br>
-     * 
-     * @param selectAds 查询类注解描述信息
-     */
-    public void setSelectAds(Collection<AnnotationDescriptor<Annotation>> selectAds) {
-        this.selectAds = selectAds;
-    }
-
-    /**
      * 添加注解描述信息.
      * 
      * @param ad 注解描述信息
      */
-    public void addSelectAd(AnnotationDescriptor<Annotation> ad) {
+    private void addSelectAd(AnnotationDescriptor<Annotation> ad) {
         Optional.ofNullable(ad)
             .filter(it -> it.getAnno().annotationType().isAnnotationPresent(Selectable.class) || it.getAnno().annotationType() == Selectable.class)
             .ifPresent(this.selectAds::add);
@@ -221,20 +192,11 @@ public final class AnnotationCollection {
     }
 
     /**
-     * 重置判断已存在(Existed)类注解描述信息.<br>
-     * 
-     * @param existedAds 判断已存在(Existed)类注解描述信息
-     */
-    public void setExistedAds(Collection<AnnotationDescriptor<Annotation>> existedAds) {
-        this.existedAds = existedAds;
-    }
-
-    /**
      * 添加注解描述信息.
      * 
      * @param ad 注解描述信息
      */
-    public void addExistedAd(AnnotationDescriptor<Annotation> ad) {
+    private void addExistedAd(AnnotationDescriptor<Annotation> ad) {
         Optional.ofNullable(ad).filter(it -> it.getAnno().annotationType().isAnnotationPresent(Existed.class) || it.getAnno().annotationType() == Existed.class)
             .ifPresent(this.existedAds::add);
     }
@@ -265,6 +227,9 @@ public final class AnnotationCollection {
      * @return boolean
      */
     public boolean isEmpty(BuilderType type) {
+        if (Objects.isNull(type)) {
+            return this.isEmpty();
+        }
         switch (type) {
             case SELECTED:
                 return this.selectAds.isEmpty();
@@ -304,9 +269,22 @@ public final class AnnotationCollection {
         }
 
         /**
+         * 基于给定 {@code clazz} 创建一个全新实例.<br>
+         * 
+         * @param clazz 参与计算的实体类型
+         * @return Builder
+         */
+        public static Builder of(Class<?> clazz) {
+            return new Builder().with(clazz);
+        }
+
+        private Builder() {
+        }
+
+        /**
          * 通过给定的参与计算的实体类, 补充完善类注解描述信息集合.<br>
          * 
-         * @param clazz 参与计算的实体类
+         * @param clazz 参与计算的实体类型
          * @return Builder
          */
         public Builder with(Class<?> clazz) {

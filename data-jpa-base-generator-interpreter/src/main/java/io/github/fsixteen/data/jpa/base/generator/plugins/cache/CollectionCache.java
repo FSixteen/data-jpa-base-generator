@@ -14,7 +14,7 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.collections.Annotation
 public final class CollectionCache {
 
     /** 参数计算字段内容. */
-    private static final Map<Class<?>, AnnotationCollection> CONPUTERS = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, AnnotationCollection> ANNOTATION_COLLECTION_CACHE = new ConcurrentHashMap<>();
 
     /**
      * 计算参数计算的内容.<br>
@@ -22,14 +22,14 @@ public final class CollectionCache {
      * @param clazz 参与请求计算的实例类
      */
     public static AnnotationCollection getAnnotationCollection(Class<?> clazz) {
-        if (!CONPUTERS.containsKey(clazz) || CONPUTERS.get(clazz).isEmpty()) {
+        if (!ANNOTATION_COLLECTION_CACHE.containsKey(clazz) || ANNOTATION_COLLECTION_CACHE.get(clazz).isEmpty()) {
             synchronized (CollectionCache.class) {
-                if (!CONPUTERS.containsKey(clazz) || CONPUTERS.get(clazz).isEmpty()) {
-                    CONPUTERS.put(clazz, AnnotationCollection.Builder.of().with(clazz).build());
+                if (!ANNOTATION_COLLECTION_CACHE.containsKey(clazz) || ANNOTATION_COLLECTION_CACHE.get(clazz).isEmpty()) {
+                    ANNOTATION_COLLECTION_CACHE.put(clazz, AnnotationCollection.Builder.of().with(clazz).build());
                 }
             }
         }
-        return CONPUTERS.get(clazz);
+        return ANNOTATION_COLLECTION_CACHE.get(clazz);
     }
 
 }

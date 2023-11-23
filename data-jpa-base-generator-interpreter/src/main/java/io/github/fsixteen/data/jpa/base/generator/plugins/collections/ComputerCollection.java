@@ -2,7 +2,6 @@ package io.github.fsixteen.data.jpa.base.generator.plugins.collections;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.persistence.criteria.AbstractQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -47,10 +45,10 @@ public final class ComputerCollection {
         return new ComputerCollection(type, ac, selectCds);
     }
 
-    private ComputerCollection(BuilderType type, AnnotationCollection annotationCollection, Collection<ComputerDescriptor<Annotation>> selectCds) {
+    private ComputerCollection(BuilderType type, AnnotationCollection ac, Collection<ComputerDescriptor<Annotation>> selectCds) {
         super();
         this.type = type;
-        this.annotationCollection = annotationCollection;
+        this.annotationCollection = ac;
         Optional.ofNullable(selectCds).ifPresent(it -> it.forEach(this.computerDescriptors::add));
     }
 
@@ -204,17 +202,7 @@ public final class ComputerCollection {
      */
     public static class Builder {
 
-        private static final Logger log = LoggerFactory.getLogger(Builder.class);
-        private static Method toPredicateMethod;
-
-        static {
-            try {
-                toPredicateMethod = BuilderPlugin.class.getMethod("toPredicate", AnnotationDescriptor.class, Object.class, Root.class, AbstractQuery.class,
-                    CriteriaBuilder.class);
-            } catch (NoSuchMethodException | SecurityException e) {
-                log.error(e.getMessage(), e);
-            }
-        }
+        private static final Logger LOG = LoggerFactory.getLogger(Builder.class);
 
         private AnnotationCollection annotationCollection;
 
@@ -286,12 +274,14 @@ public final class ComputerCollection {
             Class<? extends Annotation> type = ad.getAnno().annotationType();
             try {
                 if (!PluginsCache.containsKey(type)) {
-                    Constructor<BuilderPlugin<? extends Annotation>> cp = (Constructor<BuilderPlugin<? extends Annotation>>) type
-                        .getAnnotation(Constraint.class).processorBy().getDeclaredConstructor();
+                    Constraint constraint = type.getAnnotation(Constraint.class);
+                    Constructor<BuilderPlugin<? extends Annotation>> cp = (Constructor<
+                        BuilderPlugin<? extends Annotation>>) (Void.class != constraint.processorBy() ? constraint.processorBy()
+                            : Class.forName(constraint.processorByClassName())).getDeclaredConstructor();
                     PluginsCache.register(type, cp.newInstance());
                 }
             } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
-                log.error(e.getMessage(), e);
+                LOG.error(e.getMessage(), e);
             }
             return type;
         }
@@ -304,13 +294,12 @@ public final class ComputerCollection {
          * @see io.github.fsixteen.data.jpa.base.generator.plugins.BuilderPlugin
          * @return Builder
          */
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         private Builder createComputerDescriptor(AnnotationDescriptor<Annotation> ad, Collection<ComputerDescriptor<Annotation>> cds) {
             try {
-                Object obj = PluginsCache.reference(this.createConstraint(ad));
-                cds.add(ComputerDescriptor.class.cast(toPredicateMethod.invoke(obj, ad, this.args, root, query, cb)));
-            } catch (ReflectiveOperationException | IllegalArgumentException e) {
-                log.error(e.getMessage(), e);
+                cds.add(PluginsCache.reference(this.createConstraint(ad)).toPredicate((AnnotationDescriptor) ad, this.args, root, query, cb));
+            } catch (ClassNotFoundException e) {
+                LOG.error(e.getMessage(), e);
             }
             return this;
         }

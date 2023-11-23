@@ -11,9 +11,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ValueInType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.InTable;
 import io.github.fsixteen.data.jpa.base.generator.plugins.cache.PluginsCache;
@@ -21,15 +18,13 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.Annotation
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
 
 /**
- * 夸表包含条件.<br>
+ * 跨表包含条件.<br>
  * {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.InTable}注解解释器.<br>
  * 
  * @author FSixteen
  * @since 1.0.0
  */
 public class InTableBuilderPlugin extends AbstractComputerBuilderPlugin<InTable> {
-
-    private static final Logger log = LoggerFactory.getLogger(InTableBuilderPlugin.class);
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -39,7 +34,7 @@ public class InTableBuilderPlugin extends AbstractComputerBuilderPlugin<InTable>
             Object fieldValue = this.trimIfPresent(ad, ad.getValueFieldPd().getReadMethod().invoke(obj));
 
             if (ad.isRequired() && Objects.isNull(fieldValue)) {
-                return this.toNullValuePredicate(ad, root, cb);
+                return this.toNullValuePredicate(ad, root);
             }
 
             if (ad.isIgnoreNull() && Objects.isNull(fieldValue)) {
@@ -58,9 +53,11 @@ public class InTableBuilderPlugin extends AbstractComputerBuilderPlugin<InTable>
             Subquery<?> subQuery = query.subquery(anno.targetEntity());
             Root<?> subRoot = subQuery.from(anno.targetEntity());
             subQuery.select(subRoot.get(anno.referencedColumnName()));
+
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(root.get(anno.columnName()).in(subQuery));
-            String annoClass = anno.valueInProcessorClass();
+
+            String annoClass = anno.valueInProcessorClassName();
             if (ValueInType.TARGET == anno.valueInType()) {
                 ComputerDescriptor<?> cd = PluginsCache.reference(annoClass).toPredicate((AnnotationDescriptor) ad, obj, subRoot, subQuery, cb);
                 subQuery.where(cd.getPredicate());
@@ -69,9 +66,9 @@ public class InTableBuilderPlugin extends AbstractComputerBuilderPlugin<InTable>
                 predicates.add(cd.getPredicate());
             }
             Predicate predicate = cb.and(predicates.toArray(new Predicate[predicates.size()]));
-            return ComputerDescriptor.of(ad, this.logicReverse(ad, predicate, cb));
+            return ComputerDescriptor.of(ad, this.logicReverse(ad.isNot(), predicate));
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            log.error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
         }
         return null;
     }

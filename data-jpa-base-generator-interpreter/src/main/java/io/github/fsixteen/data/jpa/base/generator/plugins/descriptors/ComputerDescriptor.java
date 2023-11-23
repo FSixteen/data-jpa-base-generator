@@ -29,18 +29,18 @@ public final class ComputerDescriptor<A extends Annotation> {
      * @param annoDesc  注解描述信息
      * @param predicate 查询条件
      */
-    public ComputerDescriptor(final AnnotationDescriptor<A> annoDesc, final Predicate predicate) {
+    private ComputerDescriptor(final AnnotationDescriptor<A> annoDesc, final Predicate predicate) {
         super();
         this.annoDesc = annoDesc;
         this.predicate = predicate;
     }
 
     public AnnotationDescriptor<A> getAnnoDesc() {
-        return annoDesc;
+        return this.annoDesc;
     }
 
     public Predicate getPredicate() {
-        return predicate;
+        return this.predicate;
     }
 
     public boolean containsScope(final String scope) {
@@ -48,7 +48,7 @@ public final class ComputerDescriptor<A extends Annotation> {
     }
 
     public boolean isEmpty() {
-        return Objects.isNull(annoDesc) && Objects.isNull(predicate);
+        return Objects.isNull(this.annoDesc) && Objects.isNull(this.predicate);
     }
 
 }
