@@ -9,9 +9,9 @@ package io.github.fsixteen.data.jpa.base.generator.annotations.constant;
 public enum FunctionArgsType {
 
     /**
-     * 字面值.
+     * 默认值.
      */
-    VALUE,
+    AUTO,
 
     /**
      * 字面量, {@link java.lang.String} 类型.
@@ -52,6 +52,16 @@ public enum FunctionArgsType {
      * 字段.
      */
     COLUMN,
+
+    /**
+     * 字段值.
+     */
+    VALUE,
+
+    /**
+     * 函数. TODO :: 规划中
+     */
+    FUNCTION,
 
     /**
      * 自定义函数.

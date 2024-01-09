@@ -45,13 +45,13 @@ public class LikeBuilderPlugin extends AbstractComputerBuilderPlugin<Annotation>
             switch (this.type) {
                 case LEFT:
                 case START_WITH:
-                    return cb.equal(leftExpression.get(), cb.concat(rightExpression.get(), "%"));
+                    return cb.like(leftExpression.get(), cb.concat(rightExpression.get(), "%"));
                 case RIGHT:
                 case END_WITH:
-                    return cb.equal(leftExpression.get(), cb.concat("%", rightExpression.get()));
+                    return cb.like(leftExpression.get(), cb.concat("%", rightExpression.get()));
                 case CONTAINS:
                 default:
-                    return cb.equal(leftExpression.get(), cb.concat("%", cb.concat(rightExpression.get(), "%")));
+                    return cb.like(leftExpression.get(), cb.concat("%", cb.concat(rightExpression.get(), "%")));
             }
         }
         return null;

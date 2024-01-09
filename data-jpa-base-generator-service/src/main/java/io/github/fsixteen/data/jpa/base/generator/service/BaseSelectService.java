@@ -45,6 +45,9 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
     static Container<Supplier<Sort>> DEFAULT_SORT_COLUMNS = new Container<>(() -> Sort.unsorted());
     static Container<Supplier<Sort>> CUSTOM_SORT_COLUMNS = new Container<>();
 
+    /**
+     * 初始化排序规则.
+     */
     @PostConstruct
     default void init() {
         DataJpaGeneratorConfig config = AppContextInitializer.getBean(DataJpaGeneratorConfig.class, false);

@@ -87,20 +87,20 @@ public class BetweenBuilderPlugin extends AbstractComputerBuilderPlugin<Between>
      */
     private Expression<?>[] fieldValueConverts(AnnotationDescriptor<Between> ad, Object obj, Collection<?> fieldValue, Root<?> root, AbstractQuery<?> query,
         CriteriaBuilder cb) {
-        List<?> _fieldValue = List.class.isInstance(fieldValue) ? (List<?>) fieldValue : new ArrayList<>(fieldValue);
+        List<?> fieldValues = List.class.isInstance(fieldValue) ? (List<?>) fieldValue : new ArrayList<>(fieldValue);
         switch (ad.getValueType()) {
             case VALUE:
-                return new Expression<?>[] { cb.literal(_fieldValue.get(0)), cb.literal(_fieldValue.get(1)) };
+                return new Expression<?>[] { cb.literal(fieldValues.get(0)), cb.literal(fieldValues.get(1)) };
             case COLUMN:
-                return new Expression<?>[] { root.get(String.class.cast(_fieldValue.get(0))), root.get(String.class.cast(_fieldValue.get(1))) };
+                return new Expression<?>[] { root.get(String.class.cast(fieldValues.get(0))), root.get(String.class.cast(fieldValues.get(1))) };
             case FUNCTION:
                 Function function = ad.getValueFunction();
                 return new Expression<?>[] {
-                    cb.function(function.value(), function.type(), this.creaateFunctionExpression(ad, function, obj, _fieldValue.get(0), root, query, cb)),
-                    cb.function(function.value(), function.type(), this.creaateFunctionExpression(ad, function, obj, _fieldValue.get(1), root, query, cb)) };
+                    cb.function(function.value(), function.type(), this.createFunctionExpression(ad, function, obj, fieldValues.get(0), root, query, cb)),
+                    cb.function(function.value(), function.type(), this.createFunctionExpression(ad, function, obj, fieldValues.get(1), root, query, cb)) };
             case UDFUNCTION:
                 try {
-                    return this.applyBiValueProcessor(ad, obj, _fieldValue, root, query, cb);
+                    return this.applyBiValueProcessor(ad, obj, fieldValues, root, query, cb);
                 } catch (ReflectiveOperationException e) {
                     LOG.error(e.getMessage(), e);
                     return null;

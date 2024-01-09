@@ -180,7 +180,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default T insert(I args) {
-        return insert(args, this.insertPreprocessor());
+        return this.insert(args, this.insertPreprocessor());
     }
 
     /**
@@ -192,7 +192,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default T insert(I args, Consumer<I> preprocessor) {
-        return insert(args, preprocessor, this.insertBiProcessor());
+        return this.insert(args, preprocessor, this.insertBiProcessor());
     }
 
     /**
@@ -205,7 +205,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default T insert(I args, Consumer<I> preprocessor, BiConsumer<T, I> processor) {
-        return insert(args, preprocessor, processor, this.insertPostprocessor());
+        return this.insert(args, preprocessor, processor, this.insertPostprocessor());
     }
 
     /**
@@ -245,7 +245,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default List<T> insertAll(Iterable<I> args) {
-        return insertAll(args, this.insertPreprocessor());
+        return this.insertAll(args, this.insertPreprocessor());
     }
 
     /**
@@ -257,7 +257,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default List<T> insertAll(Iterable<I> args, Consumer<I> preprocessor) {
-        return insertAll(args, preprocessor, this.insertBiProcessor());
+        return this.insertAll(args, preprocessor, this.insertBiProcessor());
     }
 
     /**
@@ -270,7 +270,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default List<T> insertAll(Iterable<I> args, Consumer<I> preprocessor, BiConsumer<T, I> processor) {
-        return insertAll(args, preprocessor, processor, this.insertAllPostprocessor());
+        return this.insertAll(args, preprocessor, processor, this.insertAllPostprocessor());
     }
 
     /**

@@ -1,11 +1,12 @@
 package io.github.fsixteen.data.jpa.base.generator.service;
 
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -183,11 +184,28 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default T deleteById(ID id, Predicate<T> filter, Consumer<T> processor, Consumer<T> postprocessor) {
-        return this.deleteAllByIds(Arrays.asList(id), filter, processor, (args) -> {
-            if (Objects.nonNull(postprocessor) && Objects.nonNull(args) && !args.isEmpty()) {
-                args.forEach(it -> postprocessor.accept(it));
-            }
-        }).get(0);
+        Optional<T> eleOptional = this.getDao().findById(id).filter(filter::test);
+        if (!eleOptional.isPresent()) {
+            throw this.deleteNonDataException();
+        }
+        T ele = eleOptional.get();
+        switch (this.deleteType()) {
+            case HARD:
+                this.getDao().delete(ele);
+                break;
+            case SOFT:
+                if (Objects.nonNull(processor)) {
+                    processor.accept(ele);
+                }
+                ele = this.getDao().save(ele);
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected value: " + this.deleteType());
+        }
+        if (Objects.nonNull(postprocessor)) {
+            postprocessor.accept(ele);
+        }
+        return ele;
     }
 
     /**
@@ -199,6 +217,9 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      */
     @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
     default List<T> deleteAll(Collection<D> args) {
+        if (Objects.isNull(args) || args.isEmpty()) {
+            return new ArrayList<>();
+        }
         return this.deleteAllByIds(args.stream().map(IdEntity::getId).collect(Collectors.toSet()));
     }
 

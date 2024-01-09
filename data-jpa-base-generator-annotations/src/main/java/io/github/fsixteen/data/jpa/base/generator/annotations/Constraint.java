@@ -10,9 +10,10 @@ import java.lang.annotation.Target;
 
 /**
  * 该注解类用于指定特定逻辑注解标识类的逻辑处理器执行实现类.<br>
- * 使用示例 eg:<br>
+ * 使用示例 eg:
+ * 
  * <p>
- * 方式一:<br>
+ * 方式一:
  * 
  * <pre>
  * &#64;Target({ FIELD, METHOD })
@@ -25,8 +26,9 @@ import java.lang.annotation.Target;
  *     .....
  * }
  * </pre>
+ * 
  * <p>
- * 方式二:<br>
+ * 方式二:
  * 
  * <pre>
  * &#64;Target({ FIELD, METHOD })

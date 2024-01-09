@@ -41,11 +41,13 @@ public final class AnnotationDescriptor<A extends Annotation> {
     /** 参与计算值字段描述信息. */
     private PropertyDescriptor valueFieldPd;
 
-    /**
+    /*
      * -- JPA 操作注解类
-     * {@linkplain io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitIn
+     * {@linkplain
+     * io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitIn
      * SplitIn} 及
-     * {@linkplain io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitNotIn
+     * {@linkplain
+     * io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitNotIn
      * SplitNotIn} 中的通用内容. --
      */
 
@@ -54,12 +56,14 @@ public final class AnnotationDescriptor<A extends Annotation> {
      */
     private String decollator;
 
-    /**
+    /*
      * -- JPA 操作注解类
-     * {@linkplain io.github.fsixteen.data.jpa.base.generator.annotations.plugins.FilterNotIn
-     * FilterIn} 及
-     * {@linkplain io.github.fsixteen.data.jpa.base.generator.annotations.plugins.FilterNotIn
-     * FilterNotIn} 中的通用内容. --
+     * {@linkplain
+     * io.github.fsixteen.data.jpa.base.generator.annotations.plugins.
+     * FilterNotIn FilterIn} 及
+     * {@linkplain
+     * io.github.fsixteen.data.jpa.base.generator.annotations.plugins.
+     * FilterNotIn FilterNotIn} 中的通用内容. --
      */
 
     /**
@@ -77,7 +81,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      */
     private String testClassName;
 
-    /** ---------- JPA 操作注解类通用内容. ----------- */
+    /* ---------- JPA 操作注解类通用内容. ----------- */
 
     /**
      * 范围查询分组.<br>
@@ -104,6 +108,15 @@ public final class AnnotationDescriptor<A extends Annotation> {
     private FieldType fieldType;
 
     /**
+     * 字面量.<br>
+     * 当且仅当 {@link #fieldType} = {@link FieldType#LITERAL} 时有效.<br>
+     * 
+     * @since 1.0.2
+     * @return String
+     */
+    private String fieldLiteral;
+
+    /**
      * 字段(列)参与计算函数.<br>
      * 当且仅当 {@link #fieldType} = {@link FieldType#FUNCTION} 时有效.<br>
      *
@@ -123,6 +136,15 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * 参数字段指向的值类型, 默认为静态数值.<br>
      */
     private ValueType valueType;
+
+    /**
+     * 字面量.<br>
+     * 当且仅当 {@link #valueType} = {@link ValueType#LITERAL} 时有效.<br>
+     * 
+     * @since 1.0.2
+     * @return String
+     */
+    private String valueLiteral;
 
     /**
      * 值函数.<br>
@@ -213,10 +235,12 @@ public final class AnnotationDescriptor<A extends Annotation> {
         this.scope = this.fieldValue(anno, "scope");
         this.groups = this.fieldValue(anno, "groups");
         this.field = this.stringFieldValue(anno, "field");
+        this.fieldLiteral = this.stringFieldValue(anno, "fieldLiteral");
         this.fieldType = this.fieldValue(anno, "fieldType");
         this.fieldFunction = this.fieldValue(anno, "fieldFunction");
         this.fieldProcessor = this.fieldValue(anno, "fieldProcessor");
         this.valueType = this.fieldValue(anno, "valueType");
+        this.valueLiteral = this.stringFieldValue(anno, "valueLiteral");
         this.valueFunction = this.fieldValue(anno, "valueFunction");
         this.valueProcessor = this.fieldValue(anno, "valueProcessor");
         this.required = this.booleanFieldValue(anno, "required");
@@ -229,7 +253,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
         this.valueField = valueField;
         this.valueFieldName = Objects.nonNull(this.valueField) ? this.valueField.getName() : null;
         try {
-            /**
+            /*
              * 可爱又可笑的修改, 用于解决多版本编译, 报
              * <code>
              * cannot access com.sun.beans.introspect.PropertyInfo
@@ -405,6 +429,17 @@ public final class AnnotationDescriptor<A extends Annotation> {
     }
 
     /**
+     * 字面量.<br>
+     * 当且仅当 {@link #fieldType} = {@link FieldType#LITERAL} 时有效.<br>
+     * 
+     * @since 1.0.2
+     * @return String
+     */
+    public String getFieldLiteral() {
+        return fieldLiteral;
+    }
+
+    /**
      * 字段(列)参与计算自定义函数.<br>
      * 当且仅当 {@link #fieldType} = {@link FieldType#UDFUNCTION} 时有效.<br>
      * 
@@ -422,6 +457,17 @@ public final class AnnotationDescriptor<A extends Annotation> {
      */
     public ValueType getValueType() {
         return valueType;
+    }
+
+    /**
+     * 字面量.<br>
+     * 当且仅当 {@link #valueType} = {@link ValueType#LITERAL} 时有效.<br>
+     * 
+     * @since 1.0.2
+     * @return String
+     */
+    public String getValueLiteral() {
+        return valueLiteral;
     }
 
     /**
