@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
  * {@link Long} 或 {@link Date} 或 {@link LocalDateTime} 或 {@link LocalDate} 类型数据转
  * {@link Long} 类型毫秒时间戳数据 {@link JsonSerializer} 序列化模版.<br>
  * 
- * @see io.github.fsixteen.common.json.serializes.AbstractDateTimeJsonSerializer
+ * @see AbstractDateTimeJsonSerializer
  * @author FSixteen
  * @since 1.0.1
  */

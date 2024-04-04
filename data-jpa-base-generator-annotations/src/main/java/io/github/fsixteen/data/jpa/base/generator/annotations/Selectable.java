@@ -65,7 +65,16 @@ public @interface Selectable {
      * @since 1.0.2
      * @return FieldType
      */
-    FieldType fieldType() default FieldType.COLUMN;
+    FieldType fieldType() default FieldType.AUTO;
+
+    /**
+     * 字面量.<br>
+     * 当且仅当 {@link #fieldType()} = {@link FieldType#LITERAL} 时有效.<br>
+     * 
+     * @since 1.0.2
+     * @return String
+     */
+    String fieldLiteral() default "";
 
     /**
      * 字段(列)参与计算函数.<br>
@@ -91,6 +100,15 @@ public @interface Selectable {
      * @return ValueType
      */
     ValueType valueType() default ValueType.VALUE;
+
+    /**
+     * 字面量.<br>
+     * 当且仅当 {@link #valueType()} = {@link ValueType#LITERAL} 时有效.<br>
+     * 
+     * @since 1.0.2
+     * @return String
+     */
+    String valueLiteral() default "";
 
     /**
      * 值函数.<br>
@@ -170,4 +188,23 @@ public @interface Selectable {
      */
     boolean trim() default true;
 
+    /**
+     * Defines several {@link Selectable} annotations on the same element.
+     *
+     * @see Selectable
+     */
+    @Target({ FIELD, METHOD })
+    @Retention(RUNTIME)
+    @Documented
+    @Inherited
+    @interface List {
+
+        /**
+         * {@link Selectable} 集合.<br>
+         * 
+         * @return {@link Selectable}[]
+         */
+        Selectable[] value();
+
+    }
 }

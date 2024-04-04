@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
  * <th scope="col" style="text-align:left">目标格式化模版</th>
  * <th scope="col" style="text-align:left">模版序列化实现类</th>
  * <th scope="col" style="text-align:left">示例</th>
+ * </tr>
  * </thead>
  * <tbody>
  * <tr>
@@ -148,6 +149,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
  * <th scope="col" style="text-align:left">目标格式化模版</th>
  * <th scope="col" style="text-align:left">模版序列化实现类</th>
  * <th scope="col" style="text-align:left">示例</th>
+ * </tr>
  * </thead>
  * <tbody>
  * <tr>

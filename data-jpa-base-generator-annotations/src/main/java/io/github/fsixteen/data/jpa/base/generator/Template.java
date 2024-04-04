@@ -1,6 +1,11 @@
 package io.github.fsixteen.data.jpa.base.generator;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -54,7 +59,7 @@ public @interface Template {
      * @since 1.0.2
      * @return FieldType
      */
-    FieldType fieldType() default FieldType.COLUMN;
+    FieldType fieldType() default FieldType.AUTO;
 
     /**
      * 字面量.<br>
@@ -177,4 +182,23 @@ public @interface Template {
      */
     boolean trim() default true;
 
+    /**
+     * Defines several {@link Template} annotations on the same element.
+     *
+     * @see Template
+     */
+    @Target({ FIELD, METHOD })
+    @Retention(RUNTIME)
+    @Documented
+    @Inherited
+    @interface List {
+
+        /**
+         * {@link Template} 集合.<br>
+         * 
+         * @return {@link Template}[]
+         */
+        Template[] value();
+
+    }
 }
