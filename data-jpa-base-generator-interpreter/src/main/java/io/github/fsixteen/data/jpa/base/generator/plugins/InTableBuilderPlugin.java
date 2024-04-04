@@ -6,18 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.criteria.AbstractQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
-
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ValueInType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.InTable;
 import io.github.fsixteen.data.jpa.base.generator.plugins.cache.PluginsCache;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.AnnotationDescriptor;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
+
+import jakarta.persistence.criteria.AbstractQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 
 /**
  * 跨表包含条件.<br>

@@ -3,11 +3,11 @@ package io.github.fsixteen.data.jpa.base.generator.plugins;
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-
 import io.github.fsixteen.data.jpa.base.generator.plugins.constant.ComparableType;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
 
 /**
  * 有关{@link java.lang.Number}类型计算内容的注解解释器.<br>

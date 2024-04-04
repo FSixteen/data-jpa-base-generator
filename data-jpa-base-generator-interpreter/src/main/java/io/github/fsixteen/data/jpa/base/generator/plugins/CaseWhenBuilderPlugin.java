@@ -2,15 +2,15 @@ package io.github.fsixteen.data.jpa.base.generator.plugins;
 
 import java.lang.annotation.Annotation;
 
-import javax.persistence.criteria.AbstractQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Root;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.AnnotationDescriptor;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
+
+import jakarta.persistence.criteria.AbstractQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Root;
 
 /**
  * TODO :: 规划中.

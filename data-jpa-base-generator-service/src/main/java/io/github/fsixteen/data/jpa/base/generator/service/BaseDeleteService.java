@@ -11,10 +11,9 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.github.fsixteen.common.structure.StatusInterface;
 import io.github.fsixteen.common.structure.extend.Status;
@@ -129,7 +128,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      * @see #deleteById(Serializable, Predicate, Consumer, Consumer)
      * @return T
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default T delete(D args) {
         return this.deleteById(args.getId());
     }
@@ -141,7 +140,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      * @see #deleteById(Serializable, Predicate, Consumer, Consumer)
      * @return T
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default T deleteById(ID id) {
         return this.deleteById(id, this.deleteTest());
     }
@@ -154,7 +153,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      * @see #deleteById(Serializable, Predicate, Consumer, Consumer)
      * @return T
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default T deleteById(ID id, Predicate<T> filter) {
         return this.deleteById(id, filter, this.deleteProcessor());
     }
@@ -168,7 +167,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      * @see #deleteById(Serializable, Predicate, Consumer, Consumer)
      * @return T
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default T deleteById(ID id, Predicate<T> filter, Consumer<T> processor) {
         return this.deleteById(id, filter, this.deleteProcessor(), this.deletePostprocessor());
     }
@@ -182,7 +181,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      * @param postprocessor 删除后置处理器
      * @return T
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default T deleteById(ID id, Predicate<T> filter, Consumer<T> processor, Consumer<T> postprocessor) {
         Optional<T> eleOptional = this.getDao().findById(id).filter(filter::test);
         if (!eleOptional.isPresent()) {
@@ -215,7 +214,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      * @see #deleteAllByIds(Collection)
      * @return List&lt;T&gt;
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default List<T> deleteAll(Collection<D> args) {
         if (Objects.isNull(args) || args.isEmpty()) {
             return new ArrayList<>();
@@ -230,7 +229,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      * @see #deleteAllByIds(Collection, Predicate)
      * @return List&lt;T&gt;
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default List<T> deleteAllByIds(Collection<ID> ids) {
         return this.deleteAllByIds(ids, this.deleteTest());
     }
@@ -243,7 +242,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      * @see #deleteAllByIds(Collection, Predicate, Consumer)
      * @return List&lt;T&gt;
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default List<T> deleteAllByIds(Collection<ID> ids, Predicate<T> filter) {
         return this.deleteAllByIds(ids, filter, this.deleteProcessor());
     }
@@ -257,7 +256,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      * @see #deleteAllByIds(Collection, Predicate, Consumer, Consumer)
      * @return List&lt;T&gt;
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default List<T> deleteAllByIds(Collection<ID> ids, Predicate<T> filter, Consumer<T> processor) {
         return this.deleteAllByIds(ids, filter, this.deleteProcessor(), this.deleteAllPostprocessor());
     }
@@ -271,7 +270,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      * @param postprocessor 删除后置处理器
      * @return List&lt;T&gt;
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default List<T> deleteAllByIds(Collection<ID> ids, Predicate<T> filter, Consumer<T> processor, Consumer<Collection<T>> postprocessor) {
         List<T> ele = this.getDao().findAllById(ids).stream().filter(filter::test).collect(Collectors.toList());
         if (ele.isEmpty()) {

@@ -8,12 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.persistence.criteria.AbstractQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +19,12 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.FieldProce
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.ValueProcessorFunction;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.AnnotationDescriptor;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
+
+import jakarta.persistence.criteria.AbstractQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 /**
  * 注解解释器接口.<br>
@@ -43,9 +43,9 @@ public interface BuilderPlugin<A extends Annotation> {
      * 
      * @param ad    注解描述信息实例.
      * @param obj   原实例.
-     * @param root  见{@link javax.persistence.criteria.Root}.
-     * @param query 见{@link javax.persistence.criteria.AbstractQuery}.
-     * @param cb    见{@link javax.persistence.criteria.CriteriaBuilder}.
+     * @param root  见{@link jakarta.persistence.criteria.Root}.
+     * @param query 见{@link jakarta.persistence.criteria.AbstractQuery}.
+     * @param cb    见{@link jakarta.persistence.criteria.CriteriaBuilder}.
      * @return ComputerDescriptor&lt;A&gt;
      * @throws ClassNotFoundException if the class cannot be located
      */
@@ -125,16 +125,16 @@ public interface BuilderPlugin<A extends Annotation> {
     }
 
     /**
-     * 字段(列)处理器实现类执行返回 {@linkplain javax.persistence.criteria.Expression
+     * 字段(列)处理器实现类执行返回 {@linkplain jakarta.persistence.criteria.Expression
      * Expression}.
      * 
      * @param <T>        返回计算数据类型
      * @param ad         注解描述信息实例
      * @param obj        原实例.
      * @param fieldValue 当前值.
-     * @param root       见{@link javax.persistence.criteria.Root}.
-     * @param query      见{@link javax.persistence.criteria.AbstractQuery}.
-     * @param cb         见{@link javax.persistence.criteria.CriteriaBuilder}.
+     * @param root       见{@link jakarta.persistence.criteria.Root}.
+     * @param query      见{@link jakarta.persistence.criteria.AbstractQuery}.
+     * @param cb         见{@link jakarta.persistence.criteria.CriteriaBuilder}.
      * @return Expression&lt;T&gt;
      * @throws ReflectiveOperationException 值函数执行类实例化异常
      * @since 1.0.2
@@ -145,7 +145,7 @@ public interface BuilderPlugin<A extends Annotation> {
     }
 
     /**
-     * 字段(列)处理器实现类执行返回 {@linkplain javax.persistence.criteria.Expression
+     * 字段(列)处理器实现类执行返回 {@linkplain jakarta.persistence.criteria.Expression
      * Expression}.
      * 
      * @param <T>        返回计算数据类型
@@ -153,9 +153,9 @@ public interface BuilderPlugin<A extends Annotation> {
      * @param obj        原实例.
      * @param fieldName  当前字段.
      * @param fieldValue 当前值.
-     * @param root       见{@link javax.persistence.criteria.Root}.
-     * @param query      见{@link javax.persistence.criteria.AbstractQuery}.
-     * @param cb         见{@link javax.persistence.criteria.CriteriaBuilder}.
+     * @param root       见{@link jakarta.persistence.criteria.Root}.
+     * @param query      见{@link jakarta.persistence.criteria.AbstractQuery}.
+     * @param cb         见{@link jakarta.persistence.criteria.CriteriaBuilder}.
      * @return Expression&lt;T&gt;
      * @throws ReflectiveOperationException 值函数执行类实例化异常
      */
@@ -236,16 +236,16 @@ public interface BuilderPlugin<A extends Annotation> {
     }
 
     /**
-     * 值函数执行类执行返回 {@linkplain javax.persistence.criteria.Expression
+     * 值函数执行类执行返回 {@linkplain jakarta.persistence.criteria.Expression
      * Expression}.
      * 
      * @param <T>        返回计算数据类型
      * @param ad         注解描述信息实例
      * @param obj        原实例.
      * @param fieldValue 当前值.
-     * @param root       见{@link javax.persistence.criteria.Root}.
-     * @param query      见{@link javax.persistence.criteria.AbstractQuery}.
-     * @param cb         见{@link javax.persistence.criteria.CriteriaBuilder}.
+     * @param root       见{@link jakarta.persistence.criteria.Root}.
+     * @param query      见{@link jakarta.persistence.criteria.AbstractQuery}.
+     * @param cb         见{@link jakarta.persistence.criteria.CriteriaBuilder}.
      * @return Expression&lt;T&gt;
      * @throws ReflectiveOperationException 值函数执行类实例化异常
      */
@@ -255,7 +255,7 @@ public interface BuilderPlugin<A extends Annotation> {
     }
 
     /**
-     * 值函数执行类执行返回 {@linkplain javax.persistence.criteria.Expression
+     * 值函数执行类执行返回 {@linkplain jakarta.persistence.criteria.Expression
      * Expression}.
      * 
      * @param <T>        返回计算数据类型
@@ -263,9 +263,9 @@ public interface BuilderPlugin<A extends Annotation> {
      * @param obj        原实例.
      * @param fieldName  当前字段.
      * @param fieldValue 当前值.
-     * @param root       见{@link javax.persistence.criteria.Root}.
-     * @param query      见{@link javax.persistence.criteria.AbstractQuery}.
-     * @param cb         见{@link javax.persistence.criteria.CriteriaBuilder}.
+     * @param root       见{@link jakarta.persistence.criteria.Root}.
+     * @param query      见{@link jakarta.persistence.criteria.AbstractQuery}.
+     * @param cb         见{@link jakarta.persistence.criteria.CriteriaBuilder}.
      * @return Expression&lt;T&gt;
      * @throws ReflectiveOperationException 值函数执行类实例化异常
      */
@@ -277,16 +277,16 @@ public interface BuilderPlugin<A extends Annotation> {
     }
 
     /**
-     * 值函数执行类执行返回 {@linkplain javax.persistence.criteria.Expression
+     * 值函数执行类执行返回 {@linkplain jakarta.persistence.criteria.Expression
      * Expression}.
      * 
      * @param <T>        返回计算数据类型
      * @param ad         注解描述信息实例
      * @param obj        原实例.
      * @param fieldValue 当前值.
-     * @param root       见{@link javax.persistence.criteria.Root}.
-     * @param query      见{@link javax.persistence.criteria.AbstractQuery}.
-     * @param cb         见{@link javax.persistence.criteria.CriteriaBuilder}.
+     * @param root       见{@link jakarta.persistence.criteria.Root}.
+     * @param query      见{@link jakarta.persistence.criteria.AbstractQuery}.
+     * @param cb         见{@link jakarta.persistence.criteria.CriteriaBuilder}.
      * @return Expression&lt;T&gt;[]
      * @throws ReflectiveOperationException 值函数执行类实例化异常
      */
@@ -296,7 +296,7 @@ public interface BuilderPlugin<A extends Annotation> {
     }
 
     /**
-     * 值函数执行类执行返回 {@linkplain javax.persistence.criteria.Expression
+     * 值函数执行类执行返回 {@linkplain jakarta.persistence.criteria.Expression
      * Expression}.
      * 
      * @param <T>        返回计算数据类型
@@ -304,9 +304,9 @@ public interface BuilderPlugin<A extends Annotation> {
      * @param obj        原实例.
      * @param fieldName  当前字段.
      * @param fieldValue 当前值.
-     * @param root       见{@link javax.persistence.criteria.Root}.
-     * @param query      见{@link javax.persistence.criteria.AbstractQuery}.
-     * @param cb         见{@link javax.persistence.criteria.CriteriaBuilder}.
+     * @param root       见{@link jakarta.persistence.criteria.Root}.
+     * @param query      见{@link jakarta.persistence.criteria.AbstractQuery}.
+     * @param cb         见{@link jakarta.persistence.criteria.CriteriaBuilder}.
      * @return Expression&lt;T&gt;[]
      * @throws ReflectiveOperationException 值函数执行类实例化异常
      */
@@ -333,9 +333,9 @@ public interface BuilderPlugin<A extends Annotation> {
      * 
      * @param ad         注解描述信息实例
      * @param fieldValue 当前值.
-     * @param root       见{@link javax.persistence.criteria.Root}.
-     * @param query      见{@link javax.persistence.criteria.AbstractQuery}.
-     * @param cb         见{@link javax.persistence.criteria.CriteriaBuilder}.
+     * @param root       见{@link jakarta.persistence.criteria.Root}.
+     * @param query      见{@link jakarta.persistence.criteria.AbstractQuery}.
+     * @param cb         见{@link jakarta.persistence.criteria.CriteriaBuilder}.
      * @return boolean
      */
     default boolean isIgnore(final AnnotationDescriptor<A> ad, final Object fieldValue, final Root<?> root, final AbstractQuery<?> query,
@@ -379,7 +379,7 @@ public interface BuilderPlugin<A extends Annotation> {
      * 按需逻辑反转(If necessary, create a negation of the given restriction).
      *
      * @param isNot     逻辑反转开关
-     * @param predicate 见{@link javax.persistence.criteria.Predicate}.
+     * @param predicate 见{@link jakarta.persistence.criteria.Predicate}.
      * @return Predicate
      */
     default Predicate logicReverse(final boolean isNot, final Predicate predicate) {
@@ -390,7 +390,7 @@ public interface BuilderPlugin<A extends Annotation> {
      * 创建等于空值的注解逻辑描述信息.<br>
      * 
      * @param ad   注解描述信息实例
-     * @param root 见{@link javax.persistence.criteria.Root}.
+     * @param root 见{@link jakarta.persistence.criteria.Root}.
      * @return ComputerDescriptor&lt;A&gt;
      */
     default ComputerDescriptor<A> toNullValuePredicate(final AnnotationDescriptor<A> ad, final Root<?> root) {
@@ -401,7 +401,7 @@ public interface BuilderPlugin<A extends Annotation> {
      * 打印日志.<br>
      * 
      * @param ad   注解描述信息实例
-     * @param root 见{@link javax.persistence.criteria.Root}.
+     * @param root 见{@link jakarta.persistence.criteria.Root}.
      */
     default void printWarn(final AnnotationDescriptor<A> ad, final Root<?> root) {
         if (LOG.isWarnEnabled()) {

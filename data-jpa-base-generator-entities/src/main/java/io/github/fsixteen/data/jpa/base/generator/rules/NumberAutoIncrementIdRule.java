@@ -1,12 +1,12 @@
 package io.github.fsixteen.data.jpa.base.generator.rules;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-
 import io.github.fsixteen.data.jpa.base.generator.entities.IdEntity;
 import io.github.fsixteen.data.jpa.base.generator.groups.IdGroup;
 import io.github.fsixteen.data.jpa.base.generator.groups.InsertGroup;
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 
 /**
  * 主键字段自增规则.<br>

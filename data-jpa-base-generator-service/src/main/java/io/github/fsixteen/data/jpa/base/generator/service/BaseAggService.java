@@ -3,16 +3,16 @@ package io.github.fsixteen.data.jpa.base.generator.service;
 import java.util.Date;
 import java.util.function.Function;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.fsixteen.data.jpa.base.generator.beans.groups.GroupEntity;
 import io.github.fsixteen.data.jpa.base.generator.constants.GroupDateTimeUnit;
 import io.github.fsixteen.data.jpa.base.generator.constants.GroupResponseType;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * 通用Service聚合处理类.<br>

@@ -2,19 +2,19 @@ open module io.github.fsixteen.base.service {
 
     requires java.base;
     requires transitive org.slf4j;
-    requires transitive io.swagger.annotations;
     requires transitive io.swagger.v3.oas.annotations;
-    requires transitive java.persistence;
-    requires transitive java.validation;
-    requires transitive java.transaction;
+    requires transitive jakarta.annotation;
+    requires transitive jakarta.persistence;
+    requires transitive jakarta.validation;
     requires transitive org.apache.tomcat.embed.core;
 
-    requires transitive spring.context;
     requires transitive spring.beans;
+    requires transitive spring.context;
     requires transitive spring.core;
     requires transitive spring.data.commons;
     requires transitive spring.data.jpa;
     requires transitive spring.web;
+    requires transitive spring.tx;
     requires transitive org.hibernate.orm.core;
     requires transitive com.fasterxml.jackson.annotation;
 

@@ -8,18 +8,18 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.persistence.criteria.AbstractQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.fsixteen.data.jpa.base.generator.plugins.constant.ComparableType;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.AnnotationDescriptor;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
+
+import jakarta.persistence.criteria.AbstractQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 /**
  * 有关包含, 不包含某集合类型计算内容的注解解释器.<br>

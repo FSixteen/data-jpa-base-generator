@@ -36,7 +36,7 @@ public @interface InTable {
     /**
      * 目标实体.
      *
-     * @see javax.persistence.JoinColumn#table
+     * @see jakarta.persistence.JoinColumn#table
      * @return Class&lt;?&gt;
      */
     Class<?> targetEntity();
@@ -44,7 +44,7 @@ public @interface InTable {
     /**
      * 字段名称.<br>
      * 
-     * @see javax.persistence.JoinColumn#name
+     * @see jakarta.persistence.JoinColumn#name
      * @return String
      */
     String columnName() default "";
@@ -52,7 +52,7 @@ public @interface InTable {
     /**
      * 引用字段名称.<br>
      * 
-     * @see javax.persistence.JoinColumn#referencedColumnName
+     * @see jakarta.persistence.JoinColumn#referencedColumnName
      * @return String
      */
     String referencedColumnName() default "";

@@ -1,6 +1,6 @@
 package io.github.fsixteen.data.jpa.base.generator.groups;
 
-import javax.validation.groups.Default;
+import jakarta.validation.groups.Default;
 
 /**
  * 更新组(Update Group).<br>

@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import javax.persistence.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
 
 /**
  * 数据库数据类型 {@link Integer} 或 {@link Long} 与实体数据类型 {@link LocalDateTime} 或

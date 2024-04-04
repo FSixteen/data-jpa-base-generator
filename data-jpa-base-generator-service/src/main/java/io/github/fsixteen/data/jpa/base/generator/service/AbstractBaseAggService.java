@@ -11,18 +11,6 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Selection;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
-
 import io.github.fsixteen.data.jpa.base.generator.beans.groups.GroupEntity;
 import io.github.fsixteen.data.jpa.base.generator.constants.GroupDateTimeUnit;
 import io.github.fsixteen.data.jpa.base.generator.constants.GroupResponseType;
@@ -32,6 +20,18 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.collections.ComputerCo
 import io.github.fsixteen.data.jpa.base.generator.plugins.constant.BuilderType;
 import io.github.fsixteen.data.jpa.base.generator.utils.GroupColumnUtils;
 import io.github.fsixteen.data.jpa.base.generator.utils.GroupColumnUtils.Column;
+
+import jakarta.annotation.Resource;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Selection;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * 通用Service聚合处理类.<br>

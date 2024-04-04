@@ -9,12 +9,11 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
-import javax.transaction.Transactional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.github.fsixteen.common.structure.StatusInterface;
 import io.github.fsixteen.common.structure.extend.Status;
@@ -178,7 +177,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      * @param args 添加实体实例
      * @return T
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default T insert(I args) {
         return this.insert(args, this.insertPreprocessor());
     }
@@ -190,7 +189,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      * @param preprocessor 添加前置处理器
      * @return T
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default T insert(I args, Consumer<I> preprocessor) {
         return this.insert(args, preprocessor, this.insertBiProcessor());
     }
@@ -203,7 +202,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      * @param processor    添加处理器
      * @return T
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default T insert(I args, Consumer<I> preprocessor, BiConsumer<T, I> processor) {
         return this.insert(args, preprocessor, processor, this.insertPostprocessor());
     }
@@ -217,7 +216,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      * @param postprocessor 添加后置处理器
      * @return T
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     @SuppressWarnings("unchecked")
     default T insert(I args, Consumer<I> preprocessor, BiConsumer<T, I> processor, BiConsumer<T, I> postprocessor) {
         Optional.ofNullable(preprocessor).ifPresent(it -> it.accept(args));
@@ -243,7 +242,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      * @param args 添加实体实例
      * @return List&lt;T&gt;
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default List<T> insertAll(Iterable<I> args) {
         return this.insertAll(args, this.insertPreprocessor());
     }
@@ -255,7 +254,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      * @param preprocessor 添加前置处理器
      * @return List&lt;T&gt;
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default List<T> insertAll(Iterable<I> args, Consumer<I> preprocessor) {
         return this.insertAll(args, preprocessor, this.insertBiProcessor());
     }
@@ -268,7 +267,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      * @param processor    添加处理器
      * @return List&lt;T&gt;
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default List<T> insertAll(Iterable<I> args, Consumer<I> preprocessor, BiConsumer<T, I> processor) {
         return this.insertAll(args, preprocessor, processor, this.insertAllPostprocessor());
     }
@@ -282,7 +281,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      * @param postprocessor 添加后置处理器
      * @return List&lt;T&gt;
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     @SuppressWarnings("unchecked")
     default List<T> insertAll(Iterable<I> args, Consumer<I> preprocessor, BiConsumer<T, I> processor, BiConsumer<Iterable<T>, Iterable<I>> postprocessor) {
         Optional.ofNullable(preprocessor).ifPresent(it -> args.forEach(ele -> it.accept(ele)));

@@ -11,11 +11,10 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import javax.transaction.Transactional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.github.fsixteen.common.structure.StatusInterface;
 import io.github.fsixteen.common.structure.extend.Status;
@@ -122,12 +121,12 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
             AnnotationCollection computer = CollectionCache.getAnnotationCollection(args.getClass());
             if (!computer.isEmpty(BuilderType.EXISTS)) {
                 return dao.exists((root, query, cb) -> {
-                    List<javax.persistence.criteria.Predicate> list = new ArrayList<>();
+                    List<jakarta.persistence.criteria.Predicate> list = new ArrayList<>();
                     if (this.checkExistedWithNotEqualToId()) {
                         list.add(cb.notEqual(root.get(root.getModel().getId(root.getModel().getIdType().getJavaType())), args.getId()));
                     }
                     list.add(computer.toComputerCollection().withArgs(args).withSpecification(root, query, cb).build(BuilderType.EXISTS).getPredicate(cb));
-                    return cb.and(list.toArray(new javax.persistence.criteria.Predicate[list.size()]));
+                    return cb.and(list.toArray(new jakarta.persistence.criteria.Predicate[list.size()]));
                 });
             } else {
                 return Boolean.FALSE;
@@ -248,7 +247,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @see #update(IdEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return T
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default T update(U args) {
         return update(args, this.updatePreprocessor());
     }
@@ -261,7 +260,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @see #update(IdEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return T
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default T update(U args, Consumer<U> preprocessor) {
         return update(args, preprocessor, this.updateBiTest());
     }
@@ -275,7 +274,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @see #update(IdEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return T
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default T update(U args, Consumer<U> preprocessor, BiPredicate<T, U> filter) {
         return update(args, preprocessor, filter, this.updateBiProcessor());
     }
@@ -289,7 +288,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @see #update(IdEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return T
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default T update(U args, BiPredicate<T, U> filter, BiConsumer<T, U> processor) {
         return update(args, this.updatePreprocessor(), filter, processor, this.updatePostprocessor());
     }
@@ -303,7 +302,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @see #update(IdEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return T
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default T update(U args, BiPredicate<T, U> filter, Consumer<T> processor) {
         return update(args, this.updatePreprocessor(), filter, (ele, temp) -> processor.accept(ele));
     }
@@ -318,7 +317,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @see #update(IdEntity, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return T
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default T update(U args, Consumer<U> preprocessor, BiPredicate<T, U> filter, BiConsumer<T, U> processor) {
         return update(args, preprocessor, filter, processor, this.updatePostprocessor());
     }
@@ -333,7 +332,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @param postprocessor 更新后置处理器
      * @return T
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default T update(U args, Consumer<U> preprocessor, BiPredicate<T, U> filter, BiConsumer<T, U> processor, BiConsumer<T, U> postprocessor) {
         Optional.ofNullable(preprocessor).ifPresent(it -> it.accept(args));
         if (this.isCheckExistedBeforUpdateOne() && this.checkExistedBeforUpdate().test(args, this.getDao())) {
@@ -359,7 +358,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @see #updateAll(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return List&lt;T&gt;
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default List<T> updateAll(List<U> args) {
         return updateAll(args, this.updatePreprocessor());
     }
@@ -372,7 +371,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @see #updateAll(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return List&lt;T&gt;
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default List<T> updateAll(List<U> args, Consumer<U> preprocessor) {
         return updateAll(args, preprocessor, this.updateBiTest());
     }
@@ -386,7 +385,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @see #updateAll(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return List&lt;T&gt;
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default List<T> updateAll(List<U> args, Consumer<U> preprocessor, BiPredicate<T, U> filter) {
         return updateAll(args, preprocessor, filter, this.updateBiProcessor());
     }
@@ -400,7 +399,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @see #updateAll(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return List&lt;T&gt;
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default List<T> updateAll(List<U> args, BiPredicate<T, U> filter, BiConsumer<T, U> processor) {
         return updateAll(args, this.updatePreprocessor(), filter, processor, this.updateAllPostprocessor());
     }
@@ -414,7 +413,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @see #updateAll(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return List&lt;T&gt;
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default List<T> updateAll(List<U> args, BiPredicate<T, U> filter, Consumer<T> processor) {
         return updateAll(args, this.updatePreprocessor(), filter, (ele, temp) -> processor.accept(ele));
     }
@@ -429,7 +428,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @see #updateAll(List, Consumer, BiPredicate, BiConsumer, BiConsumer)
      * @return List&lt;T&gt;
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default List<T> updateAll(List<U> args, Consumer<U> preprocessor, BiPredicate<T, U> filter, BiConsumer<T, U> processor) {
         return updateAll(args, preprocessor, filter, processor, this.updateAllPostprocessor());
     }
@@ -444,7 +443,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @param postprocessor 更新后置处理器
      * @return List&lt;T&gt;
      */
-    @Transactional(rollbackOn = { RuntimeException.class, Exception.class })
+    @Transactional(rollbackFor = { RuntimeException.class, Exception.class })
     default List<T> updateAll(List<U> args, Consumer<U> preprocessor, BiPredicate<T, U> filter, BiConsumer<T, U> processor,
         BiConsumer<Iterable<T>, Iterable<U>> postprocessor) {
         Optional.ofNullable(preprocessor).ifPresent(it -> args.forEach(ele -> it.accept(ele)));

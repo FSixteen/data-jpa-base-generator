@@ -3,7 +3,7 @@ package io.github.fsixteen.common.persistence.converts;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import javax.persistence.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
 
 /**
  * 数据库数据类型 {@link Long} 与实体数据类型 {@link LocalDateTime} 相互转换

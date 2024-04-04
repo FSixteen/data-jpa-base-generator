@@ -1,11 +1,10 @@
 open module io.github.fsixteen.base.entities {
 
     requires java.base;
-    requires transitive io.swagger.annotations;
     requires transitive io.swagger.v3.oas.annotations;
 
-    requires transitive java.validation;
-    requires transitive java.persistence;
+    requires transitive jakarta.validation;
+    requires transitive jakarta.persistence;
 
     requires transitive spring.context;
     requires transitive org.hibernate.orm.core;

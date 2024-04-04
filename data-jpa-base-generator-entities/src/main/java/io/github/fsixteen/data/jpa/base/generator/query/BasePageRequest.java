@@ -2,8 +2,8 @@ package io.github.fsixteen.data.jpa.base.generator.query;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 /**
  * 分页请求接口.<br>

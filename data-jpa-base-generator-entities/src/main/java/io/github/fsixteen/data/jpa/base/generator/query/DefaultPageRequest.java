@@ -1,7 +1,6 @@
 package io.github.fsixteen.data.jpa.base.generator.query;
 
 import io.github.fsixteen.data.jpa.base.generator.entities.Entity;
-import io.swagger.annotations.ApiModel;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
@@ -10,7 +9,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @author FSixteen
  * @since 1.0.0
  */
-@ApiModel(value = "请求实体-默认分页请求")
 @Schema(description = "请求实体-默认分页请求")
 public class DefaultPageRequest implements BasePageRequest, Entity {
     private static final long serialVersionUID = 1L;

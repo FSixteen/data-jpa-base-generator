@@ -10,14 +10,14 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
-
 import io.github.fsixteen.data.jpa.base.generator.annotations.GroupComputerType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.GroupComputerType.Type;
 import io.github.fsixteen.data.jpa.base.generator.annotations.GroupInfo;
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
 
 /**
  * 查询条件构建器.<br>
@@ -38,7 +38,7 @@ class PredicateBuildProcessor {
     private String scope = Constant.DEFAULT;
 
     /**
-     * {@link javax.persistence.criteria.CriteriaBuilder}实例.<br>
+     * {@link jakarta.persistence.criteria.CriteriaBuilder}实例.<br>
      */
     private CriteriaBuilder cb;
 
@@ -64,9 +64,9 @@ class PredicateBuildProcessor {
     }
 
     /**
-     * 指定{@link javax.persistence.criteria.CriteriaBuilder}实例.<br>
+     * 指定{@link jakarta.persistence.criteria.CriteriaBuilder}实例.<br>
      * 
-     * @param cb {@link javax.persistence.criteria.CriteriaBuilder}实例
+     * @param cb {@link jakarta.persistence.criteria.CriteriaBuilder}实例
      * @return PredicateBuildProcessor
      */
     PredicateBuildProcessor withCriteriaBuilder(CriteriaBuilder cb) {

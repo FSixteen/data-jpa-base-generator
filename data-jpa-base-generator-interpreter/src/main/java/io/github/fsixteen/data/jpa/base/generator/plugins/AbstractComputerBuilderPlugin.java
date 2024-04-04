@@ -10,12 +10,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
-import javax.persistence.criteria.AbstractQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +20,12 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Args;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Function;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.AnnotationDescriptor;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
+
+import jakarta.persistence.criteria.AbstractQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 /**
  * 注解解释器抽像类.<br>
@@ -115,9 +115,9 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
      * @param arg        函数参数实例.
      * @param obj        原实例.
      * @param fieldValue 当前值.
-     * @param root       见{@link javax.persistence.criteria.Root}.
-     * @param query      见{@link javax.persistence.criteria.AbstractQuery}.
-     * @param cb         见{@link javax.persistence.criteria.CriteriaBuilder}.
+     * @param root       见{@link jakarta.persistence.criteria.Root}.
+     * @param query      见{@link jakarta.persistence.criteria.AbstractQuery}.
+     * @param cb         见{@link jakarta.persistence.criteria.CriteriaBuilder}.
      * @return Expression
      */
     private Expression<?> creaateArgsExpression(final AnnotationDescriptor<A> ad, final Args arg, final Object obj, final Object fieldValue, final Root<?> root,
@@ -160,9 +160,9 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
      * @param function   函数实例.
      * @param obj        原实例.
      * @param fieldValue 当前值.
-     * @param root       见{@link javax.persistence.criteria.Root}.
-     * @param query      见{@link javax.persistence.criteria.AbstractQuery}.
-     * @param cb         见{@link javax.persistence.criteria.CriteriaBuilder}.
+     * @param root       见{@link jakarta.persistence.criteria.Root}.
+     * @param query      见{@link jakarta.persistence.criteria.AbstractQuery}.
+     * @param cb         见{@link jakarta.persistence.criteria.CriteriaBuilder}.
      * @return Expression[]
      */
     protected Expression<?>[] createFunctionExpression(final AnnotationDescriptor<A> ad, final Function function, final Object obj, final Object fieldValue,
@@ -179,9 +179,9 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
      * 
      * @param ad         注解描述信息实例.
      * @param fieldValue 当前值.
-     * @param root       见{@link javax.persistence.criteria.Root}.
-     * @param query      见{@link javax.persistence.criteria.AbstractQuery}.
-     * @param cb         见{@link javax.persistence.criteria.CriteriaBuilder}.
+     * @param root       见{@link jakarta.persistence.criteria.Root}.
+     * @param query      见{@link jakarta.persistence.criteria.AbstractQuery}.
+     * @param cb         见{@link jakarta.persistence.criteria.CriteriaBuilder}.
      * @return boolean
      */
     public boolean checkField(final AnnotationDescriptor<A> ad, final Object fieldValue, final Root<?> root, final AbstractQuery<?> query,
@@ -217,9 +217,9 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
      * @param ad         注解描述信息实例.
      * @param obj        原实例.
      * @param fieldValue 当前值.
-     * @param root       见{@link javax.persistence.criteria.Root}.
-     * @param query      见{@link javax.persistence.criteria.AbstractQuery}.
-     * @param cb         见{@link javax.persistence.criteria.CriteriaBuilder}.
+     * @param root       见{@link jakarta.persistence.criteria.Root}.
+     * @param query      见{@link jakarta.persistence.criteria.AbstractQuery}.
+     * @param cb         见{@link jakarta.persistence.criteria.CriteriaBuilder}.
      * @return boolean
      */
     @SuppressWarnings("unchecked")
@@ -280,9 +280,9 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
      * 
      * @param ad         注解描述信息实例.
      * @param fieldValue 当前值.
-     * @param root       见{@link javax.persistence.criteria.Root}.
-     * @param query      见{@link javax.persistence.criteria.AbstractQuery}.
-     * @param cb         见{@link javax.persistence.criteria.CriteriaBuilder}.
+     * @param root       见{@link jakarta.persistence.criteria.Root}.
+     * @param query      见{@link jakarta.persistence.criteria.AbstractQuery}.
+     * @param cb         见{@link jakarta.persistence.criteria.CriteriaBuilder}.
      * @return boolean
      */
     public boolean checkFieldValue(final AnnotationDescriptor<A> ad, final Object fieldValue, final Root<?> root, final AbstractQuery<?> query,
@@ -318,9 +318,9 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
      * @param ad         注解描述信息实例.
      * @param obj        原实例.
      * @param fieldValue 当前值.
-     * @param root       见{@link javax.persistence.criteria.Root}.
-     * @param query      见{@link javax.persistence.criteria.AbstractQuery}.
-     * @param cb         见{@link javax.persistence.criteria.CriteriaBuilder}.
+     * @param root       见{@link jakarta.persistence.criteria.Root}.
+     * @param query      见{@link jakarta.persistence.criteria.AbstractQuery}.
+     * @param cb         见{@link jakarta.persistence.criteria.CriteriaBuilder}.
      * @return boolean
      */
     @SuppressWarnings("unchecked")
@@ -407,9 +407,9 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
     }
 
     /**
-     * 创建 {@link javax.persistence.criteria.Predicate} 谓词.
+     * 创建 {@link jakarta.persistence.criteria.Predicate} 谓词.
      * 
-     * @param cb              见{@link javax.persistence.criteria.CriteriaBuilder}.
+     * @param cb              见{@link jakarta.persistence.criteria.CriteriaBuilder}.
      * @param leftExpression  表达式1
      * @param rightExpression 表达式2
      * @return Predicate

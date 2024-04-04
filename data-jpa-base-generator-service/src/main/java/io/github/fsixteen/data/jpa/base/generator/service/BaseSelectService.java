@@ -10,9 +10,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.criteria.Predicate;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -32,6 +29,9 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.constant.BuilderType;
 import io.github.fsixteen.data.jpa.base.generator.query.BasePageRequest;
 import io.github.fsixteen.data.jpa.base.generator.query.DefaultPageRequest;
 import io.github.fsixteen.data.jpa.base.generator.utils.AppContextInitializer;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.persistence.criteria.Predicate;
 
 /**
  * 通用Service处理类.<br>

@@ -3,9 +3,9 @@ package io.github.fsixteen.data.jpa.base.generator.plugins.descriptors;
 import java.lang.annotation.Annotation;
 import java.util.Objects;
 
-import javax.persistence.criteria.Predicate;
-
 import io.github.fsixteen.data.jpa.base.generator.plugins.utils.ArrayUtils;
+
+import jakarta.persistence.criteria.Predicate;
 
 /**
  * 注解逻辑描述信息.

@@ -9,11 +9,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +21,11 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.cache.PluginsCache;
 import io.github.fsixteen.data.jpa.base.generator.plugins.constant.BuilderType;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.AnnotationDescriptor;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 /**
  * 类注解逻辑描述信息集合.<br>
@@ -130,9 +130,9 @@ public final class ComputerCollection {
     }
 
     /**
-     * 获取{@link javax.persistence.criteria.Predicate}.<br>
+     * 获取{@link jakarta.persistence.criteria.Predicate}.<br>
      * 
-     * @param cb 见{@link javax.persistence.criteria.CriteriaBuilder}
+     * @param cb 见{@link jakarta.persistence.criteria.CriteriaBuilder}
      * @return Predicate
      */
     public Predicate getPredicate(final CriteriaBuilder cb) {
@@ -143,9 +143,9 @@ public final class ComputerCollection {
     }
 
     /**
-     * 获取{@link javax.persistence.criteria.Predicate}.<br>
+     * 获取{@link jakarta.persistence.criteria.Predicate}.<br>
      * 
-     * @param cb 见{@link javax.persistence.criteria.CriteriaBuilder}
+     * @param cb 见{@link jakarta.persistence.criteria.CriteriaBuilder}
      * @return List&lt;Predicate&gt;
      */
     public List<Predicate> getPredicateList(final CriteriaBuilder cb) {
@@ -153,9 +153,9 @@ public final class ComputerCollection {
     }
 
     /**
-     * 获取{@link javax.persistence.criteria.Predicate}.<br>
+     * 获取{@link jakarta.persistence.criteria.Predicate}.<br>
      * 
-     * @param cb    见{@link javax.persistence.criteria.CriteriaBuilder}
+     * @param cb    见{@link jakarta.persistence.criteria.CriteriaBuilder}
      * @param scope 范围查询分组
      * @return List&lt;Predicate&gt;
      */
@@ -164,9 +164,9 @@ public final class ComputerCollection {
     }
 
     /**
-     * 获取{@link javax.persistence.criteria.Predicate}.<br>
+     * 获取{@link jakarta.persistence.criteria.Predicate}.<br>
      * 
-     * @param cb 见{@link javax.persistence.criteria.CriteriaBuilder}
+     * @param cb 见{@link jakarta.persistence.criteria.CriteriaBuilder}
      * @return Predicate[]
      */
     public Predicate[] getPredicateArray(final CriteriaBuilder cb) {
@@ -174,9 +174,9 @@ public final class ComputerCollection {
     }
 
     /**
-     * 获取{@link javax.persistence.criteria.Predicate}.<br>
+     * 获取{@link jakarta.persistence.criteria.Predicate}.<br>
      * 
-     * @param cb    见{@link javax.persistence.criteria.CriteriaBuilder}
+     * @param cb    见{@link jakarta.persistence.criteria.CriteriaBuilder}
      * @param scope 范围查询分组
      * @return Predicate[]
      */
@@ -246,13 +246,13 @@ public final class ComputerCollection {
         }
 
         /**
-         * 设置构建{@link javax.persistence.criteria.Predicate}所需要的{@link javax.persistence.criteria.Root},
-         * {@link javax.persistence.criteria.CriteriaQuery},
-         * {@link javax.persistence.criteria.CriteriaBuilder}.<br>
+         * 设置构建{@link jakarta.persistence.criteria.Predicate}所需要的{@link jakarta.persistence.criteria.Root},
+         * {@link jakarta.persistence.criteria.CriteriaQuery},
+         * {@link jakarta.persistence.criteria.CriteriaBuilder}.<br>
          * 
-         * @param root  见{@link javax.persistence.criteria.Root}
-         * @param query 见{@link javax.persistence.criteria.CriteriaQuery}
-         * @param cb    见{@link javax.persistence.criteria.CriteriaBuilder}
+         * @param root  见{@link jakarta.persistence.criteria.Root}
+         * @param query 见{@link jakarta.persistence.criteria.CriteriaQuery}
+         * @param cb    见{@link jakarta.persistence.criteria.CriteriaBuilder}
          * @return Builder
          */
         public Builder withSpecification(Root<?> root, CriteriaQuery<?> query, CriteriaBuilder cb) {

@@ -3,14 +3,14 @@ package io.github.fsixteen.data.jpa.base.generator.plugins;
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 
-import javax.persistence.criteria.AbstractQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import io.github.fsixteen.data.jpa.base.generator.plugins.constant.ComparableType;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.AnnotationDescriptor;
+
+import jakarta.persistence.criteria.AbstractQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 /**
  * 有关{@link java.lang.String}类型计算内容的相似注解解释器.<br>

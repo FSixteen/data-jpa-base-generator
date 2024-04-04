@@ -8,7 +8,7 @@ open module io.github.fsixteen.base.plugins {
      */
     requires java.desktop;
     requires transitive org.slf4j;
-    requires transitive java.persistence;
+    requires transitive jakarta.persistence;
     requires transitive io.github.fsixteen.base.annotations;
 
     exports io.github.fsixteen.data.jpa.base.generator.plugins;

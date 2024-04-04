@@ -2,9 +2,6 @@ package io.github.fsixteen.data.jpa.base.generator.controller;
 
 import java.io.Serializable;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +14,9 @@ import io.github.fsixteen.data.jpa.base.generator.groups.InsertGroup;
 import io.github.fsixteen.data.jpa.base.generator.service.BaseInsertService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 基础添加Controller.<br>

@@ -6,10 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -28,6 +24,10 @@ import io.github.fsixteen.data.jpa.base.generator.query.BasePageRequest;
 import io.github.fsixteen.data.jpa.base.generator.service.BaseSelectService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * 基础查询Controller.<br>
