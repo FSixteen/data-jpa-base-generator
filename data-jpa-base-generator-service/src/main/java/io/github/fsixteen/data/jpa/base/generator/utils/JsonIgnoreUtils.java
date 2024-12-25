@@ -1,7 +1,6 @@
 package io.github.fsixteen.data.jpa.base.generator.utils;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -55,8 +54,8 @@ public class JsonIgnoreUtils {
         JsonIncludeProperties includeProperties = clazz.getAnnotation(JsonIncludeProperties.class);
         if (Objects.nonNull(includeProperties) && 0 < includeProperties.value().length) {
             List<String> includes = Arrays.asList(includeProperties.value());
-            Set<String> fields = Stream.of(io.github.fsixteen.data.jpa.base.generator.plugins.utils.BeanUtils.getAllFields(clazz))
-                .filter(it -> Modifier.isStatic(it.getModifiers())).map(Field::getName).filter(it -> !includes.contains(it)).collect(Collectors.toSet());
+            Set<String> fields = Stream.of(io.github.fsixteen.data.jpa.base.generator.plugins.utils.BeanUtils.getAllFields(clazz)).map(Field::getName)
+                .filter(it -> !includes.contains(it)).collect(Collectors.toSet());
             ignoreSet.addAll(fields);
         }
         return ignoreSet.toArray(new String[ignoreSet.size()]);
