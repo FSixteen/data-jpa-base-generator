@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 /**
- * 通用字段.<br>
+ * 通用字段, 创建/修改/删除时间字段对应数据库日期时间, datetime 类型.<br>
  *
  * @author FSixteen
  * @since 1.0.1

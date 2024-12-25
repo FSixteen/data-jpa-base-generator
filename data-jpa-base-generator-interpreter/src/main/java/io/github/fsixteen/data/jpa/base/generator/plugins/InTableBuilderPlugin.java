@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import javax.persistence.criteria.AbstractQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
@@ -71,11 +72,12 @@ public class InTableBuilderPlugin extends AbstractComputerBuilderPlugin<InTable>
             }
 
             if (ValueInType.TARGET == anno.valueInType()) {
-                Subquery<?> subQuery = query.subquery(anno.targetEntity());
+                Path<?> rootColumn = root.get(anno.columnName());
+                Subquery<?> subQuery = query.subquery(rootColumn.getJavaType());
                 Root<?> subRoot = subQuery.from(anno.targetEntity());
                 subQuery.select(subRoot.get(anno.referencedColumnName()));
                 subQuery.where(plugin.toPredicate((AnnotationDescriptor) ad, obj, subRoot, subQuery, cb).getPredicate());
-                predicates.add(root.get(anno.columnName()).in(subQuery));
+                predicates.add(rootColumn.in(subQuery));
             } else {
                 ComputerDescriptor<?> cd = plugin.toPredicate((AnnotationDescriptor) ad, obj, root, query, cb);
                 predicates.add(cd.getPredicate());

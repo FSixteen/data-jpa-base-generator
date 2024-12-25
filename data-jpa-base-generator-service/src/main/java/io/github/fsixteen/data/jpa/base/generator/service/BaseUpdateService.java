@@ -1,7 +1,9 @@
 package io.github.fsixteen.data.jpa.base.generator.service;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +21,8 @@ import org.springframework.beans.BeanUtils;
 
 import io.github.fsixteen.common.structure.StatusInterface;
 import io.github.fsixteen.common.structure.extend.Status;
+import io.github.fsixteen.data.jpa.base.generator.entities.BaseEntity;
+import io.github.fsixteen.data.jpa.base.generator.entities.BaseTSTypeEntity;
 import io.github.fsixteen.data.jpa.base.generator.entities.IdEntity;
 import io.github.fsixteen.data.jpa.base.generator.exception.AccessDeniedException;
 import io.github.fsixteen.data.jpa.base.generator.exception.DataExistedException;
@@ -200,8 +204,13 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      */
     default Consumer<T> updateProcessor() {
         return (ele) -> {
-            if (log.isDebugEnabled()) {
-                log.debug("Update Processor Nothing.");
+            if (ele instanceof BaseEntity<?>) {
+                BaseEntity<?> eles = BaseEntity.class.cast(ele);
+                eles.setUpdateTime(new Date());
+            }
+            if (ele instanceof BaseTSTypeEntity<?>) {
+                BaseTSTypeEntity<?> eles = BaseTSTypeEntity.class.cast(ele);
+                eles.setUpdateTime(LocalDateTime.now());
             }
         };
     }

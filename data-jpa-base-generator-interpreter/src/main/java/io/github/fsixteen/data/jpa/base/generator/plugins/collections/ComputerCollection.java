@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.persistence.criteria.AbstractQuery;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -210,7 +210,7 @@ public final class ComputerCollection {
 
         private Root<?> root;
 
-        private CriteriaQuery<?> query;
+        private AbstractQuery<?> query;
 
         private CriteriaBuilder cb;
 
@@ -247,15 +247,17 @@ public final class ComputerCollection {
 
         /**
          * 设置构建{@link javax.persistence.criteria.Predicate}所需要的{@link javax.persistence.criteria.Root},
-         * {@link javax.persistence.criteria.CriteriaQuery},
+         * {@link javax.persistence.criteria.AbstractQuery}(
+         * {@link javax.persistence.criteria.CriteriaQuery} ),
          * {@link javax.persistence.criteria.CriteriaBuilder}.<br>
          * 
          * @param root  见{@link javax.persistence.criteria.Root}
-         * @param query 见{@link javax.persistence.criteria.CriteriaQuery}
+         * @param query 见{@link javax.persistence.criteria.AbstractQuery}(
+         *              {@link javax.persistence.criteria.CriteriaQuery} )
          * @param cb    见{@link javax.persistence.criteria.CriteriaBuilder}
          * @return Builder
          */
-        public Builder withSpecification(Root<?> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+        public Builder withSpecification(Root<?> root, AbstractQuery<?> query, CriteriaBuilder cb) {
             this.root = root;
             this.query = query;
             this.cb = cb;

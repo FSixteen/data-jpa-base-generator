@@ -1,40 +1,38 @@
 package io.github.fsixteen.data.jpa.base.generator.entities;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import io.github.fsixteen.common.persistence.converts.Timestamp2LocalDateTimeConverter;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 /**
- * 通用字段, 创建/修改/删除时间字段对应数据库日期时间, datetime 类型.<br>
+ * 通用字段, 时间字段对应数据库毫秒级时间戳, BigInt(Long) 类型.<br>
  *
  * @author FSixteen
- * @since 1.0.0
+ * @since 1.0.2
  */
 @MappedSuperclass
 @JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler", "deleted", "createTime", "updateTime", "deleteTime" })
 @Where(clause = "deleted = false")
-public abstract class BaseEntity<ID extends Serializable> implements IdEntity<ID> {
+public abstract class BaseTSTypeEntity<ID extends Serializable> implements IdEntity<ID> {
     private static final long serialVersionUID = 1L;
 
-    @Column(name = "deleted", nullable = false, unique = false, insertable = false, updatable = true, length = 0, precision = 0, scale = 0,
+    @Column(name = "deleted", nullable = false, unique = false, insertable = true, updatable = true, length = 0, precision = 0, scale = 0,
         columnDefinition = "boolean NOT NULL DEFAULT 0 COMMENT '删除状态'")
     @Schema(description = "删除状态", required = false, requiredMode = RequiredMode.NOT_REQUIRED, hidden = false, example = "false", accessMode = AccessMode.AUTO)
     @ApiModelProperty(value = "删除状态", required = false, hidden = true, example = "false", accessMode = io.swagger.annotations.ApiModelProperty.AccessMode.AUTO)
@@ -42,44 +40,39 @@ public abstract class BaseEntity<ID extends Serializable> implements IdEntity<ID
     protected Boolean deleted = Boolean.FALSE;
 
     @Column(name = "create_time", nullable = false, unique = false, insertable = true, updatable = false, length = 0, precision = 3, scale = 0,
-        columnDefinition = "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'")
+        columnDefinition = "bigint(20) NOT NULL COMMENT '创建时间'")
     @Schema(description = "创建时间(提交时忽略该参数)", required = false, requiredMode = RequiredMode.NOT_REQUIRED, hidden = false, example = "2020-01-01 00:00:00",
         type = "string", format = "yyyy-MM-dd HH:mm:ss", accessMode = AccessMode.AUTO)
     @ApiModelProperty(value = "创建时间(提交时忽略该参数)", required = false, hidden = false, example = "2020-01-01 00:00:00", dataType = "string",
         accessMode = io.swagger.annotations.ApiModelProperty.AccessMode.AUTO)
-    @CreationTimestamp
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Convert(converter = Timestamp2LocalDateTimeConverter.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonInclude(value = Include.NON_NULL)
-    protected Date createTime = new Date();
+    protected LocalDateTime createTime = LocalDateTime.now();
 
-    @Column(name = "update_time", nullable = false, unique = false, insertable = false, updatable = true, length = 0, precision = 3, scale = 0,
-        columnDefinition = "datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后一次更新时间'")
+    @Column(name = "update_time", nullable = false, unique = false, insertable = true, updatable = true, length = 0, precision = 3, scale = 0,
+        columnDefinition = "bigint(20) NOT NULL COMMENT '最后一次更新时间'")
     @Schema(description = "最后一次更新时间(提交时忽略该参数)", required = false, requiredMode = RequiredMode.NOT_REQUIRED, hidden = false, example = "2020-01-01 00:00:00",
         type = "string", format = "yyyy-MM-dd HH:mm:ss", accessMode = AccessMode.AUTO)
     @ApiModelProperty(value = "最后一次更新时间(提交时忽略该参数)", required = false, hidden = false, example = "2020-01-01 00:00:00", dataType = "string",
         accessMode = io.swagger.annotations.ApiModelProperty.AccessMode.AUTO)
-    @UpdateTimestamp
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Convert(converter = Timestamp2LocalDateTimeConverter.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonInclude(value = Include.NON_NULL)
-    protected Date updateTime = new Date();
+    protected LocalDateTime updateTime = LocalDateTime.now();
 
     @Column(name = "delete_time", nullable = true, unique = false, insertable = false, updatable = true, length = 0, precision = 3, scale = 0,
-        columnDefinition = "datetime DEFAULT NULL COMMENT '删除时间'")
+        columnDefinition = "bigint(20) DEFAULT NULL COMMENT '删除时间'")
     @Schema(description = "删除时间", required = false, requiredMode = RequiredMode.NOT_REQUIRED, hidden = false, example = "2020-01-01 00:00:00", type = "string",
         format = "yyyy-MM-dd HH:mm:ss", accessMode = AccessMode.AUTO)
     @ApiModelProperty(value = "删除时间", required = false, hidden = false, example = "2020-01-01 00:00:00", dataType = "string",
         accessMode = io.swagger.annotations.ApiModelProperty.AccessMode.AUTO)
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Convert(converter = Timestamp2LocalDateTimeConverter.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonInclude(value = Include.NON_NULL)
-    protected Date deleteTime;
+    protected LocalDateTime deleteTime;
 
-    public BaseEntity() {
+    public BaseTSTypeEntity() {
     }
 
     public Boolean getDeleted() {
@@ -90,27 +83,27 @@ public abstract class BaseEntity<ID extends Serializable> implements IdEntity<ID
         this.deleted = deleted;
     }
 
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public LocalDateTime getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
     }
 
-    public Date getDeleteTime() {
+    public LocalDateTime getDeleteTime() {
         return deleteTime;
     }
 
-    public void setDeleteTime(Date deleteTime) {
+    public void setDeleteTime(LocalDateTime deleteTime) {
         this.deleteTime = deleteTime;
     }
 

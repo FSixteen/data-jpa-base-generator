@@ -1,6 +1,7 @@
 package io.github.fsixteen.data.jpa.base.generator.service;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -20,6 +21,7 @@ import io.github.fsixteen.common.structure.StatusInterface;
 import io.github.fsixteen.common.structure.extend.Status;
 import io.github.fsixteen.data.jpa.base.generator.constants.DeleteType;
 import io.github.fsixteen.data.jpa.base.generator.entities.BaseEntity;
+import io.github.fsixteen.data.jpa.base.generator.entities.BaseTSTypeEntity;
 import io.github.fsixteen.data.jpa.base.generator.entities.IdEntity;
 import io.github.fsixteen.data.jpa.base.generator.exception.DataNonExistException;
 import io.github.fsixteen.data.jpa.base.generator.jpa.BaseDao;
@@ -92,6 +94,11 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
                 BaseEntity<?> eles = BaseEntity.class.cast(args);
                 eles.setDeleted(true);
                 eles.setDeleteTime(new Date());
+            }
+            if (args instanceof BaseTSTypeEntity<?>) {
+                BaseTSTypeEntity<?> eles = BaseTSTypeEntity.class.cast(args);
+                eles.setDeleted(true);
+                eles.setDeleteTime(LocalDateTime.now());
             }
         };
     }

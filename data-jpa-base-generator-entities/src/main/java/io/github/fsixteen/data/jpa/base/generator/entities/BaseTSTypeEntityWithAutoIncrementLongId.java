@@ -16,33 +16,33 @@ import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 /**
- * 通用字段, 创建/修改/删除时间字段对应数据库日期时间, datetime 类型.<br>
+ * 通用字段, 创建/修改/删除时间字段对应数据库毫秒级时间戳, BigInt(Long) 类型.<br>
  *
  * @author FSixteen
- * @since 1.0.1
+ * @since 1.0.2
  */
 @MappedSuperclass
 @JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler", "deleted", "createTime", "updateTime", "deleteTime" })
 @Where(clause = "deleted = false")
-public abstract class BaseEntityWithAutoIncrementIntegerId extends BaseEntity<Integer> {
+public abstract class BaseTSTypeEntityWithAutoIncrementLongId extends BaseTSTypeEntity<Long> {
     private static final long serialVersionUID = 1L;
 
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true, length = 0, precision = 11, scale = 0,
-        columnDefinition = "int(11) NOT NULL AUTO_INCREMENT COMMENT '主键'")
+    @Column(name = "[id]", nullable = false, unique = true, length = 0, precision = 20, scale = 0,
+        columnDefinition = "bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键'")
     @Schema(description = "主键", required = false, requiredMode = RequiredMode.NOT_REQUIRED, hidden = false, example = "110", accessMode = AccessMode.AUTO)
     @ApiModelProperty(value = "主键", required = false, hidden = false, example = "110", accessMode = io.swagger.annotations.ApiModelProperty.AccessMode.AUTO)
     @JsonInclude(value = JsonInclude.Include.NON_NULL)
-    public Integer id;
+    public Long id;
 
     @Override
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
     @Override
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

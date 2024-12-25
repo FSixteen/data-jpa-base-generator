@@ -16,15 +16,15 @@ import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 /**
- * 通用字段, 创建/修改/删除时间字段对应数据库日期时间, datetime 类型.<br>
+ * 通用字段, 创建/修改/删除时间字段对应数据库毫秒级时间戳, BigInt(Long) 类型.<br>
  *
  * @author FSixteen
- * @since 1.0.1
+ * @since 1.0.2
  */
 @MappedSuperclass
 @JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler", "deleted", "createTime", "updateTime", "deleteTime" })
 @Where(clause = "deleted = false")
-public abstract class BaseEntityWithAutoIncrementIntegerId extends BaseEntity<Integer> {
+public abstract class BaseTSTypeEntityWithAutoIncrementIntegerId extends BaseTSTypeEntity<Integer> {
     private static final long serialVersionUID = 1L;
 
     @javax.persistence.Id

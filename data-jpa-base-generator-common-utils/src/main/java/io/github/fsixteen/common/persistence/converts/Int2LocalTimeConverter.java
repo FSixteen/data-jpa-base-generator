@@ -11,7 +11,7 @@ import javax.persistence.AttributeConverter;
  * 
  * 格式化模板为 {@code HHmmssSSS}.
  * 
- * @see AbstractInt2LocalTimeConverter
+ * @see AbstractNumber2LocalDateTimeConverter
  * @author FSixteen
  * @since 1.0.2
  */
