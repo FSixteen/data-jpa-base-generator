@@ -7,5 +7,7 @@ package io.github.fsixteen.data.jpa.base.generator.annotations.interfaces;
  * @since 1.0.2
  */
 public class DefaultFieldProcessor implements FieldProcessor {
+
     private static final long serialVersionUID = 1L;
+
 }

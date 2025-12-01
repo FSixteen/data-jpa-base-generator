@@ -8,8 +8,10 @@ import javax.persistence.AttributeConverter;
 /**
  * 数据库数据类型 {@link Integer} 与实体数据类型 {@link LocalTime} 相互转换
  * {@link AttributeConverter} 接口.<br>
- * 
+ *
+ * <p>
  * 格式化模板为 {@code HHmmss}.
+ * </p>
  * 
  * @see AbstractNumber2LocalDateTimeConverter
  * @author FSixteen

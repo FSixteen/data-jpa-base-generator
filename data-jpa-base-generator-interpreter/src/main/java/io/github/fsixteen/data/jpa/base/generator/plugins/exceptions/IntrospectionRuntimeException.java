@@ -4,9 +4,11 @@ import java.beans.IntrospectionException;
 
 /**
  * {@link IntrospectionException}由{@link java.lang.Exception}转为{@link java.lang.RuntimeException}.
+ *
  * <p>
  * Thrown when an exception happens during Introspection.
  * </p>
+ *
  * <p>
  * Typical causes include not being able to map a string class name
  * to a Class object, not being able to resolve a string method name,
@@ -19,6 +21,7 @@ import java.beans.IntrospectionException;
  * @see java.beans.IntrospectionException
  */
 public class IntrospectionRuntimeException extends RuntimeException {
+
     private static final long serialVersionUID = 1L;
 
     public IntrospectionRuntimeException() {

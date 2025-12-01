@@ -24,14 +24,17 @@ public @interface FieldProcessorFunction {
      * 字段(列)处理器执行类.
      * {@linkplain io.github.fsixteen.data.jpa.base.generator.annotations.interfaces.FieldProcessor
      * ValueProcessor} 实现类.
+     *
      * <p>
      * 当存在 {@link #processorClassName()} 时, 以 {@link #processorClassName()} 计算,
      * 放弃 {@link #processorClass()}.
      * </p>
+     *
      * <p>
      * 当不存在 {@link #processorClassName()} 时, 以 {@link #processorClass()} 计算,
      * 放弃 {@link #processorClassName()}.
      * </p>
+     *
      * <p>
      * 当存在 {@link #processorClassName()}, 但实例化失败时, 重新以 {@link #processorClass()}
      * 计算, 放弃 {@link #processorClassName()}.
@@ -47,14 +50,17 @@ public @interface FieldProcessorFunction {
      * 字段(列)处理器执行类名.
      * {@linkplain io.github.fsixteen.data.jpa.base.generator.annotations.interfaces.FieldProcessor
      * ValueProcessor} 实现类.
+     *
      * <p>
      * 当存在 {@link #processorClassName()} 时, 以 {@link #processorClassName()} 计算,
      * 放弃 {@link #processorClass()}.
      * </p>
+     *
      * <p>
      * 当不存在 {@link #processorClassName()} 时, 以 {@link #processorClass()} 计算,
      * 放弃 {@link #processorClassName()}.
      * </p>
+     *
      * <p>
      * 当存在 {@link #processorClassName()}, 但实例化失败时, 重新以 {@link #processorClass()}
      * 计算, 放弃 {@link #processorClassName()}.

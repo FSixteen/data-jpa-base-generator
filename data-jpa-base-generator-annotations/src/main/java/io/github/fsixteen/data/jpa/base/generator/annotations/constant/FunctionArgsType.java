@@ -19,6 +19,11 @@ public enum FunctionArgsType {
     LITERAL,
 
     /**
+     * 字面量, {@link java.lang.Boolean} 类型.<br>
+     */
+    LITERAL_BOOLEAN,
+
+    /**
      * 字面量, {@link java.math.BigDecimal} 类型.
      */
     LITERAL_BIGDECIMAL,

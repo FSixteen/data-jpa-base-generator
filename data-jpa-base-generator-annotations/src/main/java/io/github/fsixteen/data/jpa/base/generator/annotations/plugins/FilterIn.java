@@ -34,13 +34,16 @@ public @interface FilterIn {
 
     /**
      * 正则表达式.<br>
+     *
      * <p>
      * 当存在 {@link #regexp()} 时, 以 {@link #regexp()} 计算,
      * 放弃 {@link #testClassName()} 及 {@link #testClass()}.<br>
      * </p>
+     *
      * <p>
      * 当不存在 {@link #regexp()} 时, 以 {@link #testClassName()} 计算.<br>
      * </p>
+     *
      * <p>
      * 当不存在 {@link #testClassName()} 时, 以 {@link #testClass()} 计算.<br>
      * </p>
@@ -51,13 +54,16 @@ public @interface FilterIn {
 
     /**
      * {@linkplain java.util.function.Predicate Predicate} 的实现类.<br>
+     *
      * <p>
      * 当存在 {@link #regexp()} 时, 以 {@link #regexp()} 计算,
      * 放弃 {@link #testClassName()} 及 {@link #testClass()}.<br>
      * </p>
+     *
      * <p>
      * 当不存在 {@link #regexp()} 时, 以 {@link #testClassName()} 计算.<br>
      * </p>
+     *
      * <p>
      * 当不存在 {@link #testClassName()} 时, 以 {@link #testClass()} 计算.<br>
      * </p>
@@ -68,13 +74,16 @@ public @interface FilterIn {
 
     /**
      * {@linkplain java.util.function.Predicate Predicate} 的实现类完整名称.<br>
+     *
      * <p>
      * 当存在 {@link #regexp()} 时, 以 {@link #regexp()} 计算,
      * 放弃 {@link #testClassName()} 及 {@link #testClass()}.<br>
      * </p>
+     *
      * <p>
      * 当不存在 {@link #regexp()} 时, 以 {@link #testClassName()} 计算.<br>
      * </p>
+     *
      * <p>
      * 当不存在 {@link #testClassName()} 时, 以 {@link #testClass()} 计算.<br>
      * </p>

@@ -15,6 +15,7 @@ open module io.github.fsixteen.base.service {
     requires transitive spring.data.commons;
     requires transitive spring.data.jpa;
     requires transitive spring.web;
+    requires transitive spring.tx;
     requires transitive org.hibernate.orm.core;
     requires transitive com.fasterxml.jackson.annotation;
 

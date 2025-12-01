@@ -14,6 +14,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.GroupInfo;
 import io.github.fsixteen.data.jpa.base.generator.annotations.Selectable;
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.FieldType;
+import io.github.fsixteen.data.jpa.base.generator.annotations.constant.TargetType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ValueType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitIn.List;
 
@@ -38,6 +39,20 @@ public @interface SplitIn {
      * @return String
      */
     String decollator() default Constant.DECOLLATOR;
+
+    /**
+     * 分割后, 分割内容的目标类型.<br>
+     *
+     * @return TargetType
+     */
+    TargetType targetType() default TargetType.DEFAULT;
+
+    /**
+     * 分割后, 分割内容向目标类型转换时的格式化模板.<br>
+     *
+     * @return String
+     */
+    String targetFormat() default "";
 
     /**
      * 范围查询分组.<br>

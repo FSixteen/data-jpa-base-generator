@@ -1,11 +1,14 @@
 package io.github.fsixteen.data.jpa.base.generator.plugins;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import javax.persistence.criteria.AbstractQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -16,8 +19,9 @@ import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Between;
-import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Function;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Functions;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.AnnotationDescriptor;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
 
@@ -29,6 +33,7 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDe
  * @since 1.0.0
  */
 public class BetweenBuilderPlugin extends AbstractComputerBuilderPlugin<Between> {
+
     private static final Logger LOG = LoggerFactory.getLogger(BetweenBuilderPlugin.class);
 
     /**
@@ -38,7 +43,7 @@ public class BetweenBuilderPlugin extends AbstractComputerBuilderPlugin<Between>
      * @param fieldValue 待转换的值.
      * @return Collection
      */
-    Collection<?> transition(AnnotationDescriptor<Between> ad, Object fieldValue) {
+    private Collection<?> transition(final AnnotationDescriptor<Between> ad, final Object fieldValue) {
         if (Objects.isNull(fieldValue)) {
             return null;
         }
@@ -57,20 +62,70 @@ public class BetweenBuilderPlugin extends AbstractComputerBuilderPlugin<Between>
      * {@inheritDoc}
      */
     @Override
-    public boolean isIgnore(AnnotationDescriptor<Between> ad, Object fieldValue, Root<?> root, AbstractQuery<?> query, CriteriaBuilder cb) {
-        return super.isIgnore(ad, fieldValue, root, query, cb);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public boolean checkFieldValue(AnnotationDescriptor<Between> ad, Object fieldValue, Root<?> root, AbstractQuery<?> query, CriteriaBuilder cb) {
         switch (ad.getValueType()) {
+            case LITERAL_BOOLEAN:
+                return false;
+            case LITERAL_BIGDECIMAL:
+            case LITERAL_DOUBLE:
+            case LITERAL_FLOAT:
+            case LITERAL_SHORT:
+            case LITERAL_INTEGER:
+            case LITERAL_LONG:
+                return !"".equals(ad.getValueLiteral()) && Pattern.matches("^(\\-|\\+)?\\d+(\\.\\d+)?(,(\\-|\\+)?\\d+(\\.\\d+)?)?$", ad.getValueLiteral());
             case VALUE:
                 return Collection.class.isInstance(fieldValue);
             default:
                 return super.checkFieldValue(ad, fieldValue, root, query, cb);
+        }
+    }
+
+    /**
+     * 解析字面量值
+     * 
+     * @param valueLiteral 字面量字符串
+     * @return 解析后的值数组
+     */
+    private String[] parseLiteralValues(String valueLiteral) {
+        String[] values = new String[2];
+        StringTokenizer tokenizer = new StringTokenizer(valueLiteral, Constant.DECOLLATOR);
+        if (tokenizer.hasMoreElements()) {
+            values[0] = tokenizer.nextToken();
+        }
+        if (tokenizer.hasMoreElements()) {
+            values[1] = tokenizer.nextToken();
+        } else {
+            values[1] = values[0];
+        }
+        return values;
+    }
+
+    /**
+     * 处理字面量类型的值转换
+     * 
+     * @param ad 注解描述信息实例
+     * @param cb CriteriaBuilder实例
+     * @return Expression数组
+     */
+    private Expression<?>[] handleLiteralValueTypes(AnnotationDescriptor<Between> ad, CriteriaBuilder cb) {
+        String[] values = this.parseLiteralValues(ad.getValueLiteral());
+        switch (ad.getValueType()) {
+            case LITERAL:
+                return new Expression<?>[] { cb.literal(values[0]), cb.literal(values[1]) };
+            case LITERAL_BIGDECIMAL:
+                return new Expression<?>[] { cb.literal(new BigDecimal(values[0])), cb.literal(new BigDecimal(values[1])) };
+            case LITERAL_DOUBLE:
+                return new Expression<?>[] { cb.literal(Double.valueOf(values[0])), cb.literal(Double.valueOf(values[1])) };
+            case LITERAL_FLOAT:
+                return new Expression<?>[] { cb.literal(Float.valueOf(values[0])), cb.literal(Float.valueOf(values[1])) };
+            case LITERAL_SHORT:
+                return new Expression<?>[] { cb.literal(Short.valueOf(values[0])), cb.literal(Short.valueOf(values[1])) };
+            case LITERAL_INTEGER:
+                return new Expression<?>[] { cb.literal(Integer.valueOf(values[0])), cb.literal(Integer.valueOf(values[1])) };
+            case LITERAL_LONG:
+                return new Expression<?>[] { cb.literal(Long.valueOf(values[0])), cb.literal(Long.valueOf(values[1])) };
+            default:
+                return null;
         }
     }
 
@@ -89,15 +144,27 @@ public class BetweenBuilderPlugin extends AbstractComputerBuilderPlugin<Between>
         CriteriaBuilder cb) {
         List<?> fieldValues = List.class.isInstance(fieldValue) ? (List<?>) fieldValue : new ArrayList<>(fieldValue);
         switch (ad.getValueType()) {
+            case AUTO:
+                return new Expression<?>[] { cb.literal(fieldValues.get(0)), cb.literal(fieldValues.get(1)) };
+            case LITERAL:
+            case LITERAL_BIGDECIMAL:
+            case LITERAL_DOUBLE:
+            case LITERAL_FLOAT:
+            case LITERAL_SHORT:
+            case LITERAL_INTEGER:
+            case LITERAL_LONG:
+                return this.handleLiteralValueTypes(ad, cb);
             case VALUE:
                 return new Expression<?>[] { cb.literal(fieldValues.get(0)), cb.literal(fieldValues.get(1)) };
             case COLUMN:
-                return new Expression<?>[] { root.get(String.class.cast(fieldValues.get(0))), root.get(String.class.cast(fieldValues.get(1))) };
+                return new Expression<?>[] { root.get(Objects.toString(fieldValues.get(0))), root.get(Objects.toString(fieldValues.get(1))) };
             case FUNCTION:
-                Function function = ad.getValueFunction();
+                Functions functions = ad.getValueFunctions();
                 return new Expression<?>[] {
-                    cb.function(function.value(), function.type(), this.createFunctionExpression(ad, function, obj, fieldValues.get(0), root, query, cb)),
-                    cb.function(function.value(), function.type(), this.createFunctionExpression(ad, function, obj, fieldValues.get(1), root, query, cb)) };
+                    cb.function(functions.value()[0].value(), functions.value()[0].type(),
+                        this.createFunctionExpression(ad, functions.value()[0], obj, fieldValues, root, query, cb)),
+                    cb.function(functions.value()[1].value(), functions.value()[1].type(),
+                        this.createFunctionExpression(ad, functions.value()[1], obj, fieldValues, root, query, cb)) };
             case UDFUNCTION:
                 try {
                     return this.applyBiValueProcessor(ad, obj, fieldValues, root, query, cb);

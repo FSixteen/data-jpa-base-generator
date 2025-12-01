@@ -16,6 +16,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.FieldType
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ValueType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.FieldProcessorFunction;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Function;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Functions;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.ValueProcessorFunction;
 
 /**
@@ -114,6 +115,15 @@ public @interface Template {
     Function valueFunction() default @Function();
 
     /**
+     * 值函数.<br>
+     * 当且仅当 {@link #valueType()} = {@link ValueType#FUNCTION} 时有效.<br>
+     * 
+     * @since 1.0.2
+     * @return Function
+     */
+    Functions valueFunctions() default @Functions();
+
+    /**
      * 自定义值函数.<br>
      * 当且仅当 {@link #valueType()} = {@link ValueType#UDFUNCTION} 时有效.<br>
      *
@@ -201,4 +211,5 @@ public @interface Template {
         Template[] value();
 
     }
+
 }

@@ -205,6 +205,7 @@ class PredicateBuildProcessor {
     private static class Tuple<V> {
 
         private Integer first;
+
         private V last;
 
         public static <V> Tuple<V> of(Integer first, V last) {

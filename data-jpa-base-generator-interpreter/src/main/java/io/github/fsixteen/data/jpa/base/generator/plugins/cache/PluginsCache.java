@@ -18,6 +18,8 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Gt;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Gte;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.In;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.InTable;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.IsNotNull;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.IsNull;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.LeftLike;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.LessThan;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.LessThanOrEqualTo;
@@ -25,6 +27,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Like;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Lt;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Lte;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NotIn;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Null;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.RightLike;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitIn;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitNotIn;
@@ -36,7 +39,10 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.ComparableBuilderPlugi
 import io.github.fsixteen.data.jpa.base.generator.plugins.FilterInBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.InBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.InTableBuilderPlugin;
+import io.github.fsixteen.data.jpa.base.generator.plugins.IsNotNullBuilderPlugin;
+import io.github.fsixteen.data.jpa.base.generator.plugins.IsNullBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.LikeBuilderPlugin;
+import io.github.fsixteen.data.jpa.base.generator.plugins.NullBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.NumberBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.SplitInBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.SplitNotInBuilderPlugin;
@@ -74,6 +80,10 @@ public final class PluginsCache {
         PLUGINS.put(RightLike.class, new LikeBuilderPlugin(ComparableType.RIGHT));
         PLUGINS.put(StartWith.class, new LikeBuilderPlugin(ComparableType.LEFT));
         PLUGINS.put(EndWith.class, new LikeBuilderPlugin(ComparableType.RIGHT));
+
+        PLUGINS.put(Null.class, new NullBuilderPlugin());
+        PLUGINS.put(IsNull.class, new IsNullBuilderPlugin());
+        PLUGINS.put(IsNotNull.class, new IsNotNullBuilderPlugin());
 
         PLUGINS.put(In.class, new InBuilderPlugin<In>(ComparableType.IN));
         PLUGINS.put(NotIn.class, new InBuilderPlugin<NotIn>(ComparableType.NOT_IN));

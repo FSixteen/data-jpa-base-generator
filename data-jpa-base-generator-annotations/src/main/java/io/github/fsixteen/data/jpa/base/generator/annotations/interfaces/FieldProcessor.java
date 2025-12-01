@@ -70,7 +70,7 @@ public interface FieldProcessor extends Serializable {
      * @param cb         见{@link javax.persistence.criteria.CriteriaBuilder}.
      * @return Expression&lt;T&gt;
      */
-    default <A extends Annotation, T> Expression<T> create(final A anno, final FieldProcessorFunction fun, final Object obj, final Object fieldName,
+    default <A extends Annotation, T> Expression<T> create(final A anno, final FieldProcessorFunction fun, final Object obj, final String fieldName,
         final Object fieldValue, final Root<?> root, final AbstractQuery<?> query, final CriteriaBuilder cb) {
         return this.create(anno, fun, obj, fieldValue, root, query, cb);
     }

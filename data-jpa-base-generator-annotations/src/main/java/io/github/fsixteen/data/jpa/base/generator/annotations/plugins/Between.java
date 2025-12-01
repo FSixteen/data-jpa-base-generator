@@ -100,6 +100,10 @@ public @interface Between {
     /**
      * 字面量.<br>
      * 当且仅当 {@link #valueType()} = {@link ValueType#LITERAL} 时有效.<br>
+     * 使用逗号
+     * {@link io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant#DECOLLATOR
+     * DECOLLATOR} 分割两个值.<br>
+     * 当仅存在一个值时, $1 和 $2 取同一个值.<br>
      * 
      * @since 1.0.2
      * @return String
@@ -111,9 +115,9 @@ public @interface Between {
      * 当且仅当 {@link #valueType()} = {@link ValueType#FUNCTION} 时有效.<br>
      * 
      * @since 1.0.2
-     * @return Function
+     * @return Functions
      */
-    Function valueFunction() default @Function();
+    Functions valueFunctions() default @Functions();
 
     /**
      * 自定义值函数.<br>

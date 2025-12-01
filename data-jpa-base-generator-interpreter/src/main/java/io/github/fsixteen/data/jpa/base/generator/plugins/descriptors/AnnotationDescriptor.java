@@ -12,11 +12,14 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.FieldType
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ValueType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.FieldProcessorFunction;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Function;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Functions;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.ValueProcessorFunction;
 import io.github.fsixteen.data.jpa.base.generator.plugins.exceptions.IntrospectionRuntimeException;
 
 /**
- * 注解描述信息.
+ * 注解描述信息容器.<br>
+ * 该类用于封装和访问注解的各种属性，提供统一的访问接口
+ * 主要用于JPA查询条件生成器中解析注解信息.<br>
  *
  * @author FSixteen
  * @since 1.0.0
@@ -30,7 +33,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
     private A anno;
 
     /** 参与计算字段名称. */
-    private String computerFieldName;
+    private String computerFieldNames;
 
     /** 参与计算值字段名称. */
     private String valueFieldName;
@@ -41,14 +44,13 @@ public final class AnnotationDescriptor<A extends Annotation> {
     /** 参与计算值字段描述信息. */
     private PropertyDescriptor valueFieldPd;
 
-    /*
+    /**
+     * <pre>
      * -- JPA 操作注解类
-     * {@linkplain
-     * io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitIn
-     * SplitIn} 及
-     * {@linkplain
-     * io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitNotIn
-     * SplitNotIn} 中的通用内容. --
+     * {@linkplain io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitIn SplitIn} 及
+     * {@linkplain io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitNotIn SplitNotIn} 中的通用内容. 
+     * --
+     * </pre>
      */
 
     /**
@@ -56,14 +58,13 @@ public final class AnnotationDescriptor<A extends Annotation> {
      */
     private String decollator;
 
-    /*
+    /**
+     * <pre>
      * -- JPA 操作注解类
-     * {@linkplain
-     * io.github.fsixteen.data.jpa.base.generator.annotations.plugins.
-     * FilterNotIn FilterIn} 及
-     * {@linkplain
-     * io.github.fsixteen.data.jpa.base.generator.annotations.plugins.
-     * FilterNotIn FilterNotIn} 中的通用内容. --
+     * {@linkplain io.github.fsixteen.data.jpa.base.generator.annotations.plugins.FilterNotIn FilterIn} 及
+     * {@linkplain io.github.fsixteen.data.jpa.base.generator.annotations.plugins.FilterNotIn FilterNotIn} 中的通用内容.
+     * --
+     * </pre>
      */
 
     /**
@@ -155,6 +156,14 @@ public final class AnnotationDescriptor<A extends Annotation> {
     private Function valueFunction;
 
     /**
+     * 值函数.<br>
+     * 当且仅当 {@link #valueType} = {@link ValueType#FUNCTION} 时有效.<br>
+     * 
+     * @since 1.0.2
+     */
+    private Functions valueFunctions;
+
+    /**
      * 自定义值函数.<br>
      * 当且仅当 {@link #valueType} = {@link ValueType#UDFUNCTION} 时有效.<br>
      */
@@ -242,6 +251,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
         this.valueType = this.fieldValue(anno, "valueType");
         this.valueLiteral = this.stringFieldValue(anno, "valueLiteral");
         this.valueFunction = this.fieldValue(anno, "valueFunction");
+        this.valueFunctions = this.fieldValue(anno, "valueFunctions");
         this.valueProcessor = this.fieldValue(anno, "valueProcessor");
         this.required = this.booleanFieldValue(anno, "required");
         this.not = this.booleanFieldValue(anno, "not");
@@ -266,7 +276,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
         } catch (IntrospectionException e) {
             throw new IntrospectionRuntimeException(e);
         }
-        this.computerFieldName = Objects.nonNull(this.field) && !this.field.isEmpty() ? this.field : this.valueFieldName;
+        this.computerFieldNames = Objects.nonNull(this.field) && !this.field.isEmpty() ? this.field : this.valueFieldName;
     }
 
     @SuppressWarnings("unchecked")
@@ -292,7 +302,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return Class&lt;?&gt;
      */
     public Class<?> getObjClass() {
-        return objClass;
+        return this.objClass;
     }
 
     /**
@@ -301,7 +311,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return A
      */
     public A getAnno() {
-        return anno;
+        return this.anno;
     }
 
     /**
@@ -309,8 +319,8 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * 
      * @return String
      */
-    public String getComputerFieldName() {
-        return computerFieldName;
+    public String getComputerFieldNames() {
+        return this.computerFieldNames;
     }
 
     /**
@@ -319,7 +329,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return String
      */
     public String getValueFieldName() {
-        return valueFieldName;
+        return this.valueFieldName;
     }
 
     /**
@@ -328,7 +338,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return Field
      */
     public Field getValueField() {
-        return valueField;
+        return this.valueField;
     }
 
     /**
@@ -337,7 +347,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return PropertyDescriptor
      */
     public PropertyDescriptor getValueFieldPd() {
-        return valueFieldPd;
+        return this.valueFieldPd;
     }
 
     /**
@@ -346,7 +356,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return String
      */
     public String getDecollator() {
-        return decollator;
+        return this.decollator;
     }
 
     /**
@@ -357,7 +367,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return 正则表达式
      */
     public String getRegexp() {
-        return regexp;
+        return this.regexp;
     }
 
     /**
@@ -366,7 +376,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return Class&lt;?&gt;
      */
     public Class<?> getTestClass() {
-        return testClass;
+        return this.testClass;
     }
 
     /**
@@ -375,7 +385,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return String
      */
     public String getTestClassName() {
-        return testClassName;
+        return this.testClassName;
     }
 
     /**
@@ -385,7 +395,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return String[]
      */
     public String[] getScope() {
-        return scope;
+        return this.scope;
     }
 
     /**
@@ -395,7 +405,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return GroupInfo[]
      */
     public GroupInfo[] getGroups() {
-        return groups;
+        return this.groups;
     }
 
     /**
@@ -404,7 +414,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return String
      */
     public String getField() {
-        return field;
+        return this.field;
     }
 
     /**
@@ -414,7 +424,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return FieldType
      */
     public FieldType getFieldType() {
-        return fieldType;
+        return this.fieldType;
     }
 
     /**
@@ -425,7 +435,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return Function
      */
     public Function getFieldFunction() {
-        return fieldFunction;
+        return this.fieldFunction;
     }
 
     /**
@@ -436,7 +446,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return String
      */
     public String getFieldLiteral() {
-        return fieldLiteral;
+        return this.fieldLiteral;
     }
 
     /**
@@ -447,7 +457,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return FieldProcessorFunction
      */
     public FieldProcessorFunction getFieldProcessor() {
-        return fieldProcessor;
+        return this.fieldProcessor;
     }
 
     /**
@@ -456,7 +466,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return ValueType
      */
     public ValueType getValueType() {
-        return valueType;
+        return this.valueType;
     }
 
     /**
@@ -467,7 +477,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return String
      */
     public String getValueLiteral() {
-        return valueLiteral;
+        return this.valueLiteral;
     }
 
     /**
@@ -478,7 +488,18 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return Function
      */
     public Function getValueFunction() {
-        return valueFunction;
+        return this.valueFunction;
+    }
+
+    /**
+     * 值函数.<br>
+     * 当且仅当 {@link #valueType} = {@link ValueType#FUNCTION} 时有效.<br>
+     * 
+     * @since 1.0.2
+     * @return Functions
+     */
+    public Functions getValueFunctions() {
+        return this.valueFunctions;
     }
 
     /**
@@ -488,7 +509,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return Function
      */
     public ValueProcessorFunction getValueProcessor() {
-        return valueProcessor;
+        return this.valueProcessor;
     }
 
     /**
@@ -502,7 +523,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return boolean
      */
     public boolean isRequired() {
-        return required;
+        return this.required;
     }
 
     /**
@@ -511,7 +532,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return boolean
      */
     public boolean isNot() {
-        return not;
+        return this.not;
     }
 
     /**
@@ -522,7 +543,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return boolean
      */
     public boolean isIgnoreNull() {
-        return ignoreNull;
+        return this.ignoreNull;
     }
 
     /**
@@ -535,7 +556,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return boolean
      */
     public boolean isIgnoreEmpty() {
-        return ignoreEmpty;
+        return this.ignoreEmpty;
     }
 
     /**
@@ -548,7 +569,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return boolean
      */
     public boolean isIgnoreBlank() {
-        return ignoreBlank;
+        return this.ignoreBlank;
     }
 
     /**
@@ -561,7 +582,7 @@ public final class AnnotationDescriptor<A extends Annotation> {
      * @return boolean
      */
     public boolean isTrim() {
-        return trim;
+        return this.trim;
     }
 
 }

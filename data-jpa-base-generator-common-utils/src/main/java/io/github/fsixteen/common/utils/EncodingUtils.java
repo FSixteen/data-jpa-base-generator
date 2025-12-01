@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Objects;
 
@@ -21,8 +22,11 @@ import org.slf4j.LoggerFactory;
  * @since 1.0.1
  */
 public class EncodingUtils {
+
     private static final Logger LOG = LoggerFactory.getLogger(EncodingUtils.class);
+
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+
     private static final char[] HEX_CODE = "0123456789abcdef".toCharArray();
 
     private EncodingUtils() {
@@ -158,7 +162,7 @@ public class EncodingUtils {
      * @param charset 编码方式
      * @return String
      */
-    public static String toBase64(String data, Charset charset) {
+    public static String toBase64(final String data, final Charset charset) {
         if (Objects.isNull(data) || data.isEmpty()) {
             return data;
         }
@@ -171,7 +175,7 @@ public class EncodingUtils {
      * @param data 数据
      * @return byte数组
      */
-    public static byte[] toBase64(byte[] data) {
+    public static byte[] toBase64(final byte[] data) {
         if (Objects.isNull(data) || 0 == data.length) {
             return data;
         }
@@ -208,10 +212,24 @@ public class EncodingUtils {
     /**
      * 转 AES加密.
      * 
+     * @param data  数据
+     * @param start 开始位置
+     * @param end   结束位置
+     * @param key   密钥
+     * @return byte 数组
+     * @throws GeneralSecurityException {@link javax.crypto.Cipher#doFinal(byte[])}
+     */
+    public static byte[] toAES(final byte[] data, final int start, final int end, final byte[] key) throws GeneralSecurityException {
+        return toAES(Arrays.copyOfRange(data, start, end), key);
+    }
+
+    /**
+     * 转 AES加密.
+     * 
      * @param data 数据
      * @param key  密钥
      * @return String
-     * @throws GeneralSecurityException {@link javax.crypto.Cipher#doFinal(byte[])}
+     * @throws GeneralSecurityException {@link javax.cry pto.Cipher#doFinal(byte[])}
      */
     public static String toAESString(final String data, final byte[] key) throws GeneralSecurityException {
         return toAESString(data.getBytes(DEFAULT_CHARSET), key);
@@ -228,4 +246,19 @@ public class EncodingUtils {
     public static String toAESString(final byte[] data, final byte[] key) throws GeneralSecurityException {
         return new String(toBase64(toAES(data, key)), DEFAULT_CHARSET);
     }
+
+    /**
+     * 转 AES加密.
+     * 
+     * @param data  数据
+     * @param start 开始位置
+     * @param end   结束位置
+     * @param key   密钥
+     * @return String
+     * @throws GeneralSecurityException {@link javax.crypto.Cipher#doFinal(byte[])}
+     */
+    public static String toAESString(final byte[] data, final int start, final int end, final byte[] key) throws GeneralSecurityException {
+        return toAESString(Arrays.copyOfRange(data, start, end), key);
+    }
+
 }

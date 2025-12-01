@@ -3,6 +3,7 @@ package io.github.fsixteen.common.utils;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Objects;
 
@@ -16,8 +17,10 @@ import javax.crypto.spec.SecretKeySpec;
  * @since 1.0.1
  */
 public class DecodingUtils {
+
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    private static final byte HEX_DIGITS[] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+
+    private static final byte[] HEX_DIGITS = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1, -1, -1, -1, -1, -1, -1, 10, 11, 12,
         13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 10, 11, 12, 13, 14, 15 };
 
@@ -71,11 +74,22 @@ public class DecodingUtils {
      * @param data BASE64 数据
      * @return byte数组
      */
-    public static String fromBase64(String data) {
+    public static String fromBase64(final String data) {
+        return fromBase64(data, DEFAULT_CHARSET);
+    }
+
+    /**
+     * 从 BASE64 转回.
+     *
+     * @param data    BASE64 数据
+     * @param charset 编码方式
+     * @return byte数组
+     */
+    public static String fromBase64(final String data, final Charset charset) {
         if (Objects.isNull(data) || data.isEmpty()) {
             return data;
         }
-        return new String(fromBase64(data.getBytes(DEFAULT_CHARSET)), DEFAULT_CHARSET);
+        return new String(fromBase64(data.getBytes(DEFAULT_CHARSET)), charset);
     }
 
     /**
@@ -84,7 +98,7 @@ public class DecodingUtils {
      * @param data BASE64 BYTE 数据
      * @return byte数组
      */
-    public static byte[] fromBase64(byte[] data) {
+    public static byte[] fromBase64(final byte[] data) {
         if (Objects.isNull(data) || 0 == data.length) {
             return new byte[] {};
         }
@@ -121,6 +135,20 @@ public class DecodingUtils {
     /**
      * 从 AES加密 转回.
      * 
+     * @param data  数据
+     * @param start 开始位置
+     * @param end   结束位置
+     * @param key   密钥
+     * @return byte 数组
+     * @throws GeneralSecurityException {@link javax.crypto.Cipher#doFinal(byte[])}
+     */
+    public static byte[] fromAES(final byte[] data, final int start, final int end, final byte[] key) throws GeneralSecurityException {
+        return fromAES(Arrays.copyOfRange(data, start, end), key);
+    }
+
+    /**
+     * 从 AES加密 转回.
+     * 
      * @param data 数据
      * @param key  密钥
      * @return String
@@ -140,6 +168,20 @@ public class DecodingUtils {
      */
     public static String fromAESString(final byte[] data, final byte[] key) throws GeneralSecurityException {
         return new String(fromAES(data, key), DEFAULT_CHARSET);
+    }
+
+    /**
+     * 从 AES加密 转回.
+     * 
+     * @param data  数据
+     * @param start 开始位置
+     * @param end   结束位置
+     * @param key   密钥
+     * @return String
+     * @throws GeneralSecurityException {@link javax.crypto.Cipher#doFinal(byte[])}
+     */
+    public static String fromAESString(final byte[] data, final int start, final int end, final byte[] key) throws GeneralSecurityException {
+        return fromAESString(Arrays.copyOfRange(data, start, end), key);
     }
 
 }

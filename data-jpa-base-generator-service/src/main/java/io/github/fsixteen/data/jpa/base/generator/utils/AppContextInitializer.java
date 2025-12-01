@@ -18,7 +18,9 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class AppContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+
     private static Logger log = LoggerFactory.getLogger(AppContextInitializer.class);
+
     private static ConfigurableApplicationContext APPLICATION_CONTEXT = null;
 
     @Override
@@ -35,6 +37,15 @@ public class AppContextInitializer implements ApplicationContextInitializer<Conf
         AppContextInitializer.APPLICATION_CONTEXT = applicationContext;
     }
 
+    /**
+     * 返回唯一匹配给定对象类型(如果有的话)的 Bean 实例.
+     * 
+     * @param <T>      Bean 类型
+     * @param clazz    Bean Class, 可为接口或超类
+     * @param required 是否必须
+     * @return T
+     * @throws BeansException 若 Bean 实例获取失败
+     */
     public static <T> T getBean(Class<T> clazz, boolean required) throws BeansException {
         try {
             return APPLICATION_CONTEXT.getBean(clazz);
@@ -45,4 +56,5 @@ public class AppContextInitializer implements ApplicationContextInitializer<Conf
             throw e;
         }
     }
+
 }

@@ -1,6 +1,5 @@
 package io.github.fsixteen.data.jpa.base.generator.annotations;
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -16,7 +15,7 @@ import java.lang.annotation.Target;
  * @author FSixteen
  * @since 1.0.0
  */
-@Target({ ANNOTATION_TYPE, FIELD, METHOD })
+@Target({ FIELD, METHOD })
 @Retention(RUNTIME)
 @Documented
 @Inherited

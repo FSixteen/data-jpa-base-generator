@@ -32,6 +32,11 @@ public final class Constant {
     public static final String GLOBAL = "global";
 
     /**
+     * 点.
+     */
+    public static final String DOT = ".";
+
+    /**
      * 逗号.
      */
     public static final String COMMA = ",";

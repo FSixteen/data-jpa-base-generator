@@ -8,6 +8,8 @@ package io.github.fsixteen.data.jpa.base.generator.annotations.constant;
  */
 public enum ValueInType {
     /**
+     * 参数值计算方向在源表中.
+     *
      * <pre>
      * SELECT * FROM table_name1 AS t1
      *   WHERE
@@ -18,6 +20,8 @@ public enum ValueInType {
     SOURCE,
 
     /**
+     * 参数值计算方向在目标表中.
+     *
      * <pre>
      * SELECT * FROM table_name1 AS t1
      * WHERE

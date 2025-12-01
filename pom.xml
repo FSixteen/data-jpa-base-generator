@@ -38,22 +38,23 @@
     <!-- 指定JDK版本 -->
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <maven.compiler.compilerVersion>${java.version}</maven.compiler.compilerVersion>
+    <!-- <maven.compiler.compilerVersion>${java.version}</maven.compiler.compilerVersion> -->
     <!-- 编译时的编码 -->
     <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
     <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
     <maven.compiler.encoding>${encoding}</maven.compiler.encoding>
     <argLine>-Dfile.encoding=${encoding}</argLine>
     <!-- 依赖版本 -->
-    <spring.version>5.3.39</spring.version>
-    <spring.boot.version>2.7.18</spring.boot.version>
-    <slf4j.version>1.7.36</slf4j.version>
-    <swagger.version>1.6.14</swagger.version>
-    <swagger-v3.version>2.2.27</swagger-v3.version>
-    <tomcat.version>9.0.98</tomcat.version>
-    <jackson.bom.version>2.17.3</jackson.bom.version>
-    <jakarta-persistence.version>2.2.3</jakarta-persistence.version>
-    <jakarta-validation.version>2.0.2</jakarta-validation.version>
+    <spring.version>5.3.39</spring.version> <!-- 2024-08-14 -->
+    <spring.boot.version>2.7.18</spring.boot.version> <!-- 2023-11-23 -->
+    <slf4j.version>1.7.36</slf4j.version> <!-- 2022-02-08 -->
+    <swagger.version>1.6.16</swagger.version> <!-- 2025-05-15 -->
+    <swagger-v3.version>2.2.39</swagger-v3.version> <!-- 2025-10-13 -->
+    <tomcat.version>9.0.111</tomcat.version> <!-- 2025-10-14 -->
+    <jackson.bom.version>2.17.3</jackson.bom.version> <!-- 2024-11-01 -->
+    <jakarta-persistence.version>2.2.3</jakarta-persistence.version> <!-- 2019-08-30 -->
+    <jakarta-validation.version>2.0.2</jakarta-validation.version> <!-- 2019-09-03 -->
+    <hibernate-core.version>5.6.15.Final</hibernate-core.version> <!-- 2023-02-06 -->
   </properties>
 
   <modules>
@@ -76,7 +77,7 @@
       <dependency>
         <groupId>io.github.fsixteen</groupId>
         <artifactId>common-response-structure</artifactId>
-        <version>1.0.5</version>
+        <version>1.0.6</version>
       </dependency>
       <dependency>
         <groupId>io.swagger</groupId>
@@ -113,7 +114,7 @@
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-core</artifactId>
-        <version>5.6.15.Final</version>
+        <version>${hibernate-core.version}</version>
         <exclusions>
           <exclusion>
             <groupId>javax.persistence</groupId>
@@ -154,7 +155,7 @@
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.10.0</version>
+        <version>5.13.4</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -166,7 +167,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.11.0</version>
+          <version>3.14.0</version>
           <configuration>
             <encoding>${encoding}</encoding>
           </configuration>
@@ -189,7 +190,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.4.2</version>
           <configuration>
             <archive>
               <addMavenDescriptor>true</addMavenDescriptor>
@@ -223,7 +224,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.3.1</version>
           <executions>
             <execution>
               <phase>package</phase>
@@ -236,7 +237,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.6.0</version>
+          <version>3.11.2</version>
           <executions>
             <execution>
               <phase>package</phase>
@@ -248,7 +249,7 @@
           <configuration>
             <!-- <doclint>all,-syntax</doclint> -->
             <!-- <doclint>none</doclint> -->
-            <doclint>all,-syntax</doclint>
+            <doclint>none</doclint>
             <charset>${encoding}</charset>
             <encoding>${encoding}</encoding>
             <docencoding>${encoding}</docencoding>
@@ -257,12 +258,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.6.0</version>
           <dependencies>
             <dependency>
               <groupId>com.puppycrawl.tools</groupId>
               <artifactId>checkstyle</artifactId>
-              <version>10.7.0</version>
+              <version>10.23.0</version>
             </dependency>
             <dependency>
               <groupId>io.github.fsixteen</groupId>
@@ -272,7 +273,7 @@
           </dependencies>
           <executions>
             <execution>
-              <phase>compile</phase>
+              <phase>package</phase>
               <goals>
                 <goal>check</goal>
               </goals>
@@ -288,7 +289,7 @@
         <plugin>
           <groupId>com.diffplug.spotless</groupId>
           <artifactId>spotless-maven-plugin</artifactId>
-          <version>2.43.0</version>
+          <version>2.44.4</version>
           <dependencies>
             <dependency>
               <groupId>io.github.fsixteen</groupId>
@@ -349,7 +350,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-gpg-plugin</artifactId>
-          <version>3.0.1</version>
+          <version>3.2.7</version>
           <executions>
             <execution>
               <id>sign-artifacts</id>
@@ -359,6 +360,18 @@
               </goals>
             </execution>
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.sonatype.central</groupId>
+          <artifactId>central-publishing-maven-plugin</artifactId>
+          <version>0.7.0</version>
+          <extensions>true</extensions>
+          <configuration>
+            <publishingServerId>ossrh</publishingServerId>
+            <skipPublishing>true</skipPublishing>
+            <autoPublish>false</autoPublish>
+            <waitUntil>published</waitUntil>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -386,6 +399,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.central</groupId>
+        <artifactId>central-publishing-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

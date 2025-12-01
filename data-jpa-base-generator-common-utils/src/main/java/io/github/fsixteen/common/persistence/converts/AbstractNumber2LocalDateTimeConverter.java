@@ -56,8 +56,11 @@ import javax.persistence.AttributeConverter;
  * </table>
  * </blockquote>
  * 
+ * @param <X> the type of the entity attribute
+ * @param <Y> the type of the database column
  * @author FSixteen
  * @since 1.0.2
+ * @see javax.persistence.AttributeConverter
  */
 public abstract class AbstractNumber2LocalDateTimeConverter<X, Y> implements AttributeConverter<X, Y> {
 

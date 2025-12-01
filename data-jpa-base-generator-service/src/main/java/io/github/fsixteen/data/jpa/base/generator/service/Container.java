@@ -26,7 +26,7 @@ class Container<T> {
         this.sort = sort;
     }
 
-    public boolean isNull() {
+    public boolean isEmpty() {
         return Objects.isNull(this.getSort());
     }
 }

@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import javax.persistence.criteria.AbstractQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -34,7 +35,9 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDe
  * @since 1.0.0
  */
 public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implements BuilderPlugin<A> {
+
     static final Map<Object, ArgsProcessor> ARGS_FUN_PROCESSOR_CACHE = new ConcurrentHashMap<>(1 << 6);
+
     static Logger LOG = LoggerFactory.getLogger(AbstractComputerBuilderPlugin.class);
 
     /**
@@ -124,9 +127,11 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
         final AbstractQuery<?> query, final CriteriaBuilder cb) {
         switch (arg.type()) {
             case AUTO:
-                return root.get(ad.getComputerFieldName());
+                return this.createComputerFieldPath(ad, root);
             case LITERAL:
                 return cb.literal(arg.value());
+            case LITERAL_BOOLEAN:
+                return cb.literal(Boolean.valueOf(arg.value()));
             case LITERAL_BIGDECIMAL:
                 return cb.literal(new BigDecimal(arg.value()));
             case LITERAL_DOUBLE:
@@ -147,9 +152,9 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
                 // TODO :: 规划中
                 return null;
             case UDFUNCTION:
-                return this.getArgsFunctionProcessor(arg).create(ad.getAnno(), arg, obj, ad.getComputerFieldName(), fieldValue, root, query, cb);
+                return this.getArgsFunctionProcessor(arg).create(ad.getAnno(), arg, obj, ad.getComputerFieldNames(), fieldValue, root, query, cb);
             default:
-                return root.get(arg.value().isEmpty() ? ad.getComputerFieldName() : arg.value());
+                return arg.value().isEmpty() ? this.createComputerFieldPath(ad, root) : root.get(arg.value());
         }
     }
 
@@ -188,10 +193,11 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
         final CriteriaBuilder cb) {
         switch (ad.getFieldType()) {
             case AUTO:
-                return !"".equals(ad.getComputerFieldName());
+                return !"".equals(ad.getComputerFieldNames());
             case LITERAL:
-            case VALUE:
                 return true;
+            case LITERAL_BOOLEAN:
+                return "true".equalsIgnoreCase(ad.getFieldLiteral()) || "false".equalsIgnoreCase(ad.getFieldLiteral());
             case LITERAL_BIGDECIMAL:
             case LITERAL_DOUBLE:
             case LITERAL_FLOAT:
@@ -199,6 +205,8 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
             case LITERAL_INTEGER:
             case LITERAL_LONG:
                 return !"".equals(ad.getFieldLiteral()) && Pattern.matches("^(\\-|\\+)?\\d+(\\.\\d+)?$", ad.getFieldLiteral());
+            case VALUE:
+                return true;
             case COLUMN:
                 return !"".equals(fieldValue);
             case FUNCTION:
@@ -227,9 +235,11 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
         final AbstractQuery<?> query, final CriteriaBuilder cb) {
         switch (ad.getFieldType()) {
             case AUTO:
-                return root.<T>get(ad.getComputerFieldName());
+                return this.createComputerFieldPath(ad, root);
             case LITERAL:
                 return cb.<T>literal((T) ad.getFieldLiteral());
+            case LITERAL_BOOLEAN:
+                return cb.<T>literal((T) Boolean.valueOf(ad.getFieldLiteral()));
             case LITERAL_BIGDECIMAL:
                 return cb.<T>literal((T) new BigDecimal(ad.getFieldLiteral()));
             case LITERAL_DOUBLE:
@@ -245,7 +255,7 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
             case VALUE:
                 return cb.<T>literal((T) fieldValue);
             case COLUMN:
-                return root.<T>get(String.class.cast(fieldValue));
+                return root.<T>get(Objects.toString(fieldValue));
             case FUNCTION:
                 Function function = ad.getFieldFunction();
                 return cb.<T>function(function.value(), (Class<T>) function.type(),
@@ -289,10 +299,11 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
         final CriteriaBuilder cb) {
         switch (ad.getValueType()) {
             case AUTO:
-                return !"".equals(ad.getComputerFieldName());
+                return !"".equals(ad.getComputerFieldNames());
             case LITERAL:
-            case VALUE:
                 return true;
+            case LITERAL_BOOLEAN:
+                return "true".equalsIgnoreCase(ad.getValueLiteral()) || "false".equalsIgnoreCase(ad.getValueLiteral());
             case LITERAL_BIGDECIMAL:
             case LITERAL_DOUBLE:
             case LITERAL_FLOAT:
@@ -300,6 +311,8 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
             case LITERAL_INTEGER:
             case LITERAL_LONG:
                 return !"".equals(ad.getValueLiteral()) && Pattern.matches("^(\\-|\\+)?\\d+(\\.\\d+)?$", ad.getValueLiteral());
+            case VALUE:
+                return true;
             case COLUMN:
                 return !"".equals(fieldValue);
             case FUNCTION:
@@ -328,9 +341,11 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
         final AbstractQuery<?> query, final CriteriaBuilder cb) {
         switch (ad.getValueType()) {
             case AUTO:
-                return root.<T>get(ad.getComputerFieldName());
+                return this.createComputerFieldPath(ad, root);
             case LITERAL:
                 return cb.<T>literal((T) ad.getValueLiteral());
+            case LITERAL_BOOLEAN:
+                return cb.<T>literal((T) Boolean.valueOf(ad.getValueLiteral()));
             case LITERAL_BIGDECIMAL:
                 return cb.<T>literal((T) new BigDecimal(ad.getValueLiteral()));
             case LITERAL_DOUBLE:
@@ -346,7 +361,7 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
             case VALUE:
                 return cb.<T>literal((T) fieldValue);
             case COLUMN:
-                return root.<T>get(String.class.cast(fieldValue));
+                return root.<T>get(Objects.toString(fieldValue));
             case FUNCTION:
                 Function function = ad.getValueFunction();
                 return cb.<T>function(function.value(), (Class<T>) function.type(),
@@ -361,6 +376,24 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
             default:
                 return null;
         }
+    }
+
+    /**
+     * 创建{@link javax.persistence.criteria.Path}.
+     * 
+     * @param <T>  表达式泛型.
+     * @param ad   注解描述信息实例.
+     * @param root 见{@link javax.persistence.criteria.Root}.
+     * @return {@link javax.persistence.criteria.Path}
+     */
+    @SuppressWarnings("unchecked")
+    public <T> Path<T> createComputerFieldPath(final AnnotationDescriptor<A> ad, final Root<?> root) {
+        String[] fields = ad.getComputerFieldNames().split("\\.");
+        Path<?> path = root.get(fields[0]);
+        for (int index = 1; index < fields.length; index++) {
+            path = path.get(fields[index]);
+        }
+        return (Path<T>) path;
     }
 
     /**

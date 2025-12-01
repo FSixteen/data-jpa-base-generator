@@ -1,7 +1,8 @@
 package io.github.fsixteen.data.jpa.base.generator.plugins;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitIn;
 import io.github.fsixteen.data.jpa.base.generator.plugins.constant.ComparableType;
@@ -25,7 +26,17 @@ public class SplitInBuilderPlugin extends InBuilderPlugin<SplitIn> {
     @Override
     Collection<?> transition(AnnotationDescriptor<SplitIn> ad, Object fieldValue) {
         if (null != fieldValue && String.class.isInstance(fieldValue)) {
-            return Arrays.asList(String.class.cast(fieldValue).split(ad.getAnno().decollator()));
+            return Stream.of(String.class.cast(fieldValue).split(ad.getAnno().decollator())).map(e -> {
+                switch (ad.getAnno().targetType()) {
+                    case TO_DATE:
+                    case TO_LD:
+                    case TO_LT:
+                    case TO_LDT:
+                        return ad.getAnno().targetType().parse(e, ad.getAnno().targetFormat());
+                    default:
+                        return ad.getAnno().targetType().parse(e);
+                }
+            }).collect(Collectors.toList());
         }
         return super.transition(ad, fieldValue);
     }

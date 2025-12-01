@@ -94,8 +94,11 @@ public class GroupColumnUtils {
     public static class Column {
 
         private GroupColumnType type = GroupColumnType.VALUE;
+
         private boolean readOnly;
+
         private String fieldOrFun;
+
         private Column[] args;
 
         public static Column of(final String column) {
@@ -127,6 +130,7 @@ public class GroupColumnUtils {
         }
 
         /**
+         * 生成分组计算字段实例.
          * 格式如下: <br>
          * '[read@@]fun@@funname[::(${fieldname}|literal)][::(${fieldname}|literal)]...'
          * <br>

@@ -24,14 +24,17 @@ public @interface ValueProcessorFunction {
      * 值函数执行类.
      * {@linkplain io.github.fsixteen.data.jpa.base.generator.annotations.interfaces.ValueProcessor
      * ValueProcessor} 实现类.<br>
+     *
      * <p>
      * 当存在 {@link #processorClassName()} 时, 以 {@link #processorClassName()} 计算,
      * 放弃 {@link #processorClass()}.<br>
      * </p>
+     *
      * <p>
      * 当不存在 {@link #processorClassName()} 时, 以 {@link #processorClass()} 计算,
      * 放弃 {@link #processorClassName()}.<br>
      * </p>
+     *
      * <p>
      * 当存在 {@link #processorClassName()}, 但实例化失败时, 重新以 {@link #processorClass()}
      * 计算, 放弃 {@link #processorClassName()}.<br>
@@ -47,14 +50,17 @@ public @interface ValueProcessorFunction {
      * 值函数执行类名.
      * {@linkplain io.github.fsixteen.data.jpa.base.generator.annotations.interfaces.ValueProcessor
      * ValueProcessor} 实现类.<br>
+     *
      * <p>
      * 当存在 {@link #processorClassName()} 时, 以 {@link #processorClassName()} 计算,
      * 放弃 {@link #processorClass()}.<br>
      * </p>
+     *
      * <p>
      * 当不存在 {@link #processorClassName()} 时, 以 {@link #processorClass()} 计算,
      * 放弃 {@link #processorClassName()}.<br>
      * </p>
+     *
      * <p>
      * 当存在 {@link #processorClassName()}, 但实例化失败时, 重新以 {@link #processorClass()}
      * 计算, 放弃 {@link #processorClassName()}.<br>

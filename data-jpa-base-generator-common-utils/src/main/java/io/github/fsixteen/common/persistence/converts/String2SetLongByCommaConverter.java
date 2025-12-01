@@ -9,7 +9,8 @@ import java.util.stream.Stream;
 import javax.persistence.AttributeConverter;
 
 /**
- * 数据库数据类型 {@link String} 与实体数据类型 {@link Set<Long>} 通过 {@value #DECOLLATOR}
+ * 数据库数据类型 {@link String} 与实体数据类型 {@link Set}<{@link Long}> 通过
+ * {@value #DECOLLATOR}
  * 分割元素相互转换 {@link AttributeConverter} 接口.<br>
  * 
  * @author FSixteen

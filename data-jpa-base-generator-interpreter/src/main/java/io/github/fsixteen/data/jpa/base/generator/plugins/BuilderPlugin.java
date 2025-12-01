@@ -1,6 +1,7 @@
 package io.github.fsixteen.data.jpa.base.generator.plugins;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,7 +36,9 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDe
 public interface BuilderPlugin<A extends Annotation> {
 
     static final Map<Object, FieldProcessor> FIELD_PROCESSOR_CACHE = new ConcurrentHashMap<>(1 << 6);
+
     static final Map<Object, ValueProcessor> VALUE_PROCESSOR_CACHE = new ConcurrentHashMap<>(1 << 6);
+
     static Logger LOG = LoggerFactory.getLogger(BuilderPlugin.class);
 
     /**
@@ -159,7 +162,7 @@ public interface BuilderPlugin<A extends Annotation> {
      * @return Expression&lt;T&gt;
      * @throws ReflectiveOperationException 值函数执行类实例化异常
      */
-    default <T> Expression<T> applyFieldProcessor(final AnnotationDescriptor<A> ad, final Object obj, final Object fieldName, final Object fieldValue,
+    default <T> Expression<T> applyFieldProcessor(final AnnotationDescriptor<A> ad, final Object obj, final String fieldName, final Object fieldValue,
         final Root<?> root, final AbstractQuery<?> query, final CriteriaBuilder cb) throws ReflectiveOperationException {
         FieldProcessor processor = this.getFieldProcessor(ad.getFieldProcessor());
         return processor.<A, T>create(ad.getAnno(), ad.getFieldProcessor(), obj, fieldName, fieldValue, root, query, cb);
@@ -269,11 +272,10 @@ public interface BuilderPlugin<A extends Annotation> {
      * @return Expression&lt;T&gt;
      * @throws ReflectiveOperationException 值函数执行类实例化异常
      */
-    default <T> Expression<T> applyValueProcessor(final AnnotationDescriptor<A> ad, final Object obj, final Object fieldName, final Object fieldValue,
+    default <T> Expression<T> applyValueProcessor(final AnnotationDescriptor<A> ad, final Object obj, final String fieldName, final Object fieldValue,
         final Root<?> root, final AbstractQuery<?> query, final CriteriaBuilder cb) throws ReflectiveOperationException {
         ValueProcessor processor = this.getValueProcessor(ad.getValueProcessor());
         return processor.<A, T>create(ad.getAnno(), ad.getValueProcessor(), obj, fieldName, fieldValue, root, query, cb);
-
     }
 
     /**
@@ -310,7 +312,7 @@ public interface BuilderPlugin<A extends Annotation> {
      * @return Expression&lt;T&gt;[]
      * @throws ReflectiveOperationException 值函数执行类实例化异常
      */
-    default <T> Expression<T>[] applyBiValueProcessor(final AnnotationDescriptor<A> ad, final Object obj, final Object fieldName, final Object fieldValue,
+    default <T> Expression<T>[] applyBiValueProcessor(final AnnotationDescriptor<A> ad, final Object obj, final String fieldName, final Object fieldValue,
         final Root<?> root, final AbstractQuery<?> query, final CriteriaBuilder cb) throws ReflectiveOperationException {
         ValueProcessor processor = this.getValueProcessor(ad.getValueProcessor());
         return processor.<A, T>biCreate(ad.getAnno(), ad.getValueProcessor(), obj, fieldName, fieldValue, root, query, cb);
@@ -352,26 +354,65 @@ public interface BuilderPlugin<A extends Annotation> {
      * @return Object
      */
     default Object trimIfPresent(final AnnotationDescriptor<A> ad, final Object obj) {
-        if (Objects.isNull(obj)) {
-            return null;
+        if (!ad.isTrim() || obj == null) {
+            return obj;
         }
-        if (ad.isTrim()) {
-            if (obj instanceof String) {
-                return String.class.cast(obj).trim();
-            }
-            List<Object> objs = new ArrayList<>();
-            if (obj instanceof Collection) {
-                for (Object o : Collection.class.cast(obj)) {
-                    objs.add(o instanceof String ? String.class.cast(o).trim() : o);
-                }
-                return objs;
-            } else if (obj.getClass().isArray()) {
-                for (Object o : (Object[]) obj) {
-                    objs.add(o instanceof String ? String.class.cast(o).trim() : o);
-                }
-                return objs;
-            }
+
+        if (obj instanceof String) {
+            return ((String) obj).trim();
         }
+
+        if (obj instanceof Collection<?>) {
+            Collection<?> collection = (Collection<?>) obj;
+            if (collection.isEmpty()) {
+                return collection;
+            }
+
+            boolean needsTrimming = false;
+            for (Object item : collection) {
+                if (item instanceof String && !((String) item).equals(((String) item).trim())) {
+                    needsTrimming = true;
+                    break;
+                }
+            }
+            if (!needsTrimming) {
+                return collection;
+            }
+
+            List<Object> result = new ArrayList<>(collection.size());
+            for (Object item : collection) {
+                result.add(item instanceof String ? ((String) item).trim() : item);
+            }
+            return result;
+        }
+
+        if (obj.getClass().isArray()) {
+            int length = Array.getLength(obj);
+            if (length == 0) {
+                return obj;
+            }
+
+            boolean needsTrimming = false;
+            for (int i = 0; i < length; i++) {
+                Object item = Array.get(obj, i);
+                if (item instanceof String && !((String) item).equals(((String) item).trim())) {
+                    needsTrimming = true;
+                    break;
+                }
+            }
+            if (!needsTrimming) {
+                return obj;
+            }
+
+            Class<?> componentType = obj.getClass().getComponentType();
+            Object result = Array.newInstance(componentType, length);
+            for (int i = 0; i < length; i++) {
+                Object item = Array.get(obj, i);
+                Array.set(result, i, item instanceof String ? ((String) item).trim() : item);
+            }
+            return result;
+        }
+
         return obj;
     }
 
@@ -394,7 +435,7 @@ public interface BuilderPlugin<A extends Annotation> {
      * @return ComputerDescriptor&lt;A&gt;
      */
     default ComputerDescriptor<A> toNullValuePredicate(final AnnotationDescriptor<A> ad, final Root<?> root) {
-        return ComputerDescriptor.of(ad, this.logicReverse(ad.isNot(), root.get(ad.getComputerFieldName()).isNull()));
+        return ComputerDescriptor.of(ad, this.logicReverse(ad.isNot(), root.get(ad.getComputerFieldNames()).isNull()));
     }
 
     /**
@@ -406,7 +447,7 @@ public interface BuilderPlugin<A extends Annotation> {
     default void printWarn(final AnnotationDescriptor<A> ad, final Root<?> root) {
         if (LOG.isWarnEnabled()) {
             LOG.warn("无效 {} 计算内容, 参与计算字段名 {}, 参与计算值字段名 {}, 类型分别为 {}, {}, 不满足计算条件, 已放弃该条件.", ad.getAnno().annotationType().getSimpleName(),
-                ad.getComputerFieldName(), ad.getValueFieldName(), root.getModel().getAttribute(ad.getComputerFieldName()).getJavaType().getSimpleName(),
+                ad.getComputerFieldNames(), ad.getValueFieldName(), root.getModel().getAttribute(ad.getComputerFieldNames()).getJavaType().getSimpleName(),
                 ad.getValueField().getType().getSimpleName());
         }
     }
