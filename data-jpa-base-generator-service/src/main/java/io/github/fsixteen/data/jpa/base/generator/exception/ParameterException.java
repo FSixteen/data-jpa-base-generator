@@ -14,6 +14,7 @@ import io.github.fsixteen.common.structure.extend.Status;
  * @since 1.0.2
  */
 public class ParameterException extends RuntimeException {
+
     private static final long serialVersionUID = 1L;
 
     private Long code = Status.ARGS_ERROR.get().code();

@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
  * @since 1.0.1
  */
 public class DateTimeStandardJsonSerializer extends AbstractDateTimeJsonSerializer {
+
     private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).withZone(ZoneId.systemDefault());
 
     @Override

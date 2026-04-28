@@ -17,7 +17,7 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.constant.ComparableTyp
  */
 public class NumberBuilderPlugin extends AbstractComputerBuilderPlugin<Annotation> {
 
-    private ComparableType type = ComparableType.GT;
+    private final ComparableType type;
 
     public NumberBuilderPlugin(ComparableType type) {
         this.type = type;

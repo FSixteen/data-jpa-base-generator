@@ -15,7 +15,6 @@ import io.github.fsixteen.data.jpa.base.generator.entities.Entity;
 import io.github.fsixteen.data.jpa.base.generator.entities.IdEntity;
 import io.github.fsixteen.data.jpa.base.generator.groups.InsertGroup;
 import io.github.fsixteen.data.jpa.base.generator.service.BaseInsertService;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 
 /**
@@ -29,7 +28,6 @@ public interface BaseInsertController<SI extends BaseInsertService<T, ID, I>, T 
 
     public SI getService();
 
-    @ApiOperation(value = "添加内容", notes = "添加内容")
     @Operation(summary = "添加内容", description = "添加内容")
     @PostMapping(value = "insert")
     default SimpleResponse<T> insert(HttpServletRequest request, HttpServletResponse response,

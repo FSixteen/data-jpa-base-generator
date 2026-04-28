@@ -14,7 +14,6 @@ import io.github.fsixteen.common.structure.extend.Ok;
 import io.github.fsixteen.data.jpa.base.generator.entities.IdEntity;
 import io.github.fsixteen.data.jpa.base.generator.groups.DeleteGroup;
 import io.github.fsixteen.data.jpa.base.generator.service.BaseDeleteService;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 
 /**
@@ -28,7 +27,6 @@ public interface BaseDeleteController<SI extends BaseDeleteService<T, ID, D>, T 
 
     public SI getService();
 
-    @ApiOperation(value = "删除内容", notes = "删除内容")
     @Operation(summary = "删除内容", description = "删除内容")
     @PostMapping(value = "delete")
     default SimpleResponse<T> delete(HttpServletRequest request, HttpServletResponse response,

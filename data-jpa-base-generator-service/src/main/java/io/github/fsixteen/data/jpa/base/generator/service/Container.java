@@ -9,6 +9,7 @@ import java.util.Objects;
  * @since 1.0.1
  */
 class Container<T> {
+
     private T sort;
 
     protected Container() {
@@ -29,4 +30,5 @@ class Container<T> {
     public boolean isEmpty() {
         return Objects.isNull(this.getSort());
     }
+
 }

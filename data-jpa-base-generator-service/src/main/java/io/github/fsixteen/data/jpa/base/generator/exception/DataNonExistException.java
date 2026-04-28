@@ -10,6 +10,7 @@ import io.github.fsixteen.common.structure.extend.Status;
  * @since 1.0.0
  */
 public class DataNonExistException extends RuntimeException {
+
     private static final long serialVersionUID = 1L;
 
     private Long code = Status.NONDATA_ERROR.get().code();

@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
@@ -169,7 +168,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
  * @since 1.0.1
  */
 public abstract class AbstractDateTimeJsonSerializer extends JsonSerializer<Object> {
-    static final ZoneId DEFAULT_ZONE = ZoneId.systemDefault();
 
     static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault()).withZone(ZoneId.systemDefault());
 
@@ -185,20 +183,24 @@ public abstract class AbstractDateTimeJsonSerializer extends JsonSerializer<Obje
     @Override
     public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers) throws IOException, IllegalArgumentException {
         if (Objects.nonNull(value)) {
-            if (value instanceof Long) {
-                ZonedDateTime zonedDateTime = Instant.ofEpochMilli(Long.class.cast(value)).atZone(DEFAULT_ZONE);
-                gen.writeString(this.formater().format(zonedDateTime));
-            } else if (value instanceof Date) {
-                ZonedDateTime zonedDateTime = Date.class.cast(value).toInstant().atZone(DEFAULT_ZONE);
-                gen.writeString(this.formater().format(zonedDateTime));
-            } else if (value instanceof LocalDateTime) {
-                gen.writeString(this.formater().format(LocalDateTime.class.cast(value).atZone(DEFAULT_ZONE)));
-            } else if (value instanceof LocalDate) {
-                gen.writeString(this.formater().format(LocalDate.class.cast(value).atStartOfDay().atZone(DEFAULT_ZONE)));
-            } else if (value instanceof LocalTime) {
-                gen.writeString(this.formater().format(LocalTime.class.cast(value)));
-            } else {
-                throw new IllegalArgumentException("Cannot format given Object as a Date");
+            try {
+                if (value instanceof Long) {
+                    Instant instant = Instant.ofEpochMilli(Long.class.cast(value));
+                    gen.writeString(this.formater().format(instant));
+                } else if (value instanceof Date) {
+                    Instant instant = Date.class.cast(value).toInstant();
+                    gen.writeString(this.formater().format(instant));
+                } else if (value instanceof LocalDateTime) {
+                    gen.writeString(this.formater().format(LocalDateTime.class.cast(value)));
+                } else if (value instanceof LocalDate) {
+                    gen.writeString(this.formater().format(LocalDate.class.cast(value).atStartOfDay()));
+                } else if (value instanceof LocalTime) {
+                    gen.writeString(this.formater().format(LocalTime.class.cast(value)));
+                } else {
+                    throw new IllegalArgumentException("Cannot format given Object as a Date");
+                }
+            } catch (Exception e) {
+                throw new IOException("Error serializing date/time value: " + value, e);
             }
         } else {
             gen.writeNull();

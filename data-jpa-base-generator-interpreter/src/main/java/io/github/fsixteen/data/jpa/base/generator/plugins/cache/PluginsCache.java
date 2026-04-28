@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import io.github.fsixteen.data.jpa.base.generator.annotations.Existed;
 import io.github.fsixteen.data.jpa.base.generator.annotations.Selectable;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Between;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Cases;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.EndWith;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.FilterIn;
@@ -26,7 +27,10 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.LessThanOr
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Like;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Lt;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Lte;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NotBetween;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NotEqual;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NotIn;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NotLike;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Null;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.RightLike;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitIn;
@@ -35,6 +39,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.StartWith;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Unique;
 import io.github.fsixteen.data.jpa.base.generator.plugins.BetweenBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.BuilderPlugin;
+import io.github.fsixteen.data.jpa.base.generator.plugins.CaseWhenBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.ComparableBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.FilterInBuilderPlugin;
 import io.github.fsixteen.data.jpa.base.generator.plugins.InBuilderPlugin;
@@ -63,7 +68,9 @@ public final class PluginsCache {
         PLUGINS.put(Selectable.class, new ComparableBuilderPlugin(ComparableType.EQ));
 
         PLUGINS.put(Equal.class, new ComparableBuilderPlugin(ComparableType.EQ));
-        PLUGINS.put(Between.class, new BetweenBuilderPlugin());
+        PLUGINS.put(NotEqual.class, new ComparableBuilderPlugin(ComparableType.NEQ));
+        PLUGINS.put(Between.class, new BetweenBuilderPlugin(ComparableType.BETWEEN));
+        PLUGINS.put(NotBetween.class, new BetweenBuilderPlugin(ComparableType.NOT_BETWEEN));
 
         PLUGINS.put(Lt.class, new NumberBuilderPlugin(ComparableType.LT));
         PLUGINS.put(Lte.class, new NumberBuilderPlugin(ComparableType.LTE));
@@ -80,6 +87,7 @@ public final class PluginsCache {
         PLUGINS.put(RightLike.class, new LikeBuilderPlugin(ComparableType.RIGHT));
         PLUGINS.put(StartWith.class, new LikeBuilderPlugin(ComparableType.LEFT));
         PLUGINS.put(EndWith.class, new LikeBuilderPlugin(ComparableType.RIGHT));
+        PLUGINS.put(NotLike.class, new LikeBuilderPlugin(ComparableType.NOT_CONTAINS));
 
         PLUGINS.put(Null.class, new NullBuilderPlugin());
         PLUGINS.put(IsNull.class, new IsNullBuilderPlugin());
@@ -96,6 +104,8 @@ public final class PluginsCache {
         PLUGINS.put(InTable.class, new InTableBuilderPlugin());
 
         PLUGINS.put(Unique.class, new ComparableBuilderPlugin(ComparableType.EQ));
+
+        PLUGINS.put(Cases.class, new CaseWhenBuilderPlugin());
     }
 
     /**

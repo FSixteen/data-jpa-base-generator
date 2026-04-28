@@ -13,11 +13,13 @@ import org.junit.jupiter.api.Test;
 public class FieldUtilTest {
 
     private static class User {
+
         private String name;
 
         public String getName() {
             return name;
         }
+
     }
 
     @Test

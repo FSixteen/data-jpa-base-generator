@@ -12,6 +12,7 @@ public class Constants {
      * 只读标识.
      */
     public static final String READONLY_POSTFIX = "read@@";
+
     /**
      * 只读标识长度.
      */
@@ -21,6 +22,7 @@ public class Constants {
      * 函数标识.
      */
     public static final String FUN_PREFIX = "fun@@";
+
     /**
      * 函数标识长度.
      */
@@ -30,6 +32,7 @@ public class Constants {
      * 函数初始位置标识.
      */
     public static final String ARG_PREFIX = "${";
+
     /**
      * 函数初始位置标识长度.
      */
@@ -39,6 +42,7 @@ public class Constants {
      * 函数结束位置标识.
      */
     public static final String ARG_POSTFIX = "}";
+
     /**
      * 函数结束位置标识长度.
      */
@@ -48,6 +52,7 @@ public class Constants {
      * 参数分割标识.
      */
     public static final String ARG_SPLIT_POSTFIX = "::";
+
     /**
      * 参数分割标识长度.
      */

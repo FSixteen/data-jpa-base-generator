@@ -20,7 +20,7 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.Annotation
  */
 public class ComparableBuilderPlugin extends AbstractComputerBuilderPlugin<Annotation> {
 
-    private ComparableType type = ComparableType.GT;
+    private final ComparableType type;
 
     public ComparableBuilderPlugin(ComparableType type) {
         this.type = type;
@@ -51,6 +51,8 @@ public class ComparableBuilderPlugin extends AbstractComputerBuilderPlugin<Annot
                     return cb.lessThan(leftExpression.get(), rightExpression.get());
                 case LTE:
                     return cb.lessThanOrEqualTo(leftExpression.get(), rightExpression.get());
+                case NEQ:
+                    return cb.notEqual(leftExpression.get(), rightExpression.get());
                 default:
                     return cb.equal(leftExpression.get(), rightExpression.get());
             }

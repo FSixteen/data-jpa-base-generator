@@ -38,7 +38,8 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.constant.BuilderType;
  * @author FSixteen
  * @since 1.0.0
  */
-public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializable, U extends IdEntity<ID>> {
+public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializable, U extends IdEntity<ID>>
+    extends BasePreService<T, ID>, BaseProService<T, ID>, BasePostService<T, ID> {
 
     static final Logger log = LoggerFactory.getLogger(BaseUpdateService.class);
 
@@ -172,11 +173,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @return Consumer&lt;U&gt;
      */
     default Consumer<U> updatePreprocessor() {
-        return (args) -> {
-            if (log.isDebugEnabled()) {
-                log.debug("Update Pre Processor Nothing.");
-            }
-        };
+        return (args) -> this.preprocessor().accept(args);
     }
 
     /**
@@ -204,6 +201,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      */
     default Consumer<T> updateProcessor() {
         return (ele) -> {
+            this.processor().accept(ele);
             if (ele instanceof BaseEntity<?>) {
                 BaseEntity<?> eles = BaseEntity.class.cast(ele);
                 eles.setUpdateTime(new Date());
@@ -230,11 +228,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @return BiConsumer&lt;T, U&gt;
      */
     default BiConsumer<T, U> updatePostprocessor() {
-        return (ele, args) -> {
-            if (log.isDebugEnabled()) {
-                log.debug("Update Post Processor Nothing.");
-            }
-        };
+        return (ele, args) -> this.postprocessor().accept(ele, args);
     }
 
     /**
@@ -243,11 +237,7 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
      * @return BiConsumer&lt;Iterable&lt;T&gt, Iterable&lt;U&gt&gt;
      */
     default BiConsumer<Iterable<T>, Iterable<U>> updateAllPostprocessor() {
-        return (ele, args) -> {
-            if (log.isDebugEnabled()) {
-                log.debug("Insert Post Processor Nothing.");
-            }
-        };
+        return (ele, args) -> this.allPostprocessor().accept(ele, args);
     }
 
     /**

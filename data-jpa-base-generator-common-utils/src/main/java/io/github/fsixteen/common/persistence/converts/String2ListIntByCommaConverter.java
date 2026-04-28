@@ -10,14 +10,14 @@ import javax.persistence.AttributeConverter;
 
 /**
  * 数据库数据类型 {@link String} 与实体数据类型 {@link List}<{@link Integer}> 通过
- * {@value #DECOLLATOR}
- * 分割元素相互转换 {@link AttributeConverter} 接口.<br>
+ * {@value #DELIMITER} 分割元素相互转换 {@link AttributeConverter} 接口.<br>
  * 
  * @author FSixteen
  * @since 1.0.2
  */
 public class String2ListIntByCommaConverter implements AttributeConverter<List<Integer>, String> {
-    private static final String DECOLLATOR = ",";
+
+    private static final String DELIMITER = ",";
 
     @Override
     public String convertToDatabaseColumn(List<Integer> attribute) {
@@ -28,7 +28,7 @@ public class String2ListIntByCommaConverter implements AttributeConverter<List<I
         } else if (1 == attribute.size()) {
             return Objects.toString(attribute.get(0));
         } else {
-            return attribute.stream().map(Objects::toString).collect(Collectors.joining(DECOLLATOR));
+            return attribute.stream().map(Objects::toString).collect(Collectors.joining(DELIMITER));
         }
     }
 
@@ -39,7 +39,7 @@ public class String2ListIntByCommaConverter implements AttributeConverter<List<I
         } else if (0 == dbData.length()) {
             return Collections.emptyList();
         } else {
-            return Stream.of(dbData.split(DECOLLATOR)).map((e) -> "null".equals(e) ? null : Integer.valueOf(e)).collect(Collectors.toList());
+            return Stream.of(dbData.split(DELIMITER)).map((e) -> "null".equals(e) ? null : Integer.valueOf(e)).collect(Collectors.toList());
         }
     }
 

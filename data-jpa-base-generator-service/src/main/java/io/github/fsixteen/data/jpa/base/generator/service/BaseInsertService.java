@@ -33,7 +33,8 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.constant.BuilderType;
  * @author FSixteen
  * @since 1.0.0
  */
-public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializable, I extends Entity> {
+public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializable, I extends Entity>
+    extends BasePreService<T, ID>, BaseProService<T, ID>, BasePostService<T, ID> {
 
     static final Logger log = LoggerFactory.getLogger(BaseInsertService.class);
 
@@ -116,11 +117,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      * @return Consumer&lt;I&gt;
      */
     default Consumer<I> insertPreprocessor() {
-        return (args) -> {
-            if (log.isDebugEnabled()) {
-                log.debug("Insert Processor Nothing.");
-            }
-        };
+        return (args) -> this.preprocessor().accept(args);
     }
 
     /**
@@ -129,12 +126,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      * @return Consumer&lt;T&gt;
      */
     default Consumer<T> insertProcessor() {
-        return (ele) -> {
-            // Nothing.
-            if (log.isDebugEnabled()) {
-                log.debug("Insert Processor Nothing.");
-            }
-        };
+        return (args) -> this.processor().accept(args);
     }
 
     /**
@@ -152,11 +144,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      * @return BiConsumer&lt;T, I&gt;
      */
     default BiConsumer<T, I> insertPostprocessor() {
-        return (ele, args) -> {
-            if (log.isDebugEnabled()) {
-                log.debug("Insert Post Processor Nothing.");
-            }
-        };
+        return (ele, args) -> this.postprocessor().accept(ele, args);
     }
 
     /**
@@ -165,11 +153,7 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
      * @return BiConsumer&lt;Iterable&lt;T&gt, Iterable&lt;I&gt&gt;
      */
     default BiConsumer<Iterable<T>, Iterable<I>> insertAllPostprocessor() {
-        return (ele, args) -> {
-            if (log.isDebugEnabled()) {
-                log.debug("Insert Post Processor Nothing.");
-            }
-        };
+        return (ele, args) -> this.allPostprocessor().accept(ele, args);
     }
 
     /**

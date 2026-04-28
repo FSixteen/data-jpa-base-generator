@@ -1,5 +1,7 @@
 package io.github.fsixteen.data.jpa.base.generator.service;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -8,11 +10,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import javax.persistence.metamodel.SingularAttribute;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -177,7 +182,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
      * @since 1.0.2
      */
     default Specification<T> deleteSelectFixedPredicate() {
-        return (r, q, c) -> null;
+        return (r, q, c) -> c.and();
     }
 
     /**
@@ -193,7 +198,22 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
         final List<javax.persistence.criteria.Predicate> list = new ArrayList<>();
         return (root, query, cb) -> {
             if (Objects.nonNull(args.getId())) {
-                list.add(cb.equal(root.get(root.getModel().getId(root.getModel().getIdType().getJavaType())), args.getId()));
+                if (Objects.nonNull(root.getModel().getIdType())) {
+                    // 单一主键
+                    list.add(cb.equal(root.get(root.getModel().getId(root.getModel().getIdType().getJavaType())), args.getId()));
+                } else {
+                    // 联合主键
+                    Set<SingularAttribute<? super T, ?>> attributes = root.getModel().getIdClassAttributes();
+                    for (SingularAttribute<? super T, ?> attribute : attributes) {
+                        try {
+                            Object id = Objects.nonNull(args.getId()) ? args.getId() : args;
+                            PropertyDescriptor pd = new PropertyDescriptor((String) attribute.getName(), id.getClass());
+                            list.add(cb.equal(root.get(attribute.getName()), pd.getReadMethod().invoke(id)));
+                        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException | IntrospectionException e) {
+                            log.error(e.getMessage(), e);
+                        }
+                    }
+                }
             }
             final AnnotationCollection computer = CollectionCache.getAnnotationCollection(args.getClass());
             if (!computer.isEmpty(BuilderType.SELECTED)) {
@@ -203,7 +223,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
                     list.add(selectPredicate);
                 }
             }
-            javax.persistence.criteria.Predicate fixedPredicate = Optional.ofNullable(this.deleteSelectFixedPredicate()).orElseGet(() -> (r, q, c) -> null)
+            javax.persistence.criteria.Predicate fixedPredicate = Optional.ofNullable(this.deleteSelectFixedPredicate()).orElseGet(() -> (r, q, c) -> c.and())
                 .toPredicate(root, query, cb);
             if (Objects.nonNull(fixedPredicate)) {
                 list.add(fixedPredicate);
@@ -222,11 +242,13 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
     @Transactional(rollbackFor = { Exception.class, Error.class })
     default T delete(D args) {
         Specification<T> spec = this.deleteSelectQuery(args);
-        return Objects.nonNull(spec)
-            ? this.deleteBySpec(spec, (ele) -> this.deleteBiTest().test(args, ele), (ele) -> this.deleteBiProcessor().accept(args, ele),
-                (ele) -> this.deleteBiPostprocessor().accept(args, ele))
-            : this.deleteById(args.getId(), (ele) -> this.deleteBiTest().test(args, ele), (ele) -> this.deleteBiProcessor().accept(args, ele),
+        if (Objects.nonNull(spec)) {
+            return this.deleteBySpec(spec, (ele) -> this.deleteBiTest().test(args, ele), (ele) -> this.deleteBiProcessor().accept(args, ele),
                 (ele) -> this.deleteBiPostprocessor().accept(args, ele));
+        } else {
+            return this.deleteById(args.getId(), (ele) -> this.deleteBiTest().test(args, ele), (ele) -> this.deleteBiProcessor().accept(args, ele),
+                (ele) -> this.deleteBiPostprocessor().accept(args, ele));
+        }
     }
 
     /**

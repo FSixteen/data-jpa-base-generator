@@ -1,4 +1,4 @@
-package io.github.fsixteen.common.serializes;
+package io.github.fsixteen.common.json.serializes.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -35,8 +35,11 @@ public class DateTimeJsonSerializerTest {
 
     // 2023-01-31 15:23:11.123 +08:00
     private static final Long MILLS = 1675149791123L;
+
     private static final Date DATE = new Date(MILLS);
+
     private static final LocalDateTime LOCAL_DATE_TIME = LocalDateTime.ofInstant(DATE.toInstant(), ZoneId.systemDefault());
+
     private static final LocalDate LOCAL_DATE = LOCAL_DATE_TIME.toLocalDate();
 
     static {
@@ -60,8 +63,8 @@ public class DateTimeJsonSerializerTest {
         inst = new DateTimeISO8601JsonSerializer();
         assertEquals("\"2023-01-31T07:23:11.123Z\"", test(inst, MILLS), String.format("%s %s 转换失败!", inst.getClass(), "MILLS"));
         assertEquals("\"2023-01-31T07:23:11.123Z\"", test(inst, DATE), String.format("%s %s 转换失败!", inst.getClass(), "DATE"));
-        assertEquals("\"2023-01-31T07:23:11.123Z\"", test(inst, LOCAL_DATE_TIME), String.format("%s %s 转换失败!", inst.getClass(), "LOCAL_DATE_TIME"));
-        assertEquals("\"2023-01-30T16:00:00.000Z\"", test(inst, LOCAL_DATE), String.format("%s %s 转换失败!", inst.getClass(), "LOCAL_DATE"));
+        assertEquals("\"2023-01-31T15:23:11.123Z\"", test(inst, LOCAL_DATE_TIME), String.format("%s %s 转换失败!", inst.getClass(), "LOCAL_DATE_TIME"));
+        assertEquals("\"2023-01-31T00:00:00.000Z\"", test(inst, LOCAL_DATE), String.format("%s %s 转换失败!", inst.getClass(), "LOCAL_DATE"));
 
         inst = new DateTimeISOJsonSerializer();
         assertEquals("\"2023-01-31T15:23:11.123+08:00\"", test(inst, MILLS), String.format("%s %s 转换失败!", inst.getClass(), "MILLS"));
@@ -72,8 +75,8 @@ public class DateTimeJsonSerializerTest {
         inst = new DateTimeGMTJsonSerializer();
         assertEquals("\"Tue, 31 Jan 2023 07:23:11 GMT\"", test(inst, MILLS), String.format("%s %s 转换失败!", inst.getClass(), "MILLS"));
         assertEquals("\"Tue, 31 Jan 2023 07:23:11 GMT\"", test(inst, DATE), String.format("%s %s 转换失败!", inst.getClass(), "DATE"));
-        assertEquals("\"Tue, 31 Jan 2023 07:23:11 GMT\"", test(inst, LOCAL_DATE_TIME), String.format("%s %s 转换失败!", inst.getClass(), "LOCAL_DATE_TIME"));
-        assertEquals("\"Mon, 30 Jan 2023 16:00:00 GMT\"", test(inst, LOCAL_DATE), String.format("%s %s 转换失败!", inst.getClass(), "LOCAL_DATE"));
+        assertEquals("\"Tue, 31 Jan 2023 15:23:11 GMT\"", test(inst, LOCAL_DATE_TIME), String.format("%s %s 转换失败!", inst.getClass(), "LOCAL_DATE_TIME"));
+        assertEquals("\"Tue, 31 Jan 2023 00:00:00 GMT\"", test(inst, LOCAL_DATE), String.format("%s %s 转换失败!", inst.getClass(), "LOCAL_DATE"));
     }
 
     private String test(AbstractDateTimeJsonSerializer jsonSerializer, Object value) throws IOException {
@@ -83,6 +86,7 @@ public class DateTimeJsonSerializerTest {
             gentor.flush();
             return baos.toString();
         } catch (Exception e) {
+            e.printStackTrace();
             return e.getMessage();
         }
     }

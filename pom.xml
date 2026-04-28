@@ -45,16 +45,28 @@
     <maven.compiler.encoding>${encoding}</maven.compiler.encoding>
     <argLine>-Dfile.encoding=${encoding}</argLine>
     <!-- 依赖版本 -->
-    <spring.version>5.3.39</spring.version> <!-- 2024-08-14 -->
-    <spring.boot.version>2.7.18</spring.boot.version> <!-- 2023-11-23 -->
-    <slf4j.version>1.7.36</slf4j.version> <!-- 2022-02-08 -->
-    <swagger.version>1.6.16</swagger.version> <!-- 2025-05-15 -->
-    <swagger-v3.version>2.2.39</swagger-v3.version> <!-- 2025-10-13 -->
-    <tomcat.version>9.0.111</tomcat.version> <!-- 2025-10-14 -->
-    <jackson.bom.version>2.17.3</jackson.bom.version> <!-- 2024-11-01 -->
-    <jakarta-persistence.version>2.2.3</jakarta-persistence.version> <!-- 2019-08-30 -->
-    <jakarta-validation.version>2.0.2</jakarta-validation.version> <!-- 2019-09-03 -->
-    <hibernate-core.version>5.6.15.Final</hibernate-core.version> <!-- 2023-02-06 -->
+    <!-- 2024-08-14 -->
+    <spring.version>5.3.39</spring.version>
+    <!-- 2023-11-23 -->
+    <spring.boot.version>2.7.18</spring.boot.version>
+    <!-- 2022-02-08 -->
+    <slf4j.version>1.7.36</slf4j.version>
+    <!-- 2025-10-13 -->
+    <swagger-v3.version>2.2.39</swagger-v3.version>
+    <!-- 2025-10-14 -->
+    <tomcat.version>9.0.111</tomcat.version>
+    <!-- 2024-11-01 -->
+    <jackson.bom.version>2.17.3</jackson.bom.version>
+    <!-- 2019-08-30 -->
+    <jakarta-persistence.version>2.2.3</jakarta-persistence.version>
+    <!-- 2019-09-03 -->
+    <jakarta-validation.version>2.0.2</jakarta-validation.version>
+    <!-- 2023-02-06 -->
+    <hibernate-core.version>5.6.15.Final</hibernate-core.version>
+    <!-- 2025-12-17 -->
+    <aspectjweaver.version>1.9.25.1</aspectjweaver.version>
+    <!-- 2024-11-18 -->
+    <security.version>5.7.14</security.version>
   </properties>
 
   <modules>
@@ -78,11 +90,6 @@
         <groupId>io.github.fsixteen</groupId>
         <artifactId>common-response-structure</artifactId>
         <version>1.0.6</version>
-      </dependency>
-      <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-annotations</artifactId>
-        <version>${swagger.version}</version>
       </dependency>
       <dependency>
         <groupId>io.swagger.core.v3</groupId>
@@ -132,6 +139,11 @@
         <artifactId>spring-context</artifactId>
         <version>${spring.version}</version>
       </dependency>
+	  <dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-aop</artifactId>
+	    <version>${spring.version}</version>
+	  </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-jdbc</artifactId>
@@ -151,6 +163,16 @@
         <groupId>org.springframework.data</groupId>
         <artifactId>spring-data-jpa</artifactId>
         <version>${spring.boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.aspectj</groupId>
+        <artifactId>aspectjweaver</artifactId>
+        <version>${aspectjweaver.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-core</artifactId>
+        <version>${security.version}</version>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
@@ -289,7 +311,7 @@
         <plugin>
           <groupId>com.diffplug.spotless</groupId>
           <artifactId>spotless-maven-plugin</artifactId>
-          <version>2.44.4</version>
+          <version>2.43.0</version>
           <dependencies>
             <dependency>
               <groupId>io.github.fsixteen</groupId>
@@ -364,11 +386,11 @@
         <plugin>
           <groupId>org.sonatype.central</groupId>
           <artifactId>central-publishing-maven-plugin</artifactId>
-          <version>0.9.0</version>
+          <version>0.10.0</version>
           <extensions>true</extensions>
           <configuration>
             <publishingServerId>ossrh</publishingServerId>
-            <skipPublishing>false</skipPublishing>
+            <skipPublishing>true</skipPublishing>
             <autoPublish>false</autoPublish>
             <waitUntil>published</waitUntil>
           </configuration>
@@ -396,10 +418,12 @@
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
       </plugin>
+      <!--
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
       </plugin>
+      -->
       <plugin>
         <groupId>org.sonatype.central</groupId>
         <artifactId>central-publishing-maven-plugin</artifactId>

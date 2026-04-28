@@ -14,7 +14,6 @@ import io.github.fsixteen.common.structure.extend.Ok;
 import io.github.fsixteen.data.jpa.base.generator.entities.IdEntity;
 import io.github.fsixteen.data.jpa.base.generator.groups.UpdateGroup;
 import io.github.fsixteen.data.jpa.base.generator.service.BaseUpdateService;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 
 /**
@@ -28,7 +27,6 @@ public interface BaseUpdateController<SI extends BaseUpdateService<T, ID, U>, T 
 
     public SI getService();
 
-    @ApiOperation(value = "修改内容", notes = "修改内容")
     @Operation(summary = "修改内容", description = "修改内容")
     @PostMapping(value = "update")
     default SimpleResponse<T> update(HttpServletRequest request, HttpServletResponse response,

@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Between;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Functions;
+import io.github.fsixteen.data.jpa.base.generator.plugins.constant.ComparableType;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.AnnotationDescriptor;
 import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
 
@@ -35,6 +36,12 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDe
 public class BetweenBuilderPlugin extends AbstractComputerBuilderPlugin<Between> {
 
     private static final Logger LOG = LoggerFactory.getLogger(BetweenBuilderPlugin.class);
+
+    private final ComparableType type;
+
+    public BetweenBuilderPlugin(ComparableType type) {
+        this.type = type;
+    }
 
     /**
      * 转换值为 {@linkplain java.util.Collection Collection}.
@@ -230,7 +237,12 @@ public class BetweenBuilderPlugin extends AbstractComputerBuilderPlugin<Between>
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Predicate createPredicates(CriteriaBuilder cb, Optional<Expression> leftExpression, Optional<Expression[]> rightExpression) {
         if (leftExpression.isPresent() && rightExpression.isPresent()) {
-            return cb.between(leftExpression.get(), rightExpression.get()[0], rightExpression.get()[1]);
+            switch (this.type) {
+                case NOT_BETWEEN:
+                    return cb.between(leftExpression.get(), rightExpression.get()[0], rightExpression.get()[1]).not();
+                default:
+                    return cb.between(leftExpression.get(), rightExpression.get()[0], rightExpression.get()[1]);
+            }
         }
         return null;
     }

@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.github.fsixteen.data.jpa.base.generator.autoconfigure.FsnPreAuthorizeAutoConfiguration

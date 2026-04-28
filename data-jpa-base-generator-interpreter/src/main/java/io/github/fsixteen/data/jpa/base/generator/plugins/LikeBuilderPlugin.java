@@ -20,7 +20,7 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.Annotation
  */
 public class LikeBuilderPlugin extends AbstractComputerBuilderPlugin<Annotation> {
 
-    private ComparableType type = ComparableType.CONTAINS;
+    private final ComparableType type;
 
     public LikeBuilderPlugin(ComparableType type) {
         this.type = type;
@@ -49,6 +49,8 @@ public class LikeBuilderPlugin extends AbstractComputerBuilderPlugin<Annotation>
                 case RIGHT:
                 case END_WITH:
                     return cb.like(leftExpression.get(), cb.concat("%", rightExpression.get()));
+                case NOT_CONTAINS:
+                    return cb.notLike(leftExpression.get(), cb.concat("%", cb.concat(rightExpression.get(), "%")));
                 case CONTAINS:
                 default:
                     return cb.like(leftExpression.get(), cb.concat("%", cb.concat(rightExpression.get(), "%")));

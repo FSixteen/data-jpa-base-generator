@@ -37,6 +37,11 @@ public enum ComparableType {
      */
     EQ,
     /**
+     * 不等于(Not Equal to).<br>
+     * eg: select * from table_name where c1 <> '${param}'.<br>
+     */
+    NEQ,
+    /**
      * 开始包含(Begin with).<br>
      * eg: select * from table_name where c1 like '${param}%'.<br>
      */
@@ -51,6 +56,11 @@ public enum ComparableType {
      * eg: select * from table_name where c1 like '%${param}%'.<br>
      */
     CONTAINS,
+    /**
+     * 不包含(Not Contains).<br>
+     * eg: select * from table_name where c1 not like '%${param}%'.<br>
+     */
+    NOT_CONTAINS,
     /**
      * 开始包含(Begin with).<br>
      * eg: select * from table_name where c1 like '${param}%'.<br>
@@ -92,5 +102,17 @@ public enum ComparableType {
      * 不为NULL(Is Not Null).<br>
      * eg: select * from table_name where c1 is not null.<br>
      */
-    IS_NOT_NULL;
+    IS_NOT_NULL,
+
+    /**
+     * 介于两者之间(Between x And y).<br>
+     * eg: select * from table_name where c1 between x and y.<br>
+     */
+    BETWEEN,
+
+    /**
+     * 不介于两者之间(Not Between x And y).<br>
+     * eg: select * from table_name where c1 not between x and y.<br>
+     */
+    NOT_BETWEEN;
 }
