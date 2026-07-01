@@ -27,7 +27,7 @@
     <url>https://github.com/FSixteen/data-jpa-base-generator</url>
     <connection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</connection>
     <developerConnection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</developerConnection>
-    <tag>V1.0.2</tag>
+    <tag>V1.0.3</tag>
   </scm>
 
   <parent>
@@ -44,11 +44,6 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-annotations</artifactId>
-        <version>1.6.15</version>
-      </dependency>
-      <dependency>
         <groupId>io.swagger.core.v3</groupId>
         <artifactId>swagger-annotations</artifactId>
         <version>2.2.30</version>
@@ -61,7 +56,7 @@
       <dependency>
         <groupId>io.github.fsixteen</groupId>
         <artifactId>common-response-structure</artifactId>
-        <version>1.0.6</version>
+        <version>1.1.0</version>
       </dependency>
       <dependency>
         <groupId>io.github.fsixteen</groupId>

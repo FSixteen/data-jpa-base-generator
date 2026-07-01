@@ -29,7 +29,7 @@
     <url>https://github.com/FSixteen/data-jpa-base-generator</url>
     <connection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</connection>
     <developerConnection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</developerConnection>
-    <tag>V1.0.2</tag>
+    <tag>V1.0.3</tag>
   </scm>
 
   <properties>
@@ -386,7 +386,7 @@
         <plugin>
           <groupId>org.sonatype.central</groupId>
           <artifactId>central-publishing-maven-plugin</artifactId>
-          <version>0.10.0</version>
+          <version>0.11.0</version>
           <extensions>true</extensions>
           <configuration>
             <publishingServerId>ossrh</publishingServerId>
@@ -418,12 +418,10 @@
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
       </plugin>
-      <!--
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
       </plugin>
-      -->
       <plugin>
         <groupId>org.sonatype.central</groupId>
         <artifactId>central-publishing-maven-plugin</artifactId>
