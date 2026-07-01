@@ -18,9 +18,13 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ValueType
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.RightLike.List;
 
 /**
- * 字符串后包含条件(select * from table_name where column_name like 'abc%').<br>
+ * 字符串后包含条件(select * from table_name where column_name like '%abc').<br>
  * 当且仅当参与计算值类型或函数返回值类型为{@code java.lang.String}时有效.<br>
  *
+ * @deprecated 请优先使用
+ *             {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.EndWith},
+ *             避免 Left/Right 命名带来的方向歧义.
+ * @see io.github.fsixteen.data.jpa.base.generator.annotations.plugins.EndWith
  * @author FSixteen
  * @since 1.0.0
  */
@@ -30,6 +34,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.RightLike.
 @Documented
 @Selectable
 @Inherited
+@Deprecated
 public @interface RightLike {
 
     /**
