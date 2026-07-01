@@ -25,7 +25,7 @@ import io.github.fsixteen.data.jpa.base.generator.exception.ReflectionException;
 import io.github.fsixteen.data.jpa.base.generator.jpa.BaseDao;
 import io.github.fsixteen.data.jpa.base.generator.plugins.cache.CollectionCache;
 import io.github.fsixteen.data.jpa.base.generator.plugins.collections.AnnotationCollection;
-import io.github.fsixteen.data.jpa.base.generator.plugins.constant.BuilderType;
+import io.github.fsixteen.data.jpa.base.generator.plugins.compiled.CompiledPredicateFacade;
 
 /**
  * 通用Service处理类.<br>
@@ -75,11 +75,9 @@ public interface BaseInsertService<T extends IdEntity<ID>, ID extends Serializab
     default BiPredicate<I, BaseDao<T, ID>> checkExistedBeforInsert() {
         return (args, dao) -> {
             AnnotationCollection computer = CollectionCache.getAnnotationCollection(args.getClass());
-            Specification<
-                T> specification = !computer.isEmpty(BuilderType.EXISTS)
-                    ? (root, query, cb) -> computer.toComputerCollection().withArgs(args).withSpecification(root, query, cb).build(BuilderType.EXISTS)
-                        .getPredicate(cb)
-                    : (root, query, cb) -> cb.equal(cb.literal(0), cb.literal(1));
+            Specification<T> specification = !computer.isExistenceEmpty()
+                ? (root, query, cb) -> CompiledPredicateFacade.existencePredicate(computer, args, root, query, cb)
+                : (root, query, cb) -> cb.equal(cb.literal(0), cb.literal(1));
             return dao.exists(specification);
         };
     }

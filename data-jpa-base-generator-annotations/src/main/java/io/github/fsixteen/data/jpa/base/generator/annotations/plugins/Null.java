@@ -1,5 +1,6 @@
 package io.github.fsixteen.data.jpa.base.generator.annotations.plugins;
 
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -13,113 +14,56 @@ import java.lang.annotation.Target;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 
-import io.github.fsixteen.data.jpa.base.generator.annotations.GroupInfo;
-import io.github.fsixteen.data.jpa.base.generator.annotations.Selectable;
-import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
-import io.github.fsixteen.data.jpa.base.generator.annotations.constant.FieldType;
+import io.github.fsixteen.data.jpa.base.generator.annotations.PredicateRole;
+import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ExprType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Null.List;
 
 /**
- * 判空条件(select * from table_name where column_name is null 或 is not null 或
- * 不参与计算).<br>
- * 当且仅当参与计算值类型或函数返回值类型为{@code java.lang.Boolean}时有效.<br>
+ * 布尔驱动空值判断快捷注解。
+ *
+ * <p>
+ * 该注解是布尔驱动的空值判断快捷包装。零配置时默认作用于当前字段路径，
+ * 并根据当前字段布尔值在 {@link #whenTrueUse()} / {@link #whenFalseUse()} 之间切换。
+ * </p>
  *
  * @author FSixteen
  * @since 1.0.2
  */
-@Target({ FIELD, METHOD })
+@Target({ ANNOTATION_TYPE, FIELD, METHOD })
 @Retention(RUNTIME)
 @Repeatable(List.class)
 @Documented
-@Selectable
+@PredicateRole(selection = true)
 @Inherited
 public @interface Null {
 
+    /**
+     * 字段值为 true 时使用的空值判断方式。
+     *
+     * @return ComputerType
+     */
     ComputerType whenTrueUse() default ComputerType.IS_NULL;
 
+    /**
+     * 字段值为 false 时使用的空值判断方式。
+     *
+     * @return ComputerType
+     */
     ComputerType whenFalseUse() default ComputerType.IS_NOT_NULL;
 
     /**
-     * 范围查询分组.<br>
-     * 默认同在一组范围查询内.<br>
+     * 当前空值判断的被判断 canonical 表达式。
      *
-     * @return String[]
+     * @return Expr
      */
-    String[] scope() default Constant.DEFAULT;
+    Expr left() default @Expr(type = ExprType.PATH);
 
     /**
-     * 条件查询分组, 默认独立组 {@code @GroupInfo("default", 0)}. <br>
-     * 当 {@link #groups()} 值大于 {@code 1} 组时, 该条件可以被多条件查询分组复用.
+     * 当前空值判断的公共选项。
      *
-     * @return GroupInfo[]
+     * @return PredicateOptions
      */
-    GroupInfo[] groups() default { @GroupInfo };
-
-    /**
-     * 参与计算的最终字段. 不指定默认为当前参数字段.<br>
-     *
-     * @return String
-     */
-    String field() default "";
-
-    /**
-     * 字段(列)参与计算方式, 默认为参数字段本身参与计算.<br>
-     *
-     * @return FieldType
-     */
-    FieldType fieldType() default FieldType.AUTO;
-
-    /**
-     * 字面量.<br>
-     * 当且仅当 {@link #fieldType()} = {@link FieldType#LITERAL} 时有效.<br>
-     * 
-     * @return String
-     */
-    String fieldLiteral() default "";
-
-    /**
-     * 字段(列)参与计算函数.<br>
-     * 当且仅当 {@link #fieldType()} = {@link FieldType#FUNCTION} 时有效.<br>
-     *
-     * @return Function
-     */
-    Function fieldFunction() default @Function();
-
-    /**
-     * 字段(列)参与计算自定义函数.<br>
-     * 当且仅当 {@link #fieldType()} = {@link FieldType#UDFUNCTION} 时有效.<br>
-     *
-     * @return Function
-     */
-    FieldProcessorFunction fieldProcessor() default @FieldProcessorFunction();
-
-    /**
-     * 参与计算方式.<br>
-     * <br>
-     * - 为<code>true</code>时, 任何时机均参与计算.<br>
-     * <br>
-     * - 为<code>false</code>时, 根据{@link #ignoreNull()}则机参与计算.<br>
-     *
-     * @return boolean
-     */
-    boolean required() default false;
-
-    /**
-     * 逻辑反向.<br>
-     *
-     * @return boolean
-     * @see io.github.fsixteen.data.jpa.base.generator.annotations.plugins.IsNotNull
-     */
-    boolean not() default false;
-
-    /**
-     * 忽略空值.<br>
-     * 当元素为集合时, 判断每个元素, 忽略空值.<br>
-     * 当且仅当 {@link #required()} = {@link Boolean#FALSE} 时有效.<br>
-     *
-     * @return boolean
-     */
-    boolean ignoreNull() default true;
+    PredicateOptions options() default @PredicateOptions();
 
     /**
      * Defines several {@link Null} annotations on the same element.
@@ -133,42 +77,47 @@ public @interface Null {
     @interface List {
 
         /**
-         * {@link Null} 集合.<br>
-         * 
-         * @return {@link Null}[]
+         * 可重复注解容器。
+         *
+         * @return Null[]
          */
         Null[] value();
 
     }
 
     /**
-     * Computer Type.<br>
-     * 
-     * @author FSixteen
-     * @since 1.0.2
+     * 判空表达式类型。
      */
-    public static enum ComputerType {
+    enum ComputerType {
 
         /**
-         * 为NULL(Is Null).<br>
-         * eg: select * from table_name where c1 is null.<br>
+         * is-null 判断。
          */
-        IS_NULL(e -> e.isNull()),
-
+        IS_NULL(Expression::isNull),
         /**
-         * 不为NULL(Is Not Null).<br>
-         * eg: select * from table_name where c1 is not null.<br>
+         * is-not-null 判断。
          */
-        IS_NOT_NULL(e -> e.isNotNull());
+        IS_NOT_NULL(Expression::isNotNull);
 
-        private java.util.function.Function<Expression<?>, Predicate> expression;
+        private final Execute execute;
 
-        private ComputerType(java.util.function.Function<Expression<?>, Predicate> expression) {
-            this.expression = expression;
+        ComputerType(final Execute execute) {
+            this.execute = execute;
         }
 
-        public Predicate apply(Expression<?> expression) {
-            return this.expression.apply(expression);
+        public Execute getExecute() {
+            return this.execute;
+        }
+
+        public Predicate apply(final Expression<?> expression) {
+            return this.execute.apply(expression);
+        }
+
+        @FunctionalInterface
+        interface Execute {
+
+            Predicate apply(Expression<?> expression);
+
         }
 
     }

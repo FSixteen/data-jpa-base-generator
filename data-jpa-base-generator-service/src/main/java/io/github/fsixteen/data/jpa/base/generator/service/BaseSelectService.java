@@ -29,7 +29,7 @@ import io.github.fsixteen.data.jpa.base.generator.entities.IdEntity;
 import io.github.fsixteen.data.jpa.base.generator.jpa.BaseDao;
 import io.github.fsixteen.data.jpa.base.generator.plugins.cache.CollectionCache;
 import io.github.fsixteen.data.jpa.base.generator.plugins.collections.AnnotationCollection;
-import io.github.fsixteen.data.jpa.base.generator.plugins.constant.BuilderType;
+import io.github.fsixteen.data.jpa.base.generator.plugins.compiled.CompiledPredicateFacade;
 import io.github.fsixteen.data.jpa.base.generator.query.BasePageRequest;
 import io.github.fsixteen.data.jpa.base.generator.query.DefaultPageRequest;
 import io.github.fsixteen.data.jpa.base.generator.utils.AppContextInitializer;
@@ -95,14 +95,13 @@ public interface BaseSelectService<T extends IdEntity<ID>, ID extends Serializab
             return this.selectFixedPredicate();
         }
         final AnnotationCollection computer = CollectionCache.getAnnotationCollection(args.getClass());
-        if (computer.isEmpty(BuilderType.SELECTED)) {
+        if (computer.isSelectionEmpty()) {
             return this.selectFixedPredicate();
         }
         return (root, query, cb) -> {
             List<Predicate> list = new ArrayList<>();
-            if (!computer.isEmpty(BuilderType.SELECTED)) {
-                Predicate selectPredicate = computer.toComputerCollection().withArgs(args).withSpecification(root, query, cb).build(BuilderType.SELECTED)
-                    .getPredicate(cb);
+            if (!computer.isSelectionEmpty()) {
+                Predicate selectPredicate = CompiledPredicateFacade.selectionPredicate(computer, args, root, query, cb);
                 if (Objects.nonNull(selectPredicate)) {
                     list.add(selectPredicate);
                 }

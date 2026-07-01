@@ -1,69 +1,52 @@
 package io.github.fsixteen.data.jpa.base.generator.annotations;
 
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * 该注解类用于指定特定逻辑注解标识类的逻辑处理器执行实现类.<br>
- * 使用示例 eg:
- * 
+ * canonical provider 扩展元注解。
+ *
  * <p>
- * 方式一:
- * 
+ * 该注解只服务于“注解类型 -> compiled provider”的绑定关系，因此只允许标注在
+ * annotation type 上。运行时 registry 会统一读取 {@link #provider()} 并实例化
+ * {@code io.github.fsixteen.data.jpa.base.generator.plugins.spi.CompiledPredicateProvider}。
+ * </p>
+ *
+ * <p>
+ * 推荐用法：
+ * </p>
+ *
  * <pre>
- * &#64;Target({ FIELD, METHOD })
- * &#64;Retention(RUNTIME)
- * &#64;Repeatable(List.class)
- * &#64;Documented
  * &#64;Selectable
- * &#64;Constraint(processorBy = io.github.fsixteen.data.jpa.base.generator.plugins.ComparableBuilderPlugin.class)
- * public &#64;interface Equal {
- *     .....
+ * &#64;Constraint(provider = &#64;ProviderRef(providerClass = XxxCompiledPredicateProvider.class))
+ * public &#64;interface CustomSelectable {
  * }
  * </pre>
- * 
- * <p>
- * 方式二:
- * 
- * <pre>
- * &#64;Target({ FIELD, METHOD })
- * &#64;Retention(RUNTIME)
- * &#64;Repeatable(List.class)
- * &#64;Documented
- * &#64;Selectable
- * &#64;Constraint(processorByClassName = "io.github.fsixteen.data.jpa.base.generator.plugins.ComparableBuilderPlugin")
- * public &#64;interface Equal {
- *     .....
- * }
- * </pre>
- * 
+ *
  * @author FSixteen
  * @since 1.0.0
  */
 @Documented
-@Target({ ElementType.TYPE })
+@Target({ ANNOTATION_TYPE })
 @Retention(RUNTIME)
 @Inherited
 public @interface Constraint {
 
     /**
-     * 特定逻辑注解标识类的逻辑处理器执行实现类.<br>
-     * 
-     * @return Class&lt;?&gt;
+     * compiled predicate provider 的结构化引用。
+     *
+     * <p>
+     * 推荐实现
+     * {@code io.github.fsixteen.data.jpa.base.generator.plugins.spi.CompiledPredicateProvider}。
+     * </p>
+     *
+     * @return ProviderRef
      */
-    Class<?> processorBy() default Void.class;
-
-    /**
-     * 特定逻辑注解标识类的逻辑处理器执行实现类完整名称.<br>
-     * 
-     * @return String
-     * @since 1.0.2
-     */
-    String processorByClassName() default "";
+    ProviderRef provider() default @ProviderRef();
 
 }

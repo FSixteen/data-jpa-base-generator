@@ -1,12 +1,9 @@
 package io.github.fsixteen.data.jpa.base.generator.plugins.collections;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.persistence.criteria.AbstractQuery;
@@ -17,70 +14,91 @@ import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.fsixteen.data.jpa.base.generator.annotations.Constraint;
 import io.github.fsixteen.data.jpa.base.generator.annotations.GroupComputerType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.GroupComputerType.Type;
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
-import io.github.fsixteen.data.jpa.base.generator.plugins.BuilderPlugin;
-import io.github.fsixteen.data.jpa.base.generator.plugins.cache.PluginsCache;
+import io.github.fsixteen.data.jpa.base.generator.plugins.compiled.CompiledAnnotationSpec;
+import io.github.fsixteen.data.jpa.base.generator.plugins.compiled.CompiledPredicateAssembler;
+import io.github.fsixteen.data.jpa.base.generator.plugins.compiled.CompiledPredicateResult;
+import io.github.fsixteen.data.jpa.base.generator.plugins.compiled.PredicateBuildTarget;
+import io.github.fsixteen.data.jpa.base.generator.plugins.compiled.PredicateGroupSpec;
 import io.github.fsixteen.data.jpa.base.generator.plugins.constant.BuilderType;
-import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.AnnotationDescriptor;
-import io.github.fsixteen.data.jpa.base.generator.plugins.descriptors.ComputerDescriptor;
+import io.github.fsixteen.data.jpa.base.generator.plugins.spi.CompiledPredicateProvider;
+import io.github.fsixteen.data.jpa.base.generator.plugins.spi.CompiledPredicateProviderRegistry;
 
 /**
- * 类注解逻辑描述信息集合.<br>
- * 
+ * 运行期构建结果集合。
+ *
+ * <p>
+ * 该对象承接 {@link AnnotationCollection} 的 compiled 注解规格，
+ * 结合具体的请求参数对象、JPA {@code Root}/{@code CriteriaBuilder} 等运行期上下文，
+ * 生成 selection 或 existence 目标下的 {@link CompiledPredicateResult} 集合。
+ * </p>
+ *
+ * <p>
+ * 对外它仍保留历史上的稳定 API 面，例如 {@link #getPredicate(CriteriaBuilder)}、
+ * {@link #getPredicateArray(CriteriaBuilder)} 和
+ * {@link #getPredicateGroupSpec()}；
+ * 但内部实际构建已经完全收敛到 compiled provider 和 compiled assembler。
+ * </p>
+ *
  * @author FSixteen
  * @since 1.0.0
  */
 public final class ComputerCollection {
 
-    private BuilderType type = BuilderType.SELECTED;
+    private final PredicateBuildTarget target;
 
-    private AnnotationCollection annotationCollection;
+    private final AnnotationCollection annotationCollection;
 
-    private Collection<ComputerDescriptor<Annotation>> computerDescriptors = new ArrayList<>();
+    private final Collection<CompiledPredicateResult<?>> predicateResults = new ArrayList<CompiledPredicateResult<?>>();
 
-    public static ComputerCollection of(BuilderType type, AnnotationCollection ac, Collection<ComputerDescriptor<Annotation>> selectCds) {
-        return new ComputerCollection(type, ac, selectCds);
-    }
-
-    private ComputerCollection(BuilderType type, AnnotationCollection ac, Collection<ComputerDescriptor<Annotation>> selectCds) {
-        super();
-        this.type = type;
+    private ComputerCollection(final PredicateBuildTarget target, final AnnotationCollection ac,
+        final Collection<CompiledPredicateResult<?>> predicateResults) {
+        this.target = Optional.ofNullable(target).orElse(PredicateBuildTarget.SELECTION);
         this.annotationCollection = ac;
-        Optional.ofNullable(selectCds).ifPresent(it -> it.forEach(this.computerDescriptors::add));
-    }
-
-    public BuilderType getType() {
-        return type;
-    }
-
-    public void setType(BuilderType type) {
-        this.type = type;
-    }
-
-    public AnnotationCollection getAnnotationCollection() {
-        return annotationCollection;
-    }
-
-    public void setAnnotationCollection(AnnotationCollection annotationCollection) {
-        this.annotationCollection = annotationCollection;
+        Optional.ofNullable(predicateResults).ifPresent(it -> it.forEach(this.predicateResults::add));
     }
 
     /**
-     * 获取分组计算信息.<br>
+     * 返回公开边界上的构建类型。
+     *
+     * @return BuilderType
+     */
+    public BuilderType getType() {
+        return this.target.toBuilderType();
+    }
+
+    public boolean isSelection() {
+        return this.target.isSelection();
+    }
+
+    public boolean isExistence() {
+        return this.target.isExistence();
+    }
+
+    /**
+     * 返回本次运行期构建所基于的注解集合。
+     *
+     * @return AnnotationCollection
+     */
+    public AnnotationCollection getAnnotationCollection() {
+        return this.annotationCollection;
+    }
+
+    /**
+     * 获取指定 scope 下的分组声明映射.<br>
      * 
      * @param scope 范围查询分组名称
      * @see AnnotationCollection#getGroupComputerType(String)
      * @return Map&lt;String, GroupComputerType&gt;
      */
-    public Map<String, GroupComputerType> getConputerType(String scope) {
+    public Map<String, GroupComputerType> getGroupComputerTypeMap(String scope) {
         return this.annotationCollection.getGroupComputerType(scope);
     }
 
     /**
-     * 获取分组计算信息.<br>
+     * 获取指定 scope 与 group 的分组合并类型.<br>
      * 
      * @param scope 范围查询分组名称
      * @param value 条件分组名称
@@ -91,7 +109,7 @@ public final class ComputerCollection {
     }
 
     /**
-     * 获取分组计算信息.<br>
+     * 获取指定 scope 与 group 的分组声明.<br>
      * 
      * @param scope 范围查询分组名称
      * @param value 条件分组名称
@@ -103,7 +121,7 @@ public final class ComputerCollection {
     }
 
     /**
-     * 获取分组计算信息.<br>
+     * 获取指定 scope 下的分组声明数组.<br>
      * 
      * @param scope 范围查询分组名称
      * @return GroupComputerType[];
@@ -113,7 +131,7 @@ public final class ComputerCollection {
     }
 
     /**
-     * 获取分组计算信息.<br>
+     * 获取全部分组声明数组.<br>
      * 
      * @return GroupComputerType[];
      */
@@ -121,12 +139,13 @@ public final class ComputerCollection {
         return this.annotationCollection.getGroupComputerTypes();
     }
 
-    public Collection<ComputerDescriptor<Annotation>> getComputerDescriptors() {
-        return computerDescriptors;
-    }
-
-    public void setComputerDescriptors(Collection<ComputerDescriptor<Annotation>> computerDescriptors) {
-        this.computerDescriptors = computerDescriptors;
+    /**
+     * compiled 主链路下的谓词结果集合。<br>
+     *
+     * @return compiled 谓词结果
+     */
+    public Collection<CompiledPredicateResult<?>> getPredicateResults() {
+        return this.predicateResults;
     }
 
     /**
@@ -160,7 +179,9 @@ public final class ComputerCollection {
      * @return List&lt;Predicate&gt;
      */
     public List<Predicate> getPredicateList(final CriteriaBuilder cb, final String scope) {
-        return new PredicateBuildProcessor(this, cb, scope).toPredicate();
+        // 统一交给 compiled 组装器做分组与合并，避免内部再维护第二套 group 逻辑。
+        return CompiledPredicateAssembler.of(this.annotationCollection, new ArrayList<CompiledPredicateResult<?>>(this.predicateResults), cb, scope)
+            .toPredicateList();
     }
 
     /**
@@ -186,12 +207,37 @@ public final class ComputerCollection {
     }
 
     /**
-     * 判断计算条件是否为空.<br>
+     * 获取 compiled 主链路下的谓词分组树。<br>
+     *
+     * <p>
+     * 该方法不会改变现有 {@link #getPredicate(CriteriaBuilder)} 的对外行为，
+     * 但为复杂对象、子查询和后续 exists/not exists 能力提供统一的分组结构出口。
+     * </p>
+     *
+     * @return 分组树
+     */
+    public PredicateGroupSpec getPredicateGroupSpec() {
+        return this.getPredicateGroupSpec(Constant.DEFAULT);
+    }
+
+    /**
+     * 获取指定 scope 的 compiled 谓词分组树。<br>
+     *
+     * @param scope 范围查询分组
+     * @return 分组树
+     */
+    public PredicateGroupSpec getPredicateGroupSpec(final String scope) {
+        return CompiledPredicateAssembler.of(this.annotationCollection, new ArrayList<CompiledPredicateResult<?>>(this.predicateResults), null, scope)
+            .toPredicateGroupSpec();
+    }
+
+    /**
+     * 判断当前构建结果是否为空.<br>
      * 
      * @return boolean
      */
     public boolean isEmpty() {
-        return this.computerDescriptors.isEmpty() || 0L == this.computerDescriptors.stream().filter(Objects::nonNull).count();
+        return this.predicateResults.isEmpty();
     }
 
     /**
@@ -213,8 +259,6 @@ public final class ComputerCollection {
         private AbstractQuery<?> query;
 
         private CriteriaBuilder cb;
-
-        private Collection<ComputerDescriptor<Annotation>> computerDescriptors = new ArrayList<>();
 
         private Builder() {
         }
@@ -265,70 +309,79 @@ public final class ComputerCollection {
         }
 
         /**
-         * 实例化 <code>ComputerPlugin</code> .
+         * 创建 compiled predicate 结果。
          *
-         * @param ad {@link AnnotationDescriptor} 实例
-         * @see io.github.fsixteen.data.jpa.base.generator.plugins.BuilderPlugin
-         * @return Class
-         */
-        @SuppressWarnings("unchecked")
-        private Class<? extends Annotation> createConstraint(AnnotationDescriptor<Annotation> ad) {
-            Class<? extends Annotation> type = ad.getAnno().annotationType();
-            try {
-                if (!PluginsCache.containsKey(type)) {
-                    Constraint constraint = type.getAnnotation(Constraint.class);
-                    Constructor<BuilderPlugin<? extends Annotation>> cp = (Constructor<
-                        BuilderPlugin<? extends Annotation>>) (Void.class != constraint.processorBy() ? constraint.processorBy()
-                            : Class.forName(constraint.processorByClassName())).getDeclaredConstructor();
-                    PluginsCache.register(type, cp.newInstance());
-                }
-            } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException e) {
-                LOG.error(e.getMessage(), e);
-            }
-            return type;
-        }
-
-        /**
-         * 创建 <code>ComputerDescriptor</code> .
-         *
-         * @param ad  {@link AnnotationDescriptor} 实例
-         * @param cds {@link ComputerDescriptor} 实例容器
-         * @see io.github.fsixteen.data.jpa.base.generator.plugins.BuilderPlugin
+         * @param spec    compiled 注解规格
+         * @param results compiled 结果容器
          * @return Builder
          */
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        private Builder createComputerDescriptor(AnnotationDescriptor<Annotation> ad, Collection<ComputerDescriptor<Annotation>> cds) {
+        private Builder addPredicateResult(final CompiledAnnotationSpec<?> spec, final Collection<CompiledPredicateResult<?>> results) {
             try {
-                cds.add(PluginsCache.reference(this.createConstraint(ad)).toPredicate((AnnotationDescriptor) ad, this.args, root, query, cb));
-            } catch (ClassNotFoundException e) {
+                // 主路径现在统一只接受 compiled provider。
+                // built-in 注解、SPI 注解以及 @Constraint 自定义注解都会先收敛到 registry。
+                CompiledPredicateProvider provider = CompiledPredicateProviderRegistry.require(spec.getAnnotationType());
+                results.add(CompiledPredicateResult.of(spec, provider.create(spec, this.args, this.root, this.query, this.cb)));
+            } catch (IllegalArgumentException e) {
                 LOG.error(e.getMessage(), e);
             }
             return this;
         }
 
         /**
-         * 创建 <code>ComputerDescriptor</code> .
+         * 批量创建 compiled predicate 结果。
          *
-         * @param ads {@link AnnotationDescriptor} 实例容器
-         * @param cds {@link ComputerDescriptor} 实例容器
-         * @see io.github.fsixteen.data.jpa.base.generator.plugins.BuilderPlugin
+         * @param specs   compiled 注解规格容器
+         * @param results compiled 结果容器
          * @return Builder
          */
-        private Builder createComputerDescriptor(Collection<AnnotationDescriptor<Annotation>> ads, Collection<ComputerDescriptor<Annotation>> cds) {
-            ads.forEach(it -> this.createComputerDescriptor(it, cds));
+        private Builder addPredicateResults(final Collection<CompiledAnnotationSpec<?>> specs, final Collection<CompiledPredicateResult<?>> results) {
+            specs.forEach(it -> this.addPredicateResult(it, results));
             return this;
+        }
+
+        /**
+         * 按公开边界上的 {@link BuilderType} 创建运行期构建结果。
+         *
+         * <p>
+         * 该方法主要服务于既有外部调用链；进入内部后会立即映射为
+         * {@link PredicateBuildTarget}。
+         * </p>
+         *
+         * @param type 外部稳定入口仍使用的构建类型
+         * @return ComputerCollection
+         */
+        public ComputerCollection build(BuilderType type) {
+            return this.build(PredicateBuildTarget.from(type));
+        }
+
+        /**
+         * 创建 selection 构建结果。
+         *
+         * @return ComputerCollection
+         */
+        public ComputerCollection buildSelection() {
+            return this.build(PredicateBuildTarget.SELECTION);
+        }
+
+        /**
+         * 创建 existence 构建结果。
+         *
+         * @return ComputerCollection
+         */
+        public ComputerCollection buildExistence() {
+            return this.build(PredicateBuildTarget.EXISTENCE);
         }
 
         /**
          * 创建 <code>ComputerCollection</code> .
          *
-         * @param type 计算方式
+         * @param target 内部构建目标
          * @return ComputerCollection
          */
-        public ComputerCollection build(BuilderType type) {
-            this.createComputerDescriptor(BuilderType.SELECTED == type ? this.annotationCollection.getSelectAds() : this.annotationCollection.getExistedAds(),
-                this.computerDescriptors);
-            return new ComputerCollection(type, this.annotationCollection, this.computerDescriptors);
+        public ComputerCollection build(final PredicateBuildTarget target) {
+            Collection<CompiledPredicateResult<?>> results = new ArrayList<CompiledPredicateResult<?>>();
+            this.addPredicateResults(this.annotationCollection.getPredicateSpecs(target), results);
+            return new ComputerCollection(target, this.annotationCollection, results);
         }
 
     }

@@ -2,15 +2,17 @@ open module io.github.fsixteen.base.controller {
 
     requires java.base;
 
-    requires transitive spring.aop;
+    requires org.slf4j;
+
+    requires spring.aop;
 
     requires transitive org.aspectj.weaver;
 
-    requires transitive spring.boot.autoconfigure;
+    requires spring.boot.autoconfigure;
 
-    requires transitive spring.security.core;
+    requires spring.security.core;
 
-    requires transitive spring.expression;
+    requires spring.expression;
 
     requires transitive io.github.fsixteen.base.service;
 

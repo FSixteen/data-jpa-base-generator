@@ -4,9 +4,7 @@ open module io.github.fsixteen.base.service {
 
     requires java.desktop;
 
-    requires transitive org.slf4j;
-
-    requires transitive io.swagger.v3.oas.annotations;
+    requires org.slf4j;
 
     requires transitive java.persistence;
 
@@ -14,7 +12,9 @@ open module io.github.fsixteen.base.service {
 
     requires transitive java.transaction;
 
-    requires transitive org.apache.tomcat.embed.core;
+    requires transitive javax.servlet.api;
+
+    requires java.annotation;
 
     requires transitive spring.context;
 
@@ -30,9 +30,9 @@ open module io.github.fsixteen.base.service {
 
     requires transitive spring.tx;
 
-    requires transitive org.hibernate.orm.core;
+    requires org.hibernate.orm.core;
 
-    requires transitive com.fasterxml.jackson.annotation;
+    requires com.fasterxml.jackson.annotation;
 
     requires transitive io.github.fsixteen.common.response.structure;
 

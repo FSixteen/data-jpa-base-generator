@@ -27,7 +27,7 @@ public class DateTimeGMTJsonSerializer extends AbstractDateTimeJsonSerializer {
 
     private static final ZoneId ZONE_ID = ZoneId.of("GMT");
 
-    private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("EE, dd MMM yyyy HH:mm:ss z", Locale.getDefault()).withZone(ZONE_ID);
+    private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("EE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH).withZone(ZONE_ID);
 
     @Override
     public DateTimeFormatter formater() {

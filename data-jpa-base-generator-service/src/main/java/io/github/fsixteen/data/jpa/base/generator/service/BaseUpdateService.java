@@ -30,7 +30,7 @@ import io.github.fsixteen.data.jpa.base.generator.exception.DataNonExistExceptio
 import io.github.fsixteen.data.jpa.base.generator.jpa.BaseDao;
 import io.github.fsixteen.data.jpa.base.generator.plugins.cache.CollectionCache;
 import io.github.fsixteen.data.jpa.base.generator.plugins.collections.AnnotationCollection;
-import io.github.fsixteen.data.jpa.base.generator.plugins.constant.BuilderType;
+import io.github.fsixteen.data.jpa.base.generator.plugins.compiled.CompiledPredicateFacade;
 
 /**
  * 通用Service处理类.<br>
@@ -125,13 +125,13 @@ public interface BaseUpdateService<T extends IdEntity<ID>, ID extends Serializab
     default BiPredicate<U, BaseDao<T, ID>> checkExistedBeforUpdate() {
         return (args, dao) -> {
             AnnotationCollection computer = CollectionCache.getAnnotationCollection(args.getClass());
-            if (!computer.isEmpty(BuilderType.EXISTS)) {
+            if (!computer.isExistenceEmpty()) {
                 return dao.exists((root, query, cb) -> {
                     List<javax.persistence.criteria.Predicate> list = new ArrayList<>();
                     if (this.checkExistedWithNotEqualToId()) {
                         list.add(cb.notEqual(root.get(root.getModel().getId(root.getModel().getIdType().getJavaType())), args.getId()));
                     }
-                    list.add(computer.toComputerCollection().withArgs(args).withSpecification(root, query, cb).build(BuilderType.EXISTS).getPredicate(cb));
+                    list.add(CompiledPredicateFacade.existencePredicate(computer, args, root, query, cb));
                     return cb.and(list.toArray(new javax.persistence.criteria.Predicate[list.size()]));
                 });
             } else {

@@ -7,8 +7,18 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Bean utils.<br>
- * 
+ * Bean 反射辅助工具。
+ *
+ * <p>
+ * 当前主要用于收集一个类型及其父类上的全部字段，
+ * 供注解扫描阶段统一遍历 query model 上的候选属性。
+ * </p>
+ *
+ * <p>
+ * 该工具不负责属性可读性判断，也不处理 getter/setter 语义；
+ * 它只提供基于声明字段的结构扫描能力，适合编译阶段做注解发现。
+ * </p>
+ *
  * @author FSixteen
  * @since 1.0.0
  */

@@ -28,8 +28,7 @@ import io.github.fsixteen.data.jpa.base.generator.constants.GroupDateTimeUnit;
 import io.github.fsixteen.data.jpa.base.generator.constants.GroupResponseType;
 import io.github.fsixteen.data.jpa.base.generator.plugins.cache.CollectionCache;
 import io.github.fsixteen.data.jpa.base.generator.plugins.collections.AnnotationCollection;
-import io.github.fsixteen.data.jpa.base.generator.plugins.collections.ComputerCollection;
-import io.github.fsixteen.data.jpa.base.generator.plugins.constant.BuilderType;
+import io.github.fsixteen.data.jpa.base.generator.plugins.compiled.CompiledPredicateFacade;
 import io.github.fsixteen.data.jpa.base.generator.utils.GroupColumnUtils;
 import io.github.fsixteen.data.jpa.base.generator.utils.GroupColumnUtils.Column;
 
@@ -60,8 +59,7 @@ public abstract class AbstractBaseAggService implements BaseAggService {
     private void setQueryWhere(Object obj, CriteriaBuilder cb, CriteriaQuery<GroupEntity> query, Root<?> root) {
         if (Objects.nonNull(obj)) {
             AnnotationCollection computer = CollectionCache.getAnnotationCollection(obj.getClass());
-            Predicate[] list = ComputerCollection.Builder.of().withAnnotationCollection(computer).withArgs(obj).withSpecification(root, query, cb)
-                .build(BuilderType.SELECTED).getPredicateArray(cb);
+            Predicate[] list = CompiledPredicateFacade.selectionPredicateArray(computer, obj, root, query, cb);
             query.where(cb.and(list));
         }
     }

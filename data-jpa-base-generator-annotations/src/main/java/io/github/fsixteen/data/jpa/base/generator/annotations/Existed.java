@@ -10,20 +10,20 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
-import io.github.fsixteen.data.jpa.base.generator.annotations.constant.FieldType;
-import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ValueType;
-import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.FieldProcessorFunction;
-import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Function;
-import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.ValueProcessorFunction;
+import io.github.fsixteen.data.jpa.base.generator.annotations.constant.CompareOp;
+import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ExprType;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Compare;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Expr;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.PredicateOptions;
 
 /**
- * 用于标记参与判断记录已存在的注解类, 字段, 方法等.<br>
- * 单独使用, 计算逻辑等价于
- * {@linkplain io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal
- * Equal} 或
- * {@linkplain io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Unique
- * Unique}.
+ * 存在性判断注解的基础元注解。
+ *
+ * <p>
+ * 直接使用时，其默认语义同样回落为 canonical 等值比较；
+ * 更常见的用途是作为 existed 语义组合注解的统一元注解入口，
+ * 让 compiled 主链路与 {@link Selectable} 共享相同的表达式读取模型。
+ * </p>
  *
  * @see io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal
  * @see io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Unique
@@ -33,160 +33,43 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.ValueProce
 @Target({ ANNOTATION_TYPE, FIELD, METHOD })
 @Retention(RUNTIME)
 @Documented
+@PredicateRole(existence = true)
+@Compare(op = CompareOp.EQ)
 @Inherited
 public @interface Existed {
 
     /**
-     * 范围查询分组.<br>
-     * 默认同在一组范围查询内.<br>
+     * canonical 左表达式。
      *
-     * @return String[]
+     * @return Expr
      */
-    String[] scope() default Constant.DEFAULT;
+    Expr left() default @Expr(type = ExprType.PATH);
 
     /**
-     * 条件查询分组, 默认独立组 {@code @GroupInfo("default", 0)}. <br>
-     * 当 {@link #groups()} 值大于 {@code 1} 组时, 该条件可以被多条件查询分组复用.
+     * canonical 右表达式。
      *
-     * @return GroupInfo[]
+     * @return Expr
      */
-    GroupInfo[] groups() default { @GroupInfo };
+    Expr right() default @Expr(type = ExprType.VALUE);
 
     /**
-     * 参与计算的最终字段. 不指定默认为当前参数字段.<br>
+     * canonical 额外操作数。
      *
-     * @return String
+     * @return Expr[]
      */
-    String field() default "";
+    Expr[] extra() default {};
 
     /**
-     * 字段(列)参与计算方式, 默认为参数字段本身参与计算.<br>
+     * canonical 公共选项。
      *
-     * @since 1.0.2
-     * @return FieldType
-     */
-    FieldType fieldType() default FieldType.AUTO;
-
-    /**
-     * 字面量.<br>
-     * 当且仅当 {@link #fieldType()} = {@link FieldType#LITERAL} 时有效.<br>
-     * 
-     * @since 1.0.2
-     * @return String
-     */
-    String fieldLiteral() default "";
-
-    /**
-     * 字段(列)参与计算函数.<br>
-     * 当且仅当 {@link #fieldType()} = {@link FieldType#FUNCTION} 时有效.<br>
+     * <p>
+     * 注解层默认保持空配置，由 compiled 主链路统一补齐默认
+     * {@code scope/groups}，避免 existed 家族重复声明同一套基础选项。
+     * </p>
      *
-     * @since 1.0.2
-     * @return Function
+     * @return PredicateOptions
      */
-    Function fieldFunction() default @Function();
-
-    /**
-     * 字段(列)参与计算自定义函数.<br>
-     * 当且仅当 {@link #fieldType()} = {@link FieldType#UDFUNCTION} 时有效.<br>
-     *
-     * @since 1.0.2
-     * @return Function
-     */
-    FieldProcessorFunction fieldProcessor() default @FieldProcessorFunction();
-
-    /**
-     * 参数字段指向的值类型, 默认为静态数值.<br>
-     *
-     * @return ValueType
-     */
-    ValueType valueType() default ValueType.VALUE;
-
-    /**
-     * 字面量.<br>
-     * 当且仅当 {@link #valueType()} = {@link ValueType#LITERAL} 时有效.<br>
-     * 
-     * @since 1.0.2
-     * @return String
-     */
-    String valueLiteral() default "";
-
-    /**
-     * 值函数.<br>
-     * 当且仅当 {@link #valueType()} = {@link ValueType#FUNCTION} 时有效.<br>
-     * 
-     * @since 1.0.2
-     * @return Function
-     */
-    Function valueFunction() default @Function();
-
-    /**
-     * 自定义值函数.<br>
-     * 当且仅当 {@link #valueType()} = {@link ValueType#UDFUNCTION} 时有效.<br>
-     *
-     * @return Function
-     */
-    ValueProcessorFunction valueProcessor() default @ValueProcessorFunction();
-
-    /**
-     * 参与计算方式.<br>
-     * <br>
-     * - 为<code>true</code>时, 任何时机均参与计算.<br>
-     * <br>
-     * - 为<code>false</code>时, 根据{@link #ignoreNull()}, {@link #ignoreEmpty()},
-     * {@link #ignoreBlank()}则机参与计算.<br>
-     *
-     * @return boolean
-     */
-    boolean required() default false;
-
-    /**
-     * 逻辑反向.<br>
-     *
-     * @return boolean
-     */
-    boolean not() default false;
-
-    /**
-     * 忽略空值.<br>
-     * 当元素为集合时, 判断每个元素, 忽略空值.<br>
-     * 当且仅当 {@link #required()} = {@link Boolean#FALSE} 时有效.<br>
-     *
-     * @return boolean
-     */
-    boolean ignoreNull() default true;
-
-    /**
-     * 忽略空字符串值.<br>
-     * 当元素为集合, 判断每个元素, 忽略空字符串值.<br>
-     * 当且仅当 {@link #required()} = {@link Boolean#FALSE} 时有效.<br>
-     * 当且仅当参与计算值类型或函数返回值类型为 {@link java.lang.String} 或数组/集合元素类型为
-     * {@link java.lang.String} 时有效.<br>
-     *
-     * @return boolean
-     */
-    boolean ignoreEmpty() default true;
-
-    /**
-     * 忽略空白字符值.<br>
-     * 当元素为集合, 判断每个元素, 忽略空白字符值.<br>
-     * 当且仅当 {@link #required()} = {@link Boolean#FALSE} 时有效.<br>
-     * 当且仅当参与计算值类型或函数返回值类型为 {@link java.lang.String} 或数组/集合元素类型为
-     * {@link java.lang.String} 时有效.<br>
-     *
-     * @return boolean
-     */
-    boolean ignoreBlank() default true;
-
-    /**
-     * 删除所有前导和尾随空白字符.<br>
-     * 当元素为集合, 判断每个元素, 删除所有前导和尾随空白字符.<br>
-     * 当且仅当 {@link #required()} = {@link Boolean#FALSE} 时有效.<br>
-     * 当且仅当参与计算值类型或函数返回值类型为 {@link java.lang.String} 或数组/集合元素类型为
-     * {@link java.lang.String} 时有效.<br>
-     *
-     * @return boolean
-     */
-    boolean trim() default true;
+    PredicateOptions options() default @PredicateOptions();
 
     /**
      * Defines several {@link Existed} annotations on the same element.
@@ -200,8 +83,8 @@ public @interface Existed {
     @interface List {
 
         /**
-         * {@link Existed} 集合.<br>
-         * 
+         * {@link Existed} 集合。
+         *
          * @return {@link Existed}[]
          */
         Existed[] value();

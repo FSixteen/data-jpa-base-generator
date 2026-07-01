@@ -1,7 +1,5 @@
 package io.github.fsixteen.data.jpa.base.generator.service;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,7 +32,8 @@ import io.github.fsixteen.data.jpa.base.generator.exception.DataNonExistExceptio
 import io.github.fsixteen.data.jpa.base.generator.jpa.BaseDao;
 import io.github.fsixteen.data.jpa.base.generator.plugins.cache.CollectionCache;
 import io.github.fsixteen.data.jpa.base.generator.plugins.collections.AnnotationCollection;
-import io.github.fsixteen.data.jpa.base.generator.plugins.constant.BuilderType;
+import io.github.fsixteen.data.jpa.base.generator.plugins.compiled.CompiledPredicateFacade;
+import io.github.fsixteen.data.jpa.base.generator.plugins.support.ReadablePropertySupport;
 
 /**
  * 通用Service处理类.<br>
@@ -207,18 +206,16 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
                     for (SingularAttribute<? super T, ?> attribute : attributes) {
                         try {
                             Object id = Objects.nonNull(args.getId()) ? args.getId() : args;
-                            PropertyDescriptor pd = new PropertyDescriptor((String) attribute.getName(), id.getClass());
-                            list.add(cb.equal(root.get(attribute.getName()), pd.getReadMethod().invoke(id)));
-                        } catch (IllegalArgumentException | ReflectiveOperationException | SecurityException | IntrospectionException e) {
+                            list.add(cb.equal(root.get(attribute.getName()), this.readReadableProperty(id, attribute.getName())));
+                        } catch (RuntimeException e) {
                             log.error(e.getMessage(), e);
                         }
                     }
                 }
             }
             final AnnotationCollection computer = CollectionCache.getAnnotationCollection(args.getClass());
-            if (!computer.isEmpty(BuilderType.SELECTED)) {
-                javax.persistence.criteria.Predicate selectPredicate = computer.toComputerCollection().withArgs(args).withSpecification(root, query, cb)
-                    .build(BuilderType.SELECTED).getPredicate(cb);
+            if (!computer.isSelectionEmpty()) {
+                javax.persistence.criteria.Predicate selectPredicate = CompiledPredicateFacade.selectionPredicate(computer, args, root, query, cb);
                 if (Objects.nonNull(selectPredicate)) {
                     list.add(selectPredicate);
                 }
@@ -485,6 +482,20 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
             postprocessor.accept(ele);
         }
         return ele;
+    }
+
+    /**
+     * 只按 getter 读取属性，避免联合主键对象必须声明 setter。
+     *
+     * @param bean         bean
+     * @param propertyName 属性名
+     * @return 属性值
+     */
+    default Object readReadableProperty(final Object bean, final String propertyName) {
+        if (null == bean || null == propertyName) {
+            return null;
+        }
+        return ReadablePropertySupport.read(bean, propertyName);
     }
 
 }

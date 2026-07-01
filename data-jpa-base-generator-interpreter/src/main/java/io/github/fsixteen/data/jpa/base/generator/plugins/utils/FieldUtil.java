@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * 字段获取工具.
+ * 方法引用到字段信息的解析工具。
  * <p>
  * 该工具类的核心用途是: 将方法引用形式的 getter lambda
  * （例如 {@code User::getName}、{@code User::isActive}）反向解析为
@@ -24,7 +24,12 @@ import java.util.function.Function;
  * <li>根据 Java Bean getter 规范推导出字段名，例如 {@code name}</li>
  * <li>根据实现类和字段名，通过反射获取最终的 {@link Field}</li>
  * </ol>
- * 
+ *
+ * <p>
+ * 该能力主要面向对外 API 或业务侧工具方法场景，和 compiled 注解主链路没有强耦合，
+ * 但仍作为工程内统一的字段推导实现保留。
+ * </p>
+ *
  * @author FSixteen
  * @since 1.0.0
  */

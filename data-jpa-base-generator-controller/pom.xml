@@ -24,15 +24,15 @@
 
   <scm>
     <url>https://github.com/FSixteen/data-jpa-base-generator</url>
-    <connection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</connection>
-    <developerConnection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</developerConnection>
-    <tag>V1.0.3</tag>
+    <connection>scm:git:https://github.com/FSixteen/data-jpa-base-generator.git</connection>
+    <developerConnection>scm:git:https://github.com/FSixteen/data-jpa-base-generator.git</developerConnection>
+    <tag>V1.1.0</tag>
   </scm>
 
   <parent>
     <groupId>io.github.fsixteen</groupId>
     <artifactId>data-jpa-base-generator-parent</artifactId>
-    <version>1.0.3</version>
+    <version>1.1.0</version>
     <relativePath>..</relativePath>
   </parent>
 
@@ -44,7 +44,7 @@
     <dependency>
       <groupId>io.github.fsixteen</groupId>
       <artifactId>data-jpa-base-generator-service</artifactId>
-      <version>1.0.3</version>
+      <version>1.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

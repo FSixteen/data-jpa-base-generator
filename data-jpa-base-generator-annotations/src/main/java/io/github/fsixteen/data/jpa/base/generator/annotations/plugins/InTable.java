@@ -1,5 +1,6 @@
 package io.github.fsixteen.data.jpa.base.generator.annotations.plugins;
 
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -10,291 +11,93 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import io.github.fsixteen.data.jpa.base.generator.annotations.GroupInfo;
-import io.github.fsixteen.data.jpa.base.generator.annotations.Selectable;
-import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
-import io.github.fsixteen.data.jpa.base.generator.annotations.constant.FieldType;
-import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ValueInType;
-import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ValueType;
+import io.github.fsixteen.data.jpa.base.generator.annotations.PredicateRole;
+import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ExprType;
+import io.github.fsixteen.data.jpa.base.generator.annotations.constant.SubqueryMode;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.InTable.List;
 
 /**
- * 跨表包含条件.<br>
- * 当且仅当参与计算值类型或函数返回值类型为{@code java.lang.Comparable}时有效.<br>
+ * 跨表成员判断快捷注解。
+ *
+ * <p>
+ * 该注解是 {@link SubqueryPredicate} 的 in-subquery 语义快捷包装：
+ * `left()` 表达外层 source 路径，
+ * `right()` 表达子查询 select 路径，
+ * `whereCompare()` 表达子查询内部默认叶子比较。
+ * 若需要更复杂的子查询内部逻辑，则通过 {@link #where()} 提供完整 where-tree。
+ * </p>
  *
  * @author FSixteen
  * @since 1.0.0
  */
-@Target({ FIELD, METHOD })
+@Target({ ANNOTATION_TYPE, FIELD, METHOD })
 @Retention(RUNTIME)
 @Repeatable(List.class)
 @Documented
-@Selectable
+@PredicateRole(selection = true)
+@SubqueryPredicate(mode = SubqueryMode.IN, targetEntity = Void.class)
 @Inherited
 public @interface InTable {
 
     /**
-     * 目标实体.
+     * 子查询实体。
      *
-     * @see javax.persistence.JoinColumn#table
-     * @return Class&lt;?&gt;
+     * @return Class
      */
     Class<?> targetEntity();
 
     /**
-     * 字段名称.<br>
-     * 
-     * @see javax.persistence.JoinColumn#name
-     * @return String
-     */
-    String columnName() default "";
-
-    /**
-     * 引用字段名称.<br>
-     * 
-     * @see javax.persistence.JoinColumn#referencedColumnName
-     * @return String
-     */
-    String referencedColumnName() default "";
-
-    /**
-     * 值参数计算方向.<br>
-     * 
-     * @see io.github.fsixteen.data.jpa.base.generator.annotations.constant.ValueInType
-     * @return ValueJoinType
-     */
-    ValueInType valueInType() default ValueInType.TARGET;
-
-    /**
-     * 值参与计算方式.<br>
-     * 当 {@link #valueInProcessorClass()} != {@link Void}.class 时, 以
-     * {@link #valueInProcessorClass()} 作为计算方式.<br>
-     * 反之, 当 {@code !"".equals( } {@link #valueInProcessorClassName()}
-     * {@code )}时, 以
-     * {@link #valueInProcessorClassName()} 作为计算方式.<br>
-     * 当 {@link #valueInProcessorClass()} 及 {@link #valueInProcessorClassName()}
-     * 均无效时, 默认以
-     * {@linkplain io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal
-     * Equal} 作为计算方式.<br>
-     * eg: <br>
-     * <code>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal}.class<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Gt}.class<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Gte}.class<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Lt}.class<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Lte}.class<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.GreaterThan}.class<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.GreaterThanOrEqualTo}.class<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.LessThan}.class<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.LessThanOrEqualTo}.class<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Like}.class<br>
-     * - ......
-     * </code>
-     * 
-     * @since 1.0.1
-     * @return Class
-     */
-    Class<?> valueInProcessorClass() default Void.class;
-
-    /**
-     * 值参与计算方式.<br>
-     * 当 {@link #valueInProcessorClass()} != {@link Void}.class 时, 以
-     * {@link #valueInProcessorClass()} 作为计算方式.<br>
-     * 反之, 当 {@code !"".equals( } {@link #valueInProcessorClassName()}
-     * {@code )}时, 以
-     * {@link #valueInProcessorClassName()} 作为计算方式.<br>
-     * 当 {@link #valueInProcessorClass()} 及 {@link #valueInProcessorClassName()}
-     * 均无效时, 默认以
-     * {@linkplain io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal
-     * Equal} 作为计算方式.<br>
-     * eg: <br>
-     * <code>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal}<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Gt}<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Gte}<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Lt}<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Lte}<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.GreaterThan}<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.GreaterThanOrEqualTo}<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.LessThan}<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.LessThanOrEqualTo}<br>
-     * - {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Like}<br>
-     * - ......
-     * </code>
-     * 
-     * @since 1.0.1
-     * @return String
-     */
-    String valueInProcessorClassName() default "";
-
-    /**
-     * 范围查询分组.<br>
-     * 默认同在一组范围查询内.<br>
+     * 当前 in-subquery 比较的外层 canonical 表达式。
      *
-     * @return String[]
+     * @return Expr
      */
-    String[] scope() default Constant.DEFAULT;
+    Expr left() default @Expr(type = ExprType.PATH);
 
     /**
-     * 条件查询分组, 默认独立组 {@code @GroupInfo("default", 0)}. <br>
-     * 当 {@link #groups()} 值大于 {@code 1} 组时, 该条件可以被多条件查询分组复用.
+     * 当前 in-subquery 比较的子查询 select 表达式。
      *
-     * @return GroupInfo[]
+     * @return Expr
      */
-    GroupInfo[] groups() default { @GroupInfo };
+    Expr right() default @Expr(type = ExprType.PATH);
 
     /**
-     * 参与计算的最终字段. 不指定默认为当前参数字段.<br>
+     * 当前 in-subquery 子查询的默认叶子比较规则。
      *
-     * @return String
-     */
-    String field() default "";
-
-    /**
-     * 字段(列)参与计算方式, 默认为参数字段本身参与计算.<br>
+     * <p>
+     * 该字段是 `InTable` 当前推荐的 canonical 入口，可直接表达
+     * 字段对字段、字段对函数、非等值比较等子查询内部匹配条件。
+     * 未显式配置时，编译器会自动回退为“外层 source 路径 = 子查询 select 路径”。
+     * </p>
      *
-     * @since 1.0.2
-     * @return FieldType
+     * @return Compare
      */
-    FieldType fieldType() default FieldType.AUTO;
+    Compare whereCompare() default @Compare(left = @Expr(type = ExprType.AUTO), right = @Expr(type = ExprType.AUTO));
 
     /**
-     * 字面量.<br>
-     * 当且仅当 {@link #fieldType()} = {@link FieldType#LITERAL} 时有效.<br>
-     * 
-     * @since 1.0.2
-     * @return String
-     */
-    String fieldLiteral() default "";
-
-    /**
-     * 字段(列)参与计算函数.<br>
-     * 当且仅当 {@link #fieldType()} = {@link FieldType#FUNCTION} 时有效.<br>
+     * 当前 in-subquery 子查询的附加谓词分组树。
      *
-     * @since 1.0.2
-     * @return Function
-     */
-    Function fieldFunction() default @Function();
-
-    /**
-     * 字段(列)参与计算自定义函数.<br>
-     * 当且仅当 {@link #fieldType()} = {@link FieldType#UDFUNCTION} 时有效.<br>
+     * <p>
+     * `whereCompare()` 用于表达默认叶子；本字段用于表达额外的 and/or 嵌套条件树。
+     * 分组内叶子谓词的 {@link PredicateOptions} 默认也会继承当前注解的 {@link #options()}。
+     * </p>
      *
-     * @since 1.0.2
-     * @return Function
+     * @return SubqueryGroup
      */
-    FieldProcessorFunction fieldProcessor() default @FieldProcessorFunction();
+    SubqueryGroup where() default @SubqueryGroup();
 
     /**
-     * 参数字段指向的值类型, 默认为静态数值.<br>
+     * 当前 in-subquery 比较的公共选项。
      *
-     * @return ValueType
+     * @return PredicateOptions
      */
-    ValueType valueType() default ValueType.VALUE;
+    PredicateOptions options() default @PredicateOptions();
 
-    /**
-     * 字面量.<br>
-     * 当且仅当 {@link #valueType()} = {@link ValueType#LITERAL} 时有效.<br>
-     * 
-     * @since 1.0.2
-     * @return String
-     */
-    String valueLiteral() default "";
-
-    /**
-     * 值函数.<br>
-     * 当且仅当 {@link #valueType()} = {@link ValueType#FUNCTION} 时有效.<br>
-     * 
-     * @since 1.0.2
-     * @return Function
-     */
-    Function valueFunction() default @Function();
-
-    /**
-     * 自定义值函数.<br>
-     * 当且仅当 {@link #valueType()} = {@link ValueType#UDFUNCTION} 时有效.<br>
-     *
-     * @return Function
-     */
-    ValueProcessorFunction valueProcessor() default @ValueProcessorFunction();
-
-    /**
-     * 参与计算方式.<br>
-     * <br>
-     * - 为<code>true</code>时, 任何时机均参与计算.<br>
-     * <br>
-     * - 为<code>false</code>时, 根据{@link #ignoreNull()}, {@link #ignoreEmpty()},
-     * {@link #ignoreBlank()}则机参与计算.<br>
-     *
-     * @return boolean
-     */
-    boolean required() default false;
-
-    /**
-     * 逻辑反向.<br>
-     *
-     * @return boolean
-     */
-    boolean not() default false;
-
-    /**
-     * 忽略空值.<br>
-     * 当元素为集合时, 判断每个元素, 忽略空值.<br>
-     * 当且仅当 {@link #required()} = {@link Boolean#FALSE} 时有效.<br>
-     *
-     * @return boolean
-     */
-    boolean ignoreNull() default true;
-
-    /**
-     * 忽略空字符串值.<br>
-     * 当元素为集合, 判断每个元素, 忽略空字符串值.<br>
-     * 当且仅当 {@link #required()} = {@link Boolean#FALSE} 时有效.<br>
-     * 当且仅当参与计算值类型或函数返回值类型为 {@link java.lang.String} 或数组/集合元素类型为
-     * {@link java.lang.String} 时有效.<br>
-     *
-     * @return boolean
-     */
-    boolean ignoreEmpty() default true;
-
-    /**
-     * 忽略空白字符值.<br>
-     * 当元素为集合, 判断每个元素, 忽略空白字符值.<br>
-     * 当且仅当 {@link #required()} = {@link Boolean#FALSE} 时有效.<br>
-     * 当且仅当参与计算值类型或函数返回值类型为 {@link java.lang.String} 或数组/集合元素类型为
-     * {@link java.lang.String} 时有效.<br>
-     *
-     * @return boolean
-     */
-    boolean ignoreBlank() default true;
-
-    /**
-     * 删除所有前导和尾随空白字符.<br>
-     * 当元素为集合, 判断每个元素, 删除所有前导和尾随空白字符.<br>
-     * 当且仅当 {@link #required()} = {@link Boolean#FALSE} 时有效.<br>
-     * 当且仅当参与计算值类型或函数返回值类型为 {@link java.lang.String} 或数组/集合元素类型为
-     * {@link java.lang.String} 时有效.<br>
-     *
-     * @return boolean
-     */
-    boolean trim() default true;
-
-    /**
-     * Defines several {@link InTable} annotations on the same element.
-     *
-     * @see InTable
-     */
     @Target({ FIELD, METHOD })
     @Retention(RUNTIME)
     @Documented
     @Inherited
     @interface List {
 
-        /**
-         * {@link InTable} 集合.<br>
-         * 
-         * @return {@link InTable}[]
-         */
         InTable[] value();
 
     }

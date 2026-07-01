@@ -1,5 +1,6 @@
 package io.github.fsixteen.data.jpa.base.generator.annotations.plugins;
 
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -10,160 +11,56 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import io.github.fsixteen.data.jpa.base.generator.annotations.GroupInfo;
-import io.github.fsixteen.data.jpa.base.generator.annotations.Selectable;
-import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
-import io.github.fsixteen.data.jpa.base.generator.annotations.constant.FieldType;
-import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ValueType;
+import io.github.fsixteen.data.jpa.base.generator.annotations.constant.CompareOp;
+import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ExprType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NotBetween.List;
 
 /**
- * 范围条件(select * from table_name where column_name between 123 and 456).<br>
- * 当且仅当参与计算值类型或函数返回值类型为{@link java.lang.Comparable}{@code [2]}或{@link java.util.Collection}{@code <}{@link java.lang.Comparable}{@code >}{@code [2]}时有效.<br>
+ * 非范围比较快捷注解。
+ *
+ * <p>
+ * 该注解是 {@link Range} 的 not-between 语义快捷包装。零配置时默认等价于
+ * “当前字段路径 NOT BETWEEN 当前字段运行时范围值[0] AND 当前字段运行时范围值[1]”。
+ * </p>
  *
  * @author FSixteen
  * @since 1.0.0
  */
-@Target({ FIELD, METHOD })
+@Target({ ANNOTATION_TYPE, FIELD, METHOD })
 @Retention(RUNTIME)
 @Repeatable(List.class)
 @Documented
-@Selectable
+@Range(op = CompareOp.NOT_BETWEEN)
 @Inherited
 public @interface NotBetween {
 
     /**
-     * 范围查询分组.<br>
-     * 默认同在一组范围查询内.<br>
+     * 当前范围比较的左侧 canonical 表达式。
      *
-     * @return String[]
+     * @return Expr
      */
-    String[] scope() default Constant.DEFAULT;
+    Expr left() default @Expr(type = ExprType.PATH);
 
     /**
-     * 条件查询分组, 默认独立组 {@code @GroupInfo("default", 0)}. <br>
-     * 当 {@link #groups()} 值大于 {@code 1} 组时, 该条件可以被多条件查询分组复用.
+     * 当前范围比较的起始边界表达式。
      *
-     * @return GroupInfo[]
+     * @return Expr
      */
-    GroupInfo[] groups() default { @GroupInfo };
+    Expr right() default @Expr(type = ExprType.VALUE);
 
     /**
-     * 参与计算的最终字段. 不指定默认为当前参数字段.<br>
+     * 当前范围比较的后续边界表达式列表。
      *
-     * @return String
+     * @return Expr[]
      */
-    String field() default "";
+    Expr[] extra() default {};
 
     /**
-     * 字段(列)参与计算方式, 默认为参数字段本身参与计算.<br>
+     * 当前范围比较的公共选项。
      *
-     * @since 1.0.2
-     * @return FieldType
+     * @return PredicateOptions
      */
-    FieldType fieldType() default FieldType.AUTO;
-
-    /**
-     * 字面量.<br>
-     * 当且仅当 {@link #fieldType()} = {@link FieldType#LITERAL} 时有效.<br>
-     * 
-     * @since 1.0.2
-     * @return String
-     */
-    String fieldLiteral() default "";
-
-    /**
-     * 字段(列)参与计算函数.<br>
-     * 当且仅当 {@link #fieldType()} = {@link FieldType#FUNCTION} 时有效.<br>
-     *
-     * @since 1.0.2
-     * @return Function
-     */
-    Function fieldFunction() default @Function();
-
-    /**
-     * 字段(列)参与计算自定义函数.<br>
-     * 当且仅当 {@link #fieldType()} = {@link FieldType#UDFUNCTION} 时有效.<br>
-     *
-     * @since 1.0.2
-     * @return Function
-     */
-    FieldProcessorFunction fieldProcessor() default @FieldProcessorFunction();
-
-    /**
-     * 参数字段指向的值类型, 默认为静态数值.<br>
-     *
-     * @return ValueType
-     */
-    ValueType valueType() default ValueType.VALUE;
-
-    /**
-     * 字面量.<br>
-     * 当且仅当 {@link #valueType()} = {@link ValueType#LITERAL} 时有效.<br>
-     * 使用逗号
-     * {@link io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant#DECOLLATOR
-     * DECOLLATOR} 分割两个值.<br>
-     * 当仅存在一个值时, $1 和 $2 取同一个值.<br>
-     * 
-     * @since 1.0.2
-     * @return String
-     */
-    String valueLiteral() default "";
-
-    /**
-     * 值函数.<br>
-     * 当且仅当 {@link #valueType()} = {@link ValueType#FUNCTION} 时有效.<br>
-     * 
-     * @since 1.0.2
-     * @return Functions
-     */
-    Functions valueFunctions() default @Functions();
-
-    /**
-     * 自定义值函数.<br>
-     * 当且仅当 {@link #valueType()} = {@link ValueType#UDFUNCTION} 时有效.<br>
-     *
-     * @return Function
-     */
-    ValueProcessorFunction valueProcessor() default @ValueProcessorFunction();
-
-    /**
-     * 参与计算方式.<br>
-     * <br>
-     * - 为<code>true</code>时, 任何时机均参与计算.<br>
-     * <br>
-     * - 为<code>false</code>时, 根据{@link #ignoreNull()}则机参与计算.<br>
-     *
-     * @return boolean
-     */
-    boolean required() default false;
-
-    /**
-     * 逻辑反向.<br>
-     *
-     * @return boolean
-     */
-    boolean not() default false;
-
-    /**
-     * 忽略空元素集合.<br>
-     * 当且仅当 {@link #required()} = {@link Boolean#FALSE} 时有效.<br>
-     *
-     * @return boolean
-     */
-    boolean ignoreNull() default true;
-
-    /**
-     * 删除所有前导和尾随空白字符.<br>
-     * 当元素为集合, 判断每个元素, 删除所有前导和尾随空白字符.<br>
-     * 当且仅当 {@link #required()} = {@link Boolean#FALSE} 时有效.<br>
-     * 当且仅当参与计算值类型或函数返回值类型为 {@link java.lang.String} 或数组/集合元素类型为
-     * {@link java.lang.String} 时有效.<br>
-     *
-     * @since 1.0.2
-     * @return boolean
-     */
-    boolean trim() default true;
+    PredicateOptions options() default @PredicateOptions();
 
     /**
      * Defines several {@link NotBetween} annotations on the same element.
@@ -177,9 +74,9 @@ public @interface NotBetween {
     @interface List {
 
         /**
-         * {@link NotBetween} 集合.<br>
-         * 
-         * @return {@link NotBetween}[]
+         * 可重复注解容器。
+         *
+         * @return NotBetween[]
          */
         NotBetween[] value();
 

@@ -24,15 +24,15 @@
 
   <scm>
     <url>https://github.com/FSixteen/data-jpa-base-generator</url>
-    <connection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</connection>
-    <developerConnection>scm:svn:https://github.com/FSixteen/data-jpa-base-generator.git</developerConnection>
-    <tag>V1.0.3</tag>
+    <connection>scm:git:https://github.com/FSixteen/data-jpa-base-generator.git</connection>
+    <developerConnection>scm:git:https://github.com/FSixteen/data-jpa-base-generator.git</developerConnection>
+    <tag>V1.1.0</tag>
   </scm>
 
   <parent>
     <groupId>io.github.fsixteen</groupId>
     <artifactId>data-jpa-base-generator-parent</artifactId>
-    <version>1.0.3</version>
+    <version>1.1.0</version>
     <relativePath>..</relativePath>
   </parent>
 
@@ -50,8 +50,8 @@
       <artifactId>swagger-annotations</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.tomcat.embed</groupId>
-      <artifactId>tomcat-embed-core</artifactId>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
     </dependency>
     <dependency>
       <groupId>jakarta.persistence</groupId>
@@ -60,6 +60,10 @@
     <dependency>
       <groupId>jakarta.validation</groupId>
       <artifactId>jakarta.validation-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -78,18 +82,23 @@
       <artifactId>spring-context</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>3.0.2</version>
+    </dependency>
+    <dependency>
       <groupId>io.github.fsixteen</groupId>
       <artifactId>common-response-structure</artifactId>
     </dependency>
     <dependency>
       <groupId>io.github.fsixteen</groupId>
       <artifactId>data-jpa-base-generator-interpreter</artifactId>
-      <version>1.0.3</version>
+      <version>1.1.0</version>
     </dependency>
     <dependency>
       <groupId>io.github.fsixteen</groupId>
       <artifactId>data-jpa-base-generator-entities</artifactId>
-      <version>1.0.3</version>
+      <version>1.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

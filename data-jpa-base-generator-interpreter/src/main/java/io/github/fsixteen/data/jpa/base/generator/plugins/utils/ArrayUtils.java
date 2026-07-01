@@ -1,7 +1,17 @@
 package io.github.fsixteen.data.jpa.base.generator.plugins.utils;
 
 /**
- * 数组工具.
+ * 数组辅助工具。
+ *
+ * <p>
+ * 该类型保留少量与解释器内部兼容相关的基础数组判断逻辑，
+ * 主要用于 null-safe 的包含判断。
+ * </p>
+ *
+ * <p>
+ * 当前功能刻意保持收敛，没有引入更复杂的集合转换或数组操作，
+ * 只承担老代码与新 compiled 链路仍会复用的最小公共能力。
+ * </p>
  *
  * @author FSixteen
  * @since 1.0.0
