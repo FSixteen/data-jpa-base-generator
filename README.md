@@ -191,10 +191,10 @@ Predicate predicate = collection.toComputerCollection()
   示例：`@NotLike(left = @Expr(path = "userName")) private String keyword = "demo";`
 - `@LeftLike`
   左模糊匹配。
-  示例：`@LeftLike(left = @Expr(path = "userName")) private String suffix = "son";`
+  示例：`@LeftLike(left = @Expr(path = "userName")) private String prefix = "adm";`
 - `@RightLike`
   右模糊匹配。
-  示例：`@RightLike(left = @Expr(path = "userName")) private String prefix = "adm";`
+  示例：`@RightLike(left = @Expr(path = "userName")) private String suffix = "son";`
 - `@StartWith`
   前缀匹配。
   示例：`@StartWith(left = @Expr(path = "userName")) private String prefix = "adm";`

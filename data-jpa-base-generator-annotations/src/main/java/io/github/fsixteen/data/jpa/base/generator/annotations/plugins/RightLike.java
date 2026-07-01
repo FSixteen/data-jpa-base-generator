@@ -20,9 +20,13 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.RightLike.
  *
  * <p>
  * 该注解是 {@link TextMatch} 的 right-like 语义快捷包装。零配置时默认等价于
- * “当前字段路径 LIKE 当前字段运行时值%”。
+ * “当前字段路径 LIKE %当前字段运行时值”。
  * </p>
  *
+ * @deprecated 请改用
+ *             {@link io.github.fsixteen.data.jpa.base.generator.annotations.plugins.EndWith}，避免
+ *             left/right 方向语义歧义。
+ * @see io.github.fsixteen.data.jpa.base.generator.annotations.plugins.EndWith
  * @author FSixteen
  * @since 1.0.0
  */
@@ -30,8 +34,9 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.RightLike.
 @Retention(RUNTIME)
 @Repeatable(List.class)
 @Documented
-@TextMatch(op = CompareOp.STARTS_WITH)
+@TextMatch(op = CompareOp.ENDS_WITH)
 @Inherited
+@Deprecated
 public @interface RightLike {
 
     /**

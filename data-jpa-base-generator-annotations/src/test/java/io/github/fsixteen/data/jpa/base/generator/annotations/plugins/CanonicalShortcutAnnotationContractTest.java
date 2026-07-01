@@ -30,7 +30,7 @@ class CanonicalShortcutAnnotationContractTest {
     private static final Set<
         Class<? extends Annotation>> PURE_BINARY_SHORTCUTS = new HashSet<Class<? extends Annotation>>(Arrays.<Class<? extends Annotation>>asList(Equal.class,
             NotEqual.class, Gt.class, Gte.class, Lt.class, Lte.class, GreaterThan.class, GreaterThanOrEqualTo.class, LessThan.class, LessThanOrEqualTo.class,
-            Like.class, NotLike.class, LeftLike.class, RightLike.class, StartWith.class, EndWith.class, IgnoreCaseEqual.class, IgnoreCaseLike.class));
+            Like.class, NotLike.class, StartWith.class, EndWith.class, IgnoreCaseEqual.class, IgnoreCaseLike.class));
 
     private static final Set<Class<? extends Annotation>> PURE_RANGE_SHORTCUTS = new HashSet<Class<? extends Annotation>>(
         Arrays.<Class<? extends Annotation>>asList(Between.class, NotBetween.class));
@@ -70,6 +70,16 @@ class CanonicalShortcutAnnotationContractTest {
             assertNoLegacyMethods(annotation);
             assertNotDeprecatedShortcut(annotation);
         });
+    }
+
+    @Test
+    void shouldKeepLegacyDirectionalLikeShortcutsCanonicalButDeprecated() {
+        assertExactMethods(LeftLike.class, "left", "right", "options");
+        assertExactMethods(RightLike.class, "left", "right", "options");
+        assertNoLegacyMethods(LeftLike.class);
+        assertNoLegacyMethods(RightLike.class);
+        assertDeprecatedShortcut(LeftLike.class);
+        assertDeprecatedShortcut(RightLike.class);
     }
 
     @Test
@@ -206,6 +216,8 @@ class CanonicalShortcutAnnotationContractTest {
         assertEquals(CompareOp.IS_NULL, IsNull.class.getAnnotation(NullCheck.class).op());
         assertEquals(CompareOp.LIKE, Like.class.getAnnotation(TextMatch.class).op());
         assertEquals(CompareOp.NOT_LIKE, NotLike.class.getAnnotation(TextMatch.class).op());
+        assertEquals(CompareOp.STARTS_WITH, LeftLike.class.getAnnotation(TextMatch.class).op());
+        assertEquals(CompareOp.ENDS_WITH, RightLike.class.getAnnotation(TextMatch.class).op());
         assertEquals(CompareOp.STARTS_WITH, StartWith.class.getAnnotation(TextMatch.class).op());
         assertEquals(CompareOp.ENDS_WITH, EndWith.class.getAnnotation(TextMatch.class).op());
         assertEquals(CompareOp.EQ, IgnoreCaseEqual.class.getAnnotation(Compare.class).op());
@@ -386,8 +398,8 @@ class CanonicalShortcutAnnotationContractTest {
     @SafeVarargs
     private static void assertDirectCustomMetaAnnotations(final Class<? extends Annotation> annotationType,
         final Class<? extends Annotation>... expectedMetaTypes) {
-        List<String> actual = Arrays.stream(annotationType.getAnnotations()).map(Annotation::annotationType).filter(it -> !isJdkMetaAnnotation(it))
-            .map(Class::getSimpleName).sorted().collect(Collectors.toList());
+        List<String> actual = Arrays.stream(annotationType.getAnnotations()).map(Annotation::annotationType)
+            .filter(it -> !isJdkMetaAnnotation(it) && !Deprecated.class.equals(it)).map(Class::getSimpleName).sorted().collect(Collectors.toList());
         List<String> expected = new ArrayList<String>();
         Arrays.stream(expectedMetaTypes).map(Class::getSimpleName).forEach(expected::add);
         Collections.sort(expected);
@@ -410,6 +422,13 @@ class CanonicalShortcutAnnotationContractTest {
 
     private static void assertNotDeprecatedShortcut(final Class<? extends Annotation> annotationType) {
         assertTrue(!annotationType.isAnnotationPresent(Deprecated.class), () -> annotationType.getSimpleName() + " should not be deprecated");
+        Arrays.stream(annotationType.getDeclaredClasses()).filter(Class::isAnnotation)
+            .forEach(innerType -> assertTrue(!innerType.isAnnotationPresent(Deprecated.class),
+                () -> annotationType.getSimpleName() + "." + innerType.getSimpleName() + " should not be deprecated"));
+    }
+
+    private static void assertDeprecatedShortcut(final Class<? extends Annotation> annotationType) {
+        assertTrue(annotationType.isAnnotationPresent(Deprecated.class), () -> annotationType.getSimpleName() + " should be deprecated");
         Arrays.stream(annotationType.getDeclaredClasses()).filter(Class::isAnnotation)
             .forEach(innerType -> assertTrue(!innerType.isAnnotationPresent(Deprecated.class),
                 () -> annotationType.getSimpleName() + "." + innerType.getSimpleName() + " should not be deprecated"));

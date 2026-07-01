@@ -395,9 +395,6 @@
           <extensions>true</extensions>
           <configuration>
             <publishingServerId>ossrh</publishingServerId>
-            <skipPublishing>true</skipPublishing>
-            <autoPublish>false</autoPublish>
-            <waitUntil>published</waitUntil>
           </configuration>
         </plugin>
       </plugins>
@@ -426,10 +423,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.sonatype.central</groupId>
-        <artifactId>central-publishing-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

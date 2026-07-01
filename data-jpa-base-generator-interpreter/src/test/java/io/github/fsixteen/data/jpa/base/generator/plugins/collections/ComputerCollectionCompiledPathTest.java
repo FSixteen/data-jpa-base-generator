@@ -851,7 +851,7 @@ public class ComputerCollectionCompiledPathTest {
         assertTrue(predicates.contains("rank=root.rank < 99"), predicates.toString());
         assertTrue(predicates.contains("level=root.level <= 5"), predicates.toString());
         assertTrue(predicates.contains("keyword=root.keyword NOT LIKE %demo%"), predicates.toString());
-        assertTrue(predicates.contains("code=root.code LIKE suffix%"), predicates.toString());
+        assertTrue(predicates.contains("code=root.code LIKE %suffix"), predicates.toString());
         assertTrue(predicates.contains("otherStatuses=root.otherStatuses NOT IN (SELECT [DISABLED])"), predicates.toString());
         assertTrue(predicates.contains("deletedAt=<null>") || predicates.contains("deletedAt=root.deletedAt IS NOT NULL"), predicates.toString());
     }
