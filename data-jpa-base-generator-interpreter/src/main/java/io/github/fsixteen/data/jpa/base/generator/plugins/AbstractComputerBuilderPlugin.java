@@ -205,6 +205,8 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
             case LITERAL_INTEGER:
             case LITERAL_LONG:
                 return !"".equals(ad.getFieldLiteral()) && Pattern.matches("^(\\-|\\+)?\\d+(\\.\\d+)?$", ad.getFieldLiteral());
+            case LITERAL_COLUMN:
+                return !"".equals(ad.getFieldLiteral());
             case VALUE:
                 return true;
             case COLUMN:
@@ -252,6 +254,8 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
                 return cb.<T>literal((T) Integer.valueOf(ad.getFieldLiteral()));
             case LITERAL_LONG:
                 return cb.<T>literal((T) Long.valueOf(ad.getFieldLiteral()));
+            case LITERAL_COLUMN:
+                return root.get(ad.getFieldLiteral());
             case VALUE:
                 return cb.<T>literal((T) fieldValue);
             case COLUMN:
@@ -311,6 +315,8 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
             case LITERAL_INTEGER:
             case LITERAL_LONG:
                 return !"".equals(ad.getValueLiteral()) && Pattern.matches("^(\\-|\\+)?\\d+(\\.\\d+)?$", ad.getValueLiteral());
+            case LITERAL_COLUMN:
+                return true;
             case VALUE:
                 return true;
             case COLUMN:
@@ -358,6 +364,8 @@ public abstract class AbstractComputerBuilderPlugin<A extends Annotation> implem
                 return cb.<T>literal((T) Integer.valueOf(ad.getValueLiteral()));
             case LITERAL_LONG:
                 return cb.<T>literal((T) Long.valueOf(ad.getValueLiteral()));
+            case LITERAL_COLUMN:
+                return root.<T>get(ad.getValueLiteral());
             case VALUE:
                 return cb.<T>literal((T) fieldValue);
             case COLUMN:

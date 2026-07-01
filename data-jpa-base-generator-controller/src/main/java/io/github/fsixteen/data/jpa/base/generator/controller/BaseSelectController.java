@@ -8,7 +8,6 @@ import java.util.function.BiConsumer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,17 +54,47 @@ public interface BaseSelectController<SI extends BaseSelectService<T, ID, S>, T 
     }
 
     /**
-     * 单一详细查询.<br>
+     * 单一详细查询逻辑方法.<br>
+     * <p>
+     * 此方法仅封装查询逻辑, 不包含任何HTTP映射注解. 实现类应根据自身ID类型选择合适的端点暴露方式:
+     * </p>
+     * <p>
+     * <b>ID为简单类型(Long/String等)时, 使用 @PathVariable:</b>
+     * </p>
      * 
+     * <pre>
+     * 
+     * &#64;Operation(summary = "单一详细查询")
+     * &#64;PostMapping("select/{id}")
+     * public Response&lt;T, Object&gt; select(HttpServletRequest request, HttpServletResponse response,
+     *     &#64;NotNull(message = "请指定查询内容") &#64;PathVariable("id") final ID id) {
+     *     return this.findById(request, response, id);
+     * }
+     * </pre>
+     * <p>
+     * <b>ID为复杂类型(复合主键等)时, 使用 @RequestBody:</b>
+     * </p>
+     * 
+     * <pre>
+     * 
+     * &#64;Operation(summary = "单一详细查询")
+     * &#64;PostMapping("select/details")
+     * public Response&lt;T, Object&gt; selectOne(HttpServletRequest request, HttpServletResponse response,
+     *     &#64;Validated(value = { SelectGroup.class }) &#64;RequestBody final ID id) {
+     *     return this.findById(request, response, id);
+     * }
+     * </pre>
+     * <p>
+     * <b>注意:</b> 两种方式不应同时存在于同一个实现类中, 因为ID类型是确定的, 只有一种端点可用.
+     * </p>
+     *
      * @param request  {@link javax.servlet.http.HttpServletRequest}实例, 自动注入
      * @param response {@link javax.servlet.http.HttpServletResponse}实例, 自动注入
-     * @param id       请求数据
-     * @return Response&lt;List&lt;T&gt;, Object&gt;
+     * @param id       主键ID, 类型由泛型参数ID决定
+     * @return Response&lt;T, Object&gt; 查询结果
+     * @see #selectPostprocessor()
      */
-    @Operation(summary = "单一详细查询", description = "单一详细查询")
-    @PostMapping(value = "select/details")
-    default Response<T, Object> selectOne(HttpServletRequest request, HttpServletResponse response,
-        @Validated(value = { SelectGroup.class }) @NotNull(message = "请指定查询内容") @RequestBody final ID id) {
+    default Response<T, Object> findById(HttpServletRequest request, HttpServletResponse response, ID id) {
         Optional<T> eles = this.getService().findById(id);
         Response<T, Object> result = eles.isPresent() ? Ok.selectWithExts(eles.get(), null) : Err.selectWithExts(null, null);
         if (eles.isPresent()) {
@@ -74,29 +103,57 @@ public interface BaseSelectController<SI extends BaseSelectService<T, ID, S>, T 
         return result;
     }
 
-    // /**
-    // * 单一详细查询.<br>
-    // *
-    // * @param request {@link javax.servlet.http.HttpServletRequest}实例, 自动注入
-    // * @param response {@link javax.servlet.http.HttpServletResponse}实例, 自动注入
-    // * @param id 请求数据
-    // * @return Response&lt;List&lt;T&gt;, Object&gt;
-    // */
-    // @Operation(summary = "单一详细查询", description = "单一详细查询")
-    // @PostMapping(value = "select/{id}")
-    // default Response<T, Object> select(HttpServletRequest request,
-    // HttpServletResponse response,
-    // @Validated(value = { SelectGroup.class }) @NotNull(message = "请指定查询内容")
-    // @PathVariable("id") final ID id) {
-    // Optional<T> eles = this.getService().findById(id);
-    // Response<T, Object> result = eles.isPresent() ? Ok.selectWithExts(eles.get(),
-    // null) : Err.selectWithExts(null, null);
-    // if (eles.isPresent()) {
-    // Optional.ofNullable(this.selectPostprocessor()).ifPresent(it ->
-    // it.accept(Arrays.asList(eles.get()), result));
-    // }
-    // return result;
-    // }
+    /**
+     * 单一详细查询.<br>
+     * 
+     * @param request  {@link javax.servlet.http.HttpServletRequest}实例, 自动注入
+     * @param response {@link javax.servlet.http.HttpServletResponse}实例, 自动注入
+     * @param id       请求数据
+     * @return Response&lt;List&lt;T&gt;, Object&gt;
+     */
+    /*
+     * @Operation(summary = "单一详细查询", description = "单一详细查询")
+     * @PostMapping(value = "select/details")
+     * default Response<T, Object> selectOne(HttpServletRequest request,
+     * HttpServletResponse response,
+     * @Validated(value = { SelectGroup.class }) @NotNull(message =
+     * "请指定查询内容") @RequestBody final ID id) {
+     * Optional<T> eles = this.getService().findById(id);
+     * Response<T, Object> result = eles.isPresent() ? Ok.selectWithExts(eles.get(),
+     * null) : Err.selectWithExts(null, null);
+     * if (eles.isPresent()) {
+     * Optional.ofNullable(this.selectPostprocessor()).ifPresent(it ->
+     * it.accept(Arrays.asList(eles.get()), result));
+     * }
+     * return result;
+     * }
+     */
+
+    /**
+     * 单一详细查询.<br>
+     *
+     * @param request  {@link javax.servlet.http.HttpServletRequest}实例, 自动注入
+     * @param response {@link javax.servlet.http.HttpServletResponse}实例, 自动注入
+     * @param id       请求数据
+     * @return Response&lt;List&lt;T&gt;, Object&gt;
+     */
+    /*
+     * @Operation(summary = "单一详细查询", description = "单一详细查询")
+     * @PostMapping(value = "select/by/{id}")
+     * default Response<T, Object> select(HttpServletRequest request,
+     * HttpServletResponse response,
+     * @Validated(value = { SelectGroup.class }) @NotNull(message =
+     * "请指定查询内容") @PathVariable("id") final ID id) {
+     * Optional<T> eles = this.getService().findById(id);
+     * Response<T, Object> result = eles.isPresent() ? Ok.selectWithExts(eles.get(),
+     * null) : Err.selectWithExts(null, null);
+     * if (eles.isPresent()) {
+     * Optional.ofNullable(this.selectPostprocessor()).ifPresent(it ->
+     * it.accept(Arrays.asList(eles.get()), result));
+     * }
+     * return result;
+     * }
+     */
 
     /**
      * 分页查询.<br>

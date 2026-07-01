@@ -99,6 +99,8 @@ public class InBuilderPlugin<A extends Annotation> extends AbstractComputerBuild
             case LITERAL_INTEGER:
             case LITERAL_LONG:
                 return !"".equals(ad.getValueLiteral()) && Pattern.matches("^(\\-|\\+)?\\d+(\\.\\d+)?(,((\\-|\\+)?\\d+(\\.\\d+)?)*)?$", ad.getValueLiteral());
+            case LITERAL_COLUMN:
+                return !"".equals(ad.getValueLiteral());
             case VALUE:
                 return Collection.class.isInstance(fieldValue);
             default:
@@ -174,6 +176,8 @@ public class InBuilderPlugin<A extends Annotation> extends AbstractComputerBuild
             case LITERAL_INTEGER:
             case LITERAL_LONG:
                 return this.handleLiteralValueTypes(ad, cb);
+            case LITERAL_COLUMN:
+                return root.get(ad.getValueLiteral());
             case VALUE:
                 return cb.literal(fieldValue);
             case COLUMN:

@@ -90,6 +90,15 @@ public enum ValueType {
     LITERAL_LONG,
 
     /**
+     * 字面量, {@link java.lang.String} 类型.<br>
+     * 
+     * <pre>
+     * root.&lt;T&gt;get(ad.getFieldLiteral())
+     * </pre>
+     */
+    LITERAL_COLUMN,
+
+    /**
      * 字段.<br>
      * 
      * <pre>

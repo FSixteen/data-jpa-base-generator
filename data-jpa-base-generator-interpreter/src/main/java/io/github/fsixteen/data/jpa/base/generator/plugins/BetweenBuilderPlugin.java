@@ -80,6 +80,8 @@ public class BetweenBuilderPlugin extends AbstractComputerBuilderPlugin<Between>
             case LITERAL_INTEGER:
             case LITERAL_LONG:
                 return !"".equals(ad.getValueLiteral()) && Pattern.matches("^(\\-|\\+)?\\d+(\\.\\d+)?(,(\\-|\\+)?\\d+(\\.\\d+)?)?$", ad.getValueLiteral());
+            case LITERAL_COLUMN:
+                return ad.getValueLiteral().contains(",") && !ad.getValueLiteral().startsWith(",") && !ad.getValueLiteral().endsWith(",");
             case VALUE:
                 return Collection.class.isInstance(fieldValue);
             default:
@@ -131,6 +133,8 @@ public class BetweenBuilderPlugin extends AbstractComputerBuilderPlugin<Between>
                 return new Expression<?>[] { cb.literal(Integer.valueOf(values[0])), cb.literal(Integer.valueOf(values[1])) };
             case LITERAL_LONG:
                 return new Expression<?>[] { cb.literal(Long.valueOf(values[0])), cb.literal(Long.valueOf(values[1])) };
+            case LITERAL_COLUMN:
+                return new Expression<?>[] { cb.literal(values[0]), cb.literal(values[1]) };
             default:
                 return null;
         }
@@ -160,6 +164,7 @@ public class BetweenBuilderPlugin extends AbstractComputerBuilderPlugin<Between>
             case LITERAL_SHORT:
             case LITERAL_INTEGER:
             case LITERAL_LONG:
+            case LITERAL_COLUMN:
                 return this.handleLiteralValueTypes(ad, cb);
             case VALUE:
                 return new Expression<?>[] { cb.literal(fieldValues.get(0)), cb.literal(fieldValues.get(1)) };
