@@ -22,7 +22,7 @@ public class DateJsonSerializer extends AbstractDateTimeJsonSerializer {
     private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault()).withZone(ZoneId.systemDefault());
 
     @Override
-    public DateTimeFormatter formater() {
+    public DateTimeFormatter formatter() {
         return DTF;
     }
 

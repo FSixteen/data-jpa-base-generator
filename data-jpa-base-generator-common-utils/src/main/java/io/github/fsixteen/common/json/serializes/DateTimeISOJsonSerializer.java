@@ -30,7 +30,7 @@ public class DateTimeISOJsonSerializer extends AbstractDateTimeJsonSerializer {
     private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault()).withZone(ZONE_ID);
 
     @Override
-    public DateTimeFormatter formater() {
+    public DateTimeFormatter formatter() {
         return DTF;
     }
 
@@ -38,9 +38,9 @@ public class DateTimeISOJsonSerializer extends AbstractDateTimeJsonSerializer {
     public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers) throws IOException, IllegalArgumentException {
         if (Objects.nonNull(value)) {
             if (value instanceof LocalDateTime) {
-                gen.writeString(this.formater().format(LocalDateTime.class.cast(value).atZone(ZONE_ID)));
+                gen.writeString(this.formatter().format(LocalDateTime.class.cast(value).atZone(ZONE_ID)));
             } else if (value instanceof LocalDate) {
-                gen.writeString(this.formater().format(LocalDate.class.cast(value).atStartOfDay().atZone(ZONE_ID)));
+                gen.writeString(this.formatter().format(LocalDate.class.cast(value).atStartOfDay().atZone(ZONE_ID)));
             } else if (value instanceof LocalTime) {
                 throw new UnsupportedTemporalTypeException("Cannot format given Object as a 'yyyy-MM-dd'T'HH:mm:ss.SSSXXX'");
             } else {

@@ -176,7 +176,7 @@ public abstract class AbstractDateTimeJsonSerializer extends JsonSerializer<Obje
      *
      * @return 格式化模版实例 {@link java.time.format.DateTimeFormatter}
      */
-    public DateTimeFormatter formater() {
+    public DateTimeFormatter formatter() {
         return DTF;
     }
 
@@ -186,16 +186,16 @@ public abstract class AbstractDateTimeJsonSerializer extends JsonSerializer<Obje
             try {
                 if (value instanceof Long) {
                     Instant instant = Instant.ofEpochMilli(Long.class.cast(value));
-                    gen.writeString(this.formater().format(instant));
+                    gen.writeString(this.formatter().format(instant));
                 } else if (value instanceof Date) {
                     Instant instant = Date.class.cast(value).toInstant();
-                    gen.writeString(this.formater().format(instant));
+                    gen.writeString(this.formatter().format(instant));
                 } else if (value instanceof LocalDateTime) {
-                    gen.writeString(this.formater().format(LocalDateTime.class.cast(value)));
+                    gen.writeString(this.formatter().format(LocalDateTime.class.cast(value)));
                 } else if (value instanceof LocalDate) {
-                    gen.writeString(this.formater().format(LocalDate.class.cast(value).atStartOfDay()));
+                    gen.writeString(this.formatter().format(LocalDate.class.cast(value).atStartOfDay()));
                 } else if (value instanceof LocalTime) {
-                    gen.writeString(this.formater().format(LocalTime.class.cast(value)));
+                    gen.writeString(this.formatter().format(LocalTime.class.cast(value)));
                 } else {
                     throw new IllegalArgumentException("Cannot format given Object as a Date");
                 }
