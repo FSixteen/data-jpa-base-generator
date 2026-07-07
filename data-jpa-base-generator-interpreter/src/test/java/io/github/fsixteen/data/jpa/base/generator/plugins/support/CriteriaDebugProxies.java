@@ -15,11 +15,11 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
 /**
- * 测试专用的 Criteria/JPA proxy 调试工具。
+ * 测试专用的 Criteria/JPA proxy 调试工具.
  *
  * <p>
- * 统一把 JPA Criteria 交互投影为稳定字符串，避免不同测试类各自维护一份近似但不完全一致的
- * debug proxy 逻辑。
+ * 统一把 JPA Criteria 交互投影为稳定字符串, 避免不同测试类各自维护一份近似但不完全一致的
+ * debug proxy 逻辑.
  * </p>
  */
 public final class CriteriaDebugProxies {

@@ -15,13 +15,13 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.PredicateRole;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.TupleInValues.List;
 
 /**
- * 多列 tuple-value 成员判断注解。
+ * 多列 tuple-value 成员判断注解.
  *
  * <p>
- * 该注解用于表达类似 {@code (a, b) in ((1, 2), (3, 4))} 的语义，
- * 解释器会在 compiled 主链路中将其降级为多组 {@code and} 通过 {@code or} 拼接的稳定 JPA Predicate。
- * 当 {@link #tupleField()} 为空时，当前注解宿主字段本身就是 tuple 数据源；否则宿主字段承担触发器语义，
- * 真实 tuple 数据源从 {@link #tupleField()} 指向的属性路径读取。
+ * 该注解用于表达类似 {@code (a, b) in ((1, 2), (3, 4))} 的语义,
+ * 解释器会在 compiled 主链路中将其降级为多组 {@code and} 通过 {@code or} 拼接的稳定 JPA Predicate.
+ * 当 {@link #tupleField()} 为空时, 当前注解宿主字段本身就是 tuple 数据源；否则宿主字段承担触发器语义,
+ * 真实 tuple 数据源从 {@link #tupleField()} 指向的属性路径读取.
  * </p>
  *
  * @author FSixteen
@@ -36,21 +36,21 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.TupleInVal
 public @interface TupleInValues {
 
     /**
-     * tuple 列映射集合。
+     * tuple 列映射集合.
      *
      * @return TupleColumn[]
      */
     TupleColumn[] columns();
 
     /**
-     * tuple 数据源字段路径。
+     * tuple 数据源字段路径.
      *
      * @return String
      */
     String tupleField() default "";
 
     /**
-     * 当前 tuple 谓词的公共选项。
+     * 当前 tuple 谓词的公共选项.
      *
      * @return PredicateOptions
      */

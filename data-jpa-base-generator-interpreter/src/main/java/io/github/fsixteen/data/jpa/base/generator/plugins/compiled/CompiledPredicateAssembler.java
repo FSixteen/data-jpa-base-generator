@@ -20,17 +20,17 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.Constant;
 import io.github.fsixteen.data.jpa.base.generator.plugins.collections.AnnotationCollection;
 
 /**
- * compiled 谓词分组与组装器。
+ * compiled 谓词分组与组装器.
  *
  * <p>
  * 该类型负责把一组已经生成好的 {@link CompiledPredicateResult} 按 scope 与 group 规则做归类、
- * 排序、递归合并，并最终落成 {@link Predicate} 列表或 {@link PredicateGroupSpec} 分组树。
- * 它是当前 group 语义在运行期的唯一执行实现。
+ * 排序、递归合并, 并最终落成 {@link Predicate} 列表或 {@link PredicateGroupSpec} 分组树.
+ * 它是当前 group 语义在运行期的唯一执行实现.
  * </p>
  *
  * <p>
- * 对外保留的 {@code AnnotationCollection -> ComputerCollection} 调用链最终也会经过这里，
- * 因此 scope 过滤、group 顺序与组间 AND/OR 规则都必须在该层保持稳定且可预测。
+ * 对外保留的 {@code AnnotationCollection -> ComputerCollection} 调用链最终也会经过这里,
+ * 因此 scope 过滤、group 顺序与组间 AND/OR 规则都必须在该层保持稳定且可预测.
  * </p>
  *
  * @author FSixteen
@@ -55,7 +55,7 @@ public final class CompiledPredicateAssembler {
     }
 
     /**
-     * 创建一份面向指定 scope 的 compiled 谓词组装器。
+     * 创建一份面向指定 scope 的 compiled 谓词组装器.
      */
     public static CompiledPredicateAssembler of(final AnnotationCollection annotationCollection, final List<CompiledPredicateResult<?>> results,
         final CriteriaBuilder cb, final String scope) {
@@ -63,10 +63,10 @@ public final class CompiledPredicateAssembler {
     }
 
     /**
-     * 先按注解声明的 group 名收集原子谓词。
+     * 先按注解声明的 group 名收集原子谓词.
      */
     private Map<String, List<Tuple<CompiledPredicateResult<?>>>> createStandardGroups() {
-        // 先按注解声明的 group 粒度收集“原子谓词”，后续再递归折叠成最终 DEFAULT 组。
+        // 先按注解声明的 group 粒度收集“原子谓词”, 后续再递归折叠成最终 DEFAULT 组.
         List<CompiledPredicateResult<?>> valid = this.results.stream().filter(it -> Objects.nonNull(it) && !it.isEmpty() && Objects.nonNull(it.getPredicate()))
             .filter(it -> containsScope(it.getSpec())).collect(Collectors.toList());
         Map<String, List<Tuple<CompiledPredicateResult<?>>>> standardGroups = new ConcurrentHashMap<String, List<Tuple<CompiledPredicateResult<?>>>>();
@@ -83,7 +83,7 @@ public final class CompiledPredicateAssembler {
     }
 
     /**
-     * 按 group 规则将同组原子谓词折叠为上一级 group 的组合谓词。
+     * 按 group 规则将同组原子谓词折叠为上一级 group 的组合谓词.
      */
     private void mergerCompositeGroups(final Map<String, List<Tuple<Predicate>>> map, final String value, final List<Predicate> groupPs) {
         Predicate[] predicates = groupPs.toArray(new Predicate[groupPs.size()]);
@@ -106,7 +106,7 @@ public final class CompiledPredicateAssembler {
     }
 
     /**
-     * 将标准 group 聚合为第一层复合 group。
+     * 将标准 group 聚合为第一层复合 group.
      */
     private Map<String, List<Tuple<Predicate>>> createCompositeGroups() {
         Map<String, List<Tuple<Predicate>>> compositeGroups = new ConcurrentHashMap<String, List<Tuple<Predicate>>>();
@@ -123,14 +123,14 @@ public final class CompiledPredicateAssembler {
     }
 
     /**
-     * 递归折叠复合 group，直到只剩 default 根组。
+     * 递归折叠复合 group, 直到只剩 default 根组.
      */
     private Map<String, List<Tuple<Predicate>>> createCompositeGroups(final Map<String, List<Tuple<Predicate>>> map) {
         if (map.isEmpty() || (1 == map.size() && map.containsKey(Constant.DEFAULT))) {
             return map;
         }
-        // 复合组允许 group 嵌套 group，这里反复折叠直到只剩 DEFAULT 为止，
-        // 从而复用既有分组语义，而不再保留另一套实现。
+        // 复合组允许 group 嵌套 group, 这里反复折叠直到只剩 DEFAULT 为止,
+        // 从而复用既有分组语义, 而不再保留另一套实现.
         Map<String, List<Tuple<Predicate>>> compositeGroups = new ConcurrentHashMap<String, List<Tuple<Predicate>>>();
         for (Entry<String, List<Tuple<Predicate>>> entry : map.entrySet()) {
             List<Tuple<Predicate>> values = entry.getValue();
@@ -145,7 +145,7 @@ public final class CompiledPredicateAssembler {
     }
 
     /**
-     * 产出当前 scope 下按 group 规则组装后的最终谓词列表。
+     * 产出当前 scope 下按 group 规则组装后的最终谓词列表.
      */
     public List<Predicate> toPredicateList() {
         Map<String, List<Tuple<Predicate>>> compositeGroups = this.createCompositeGroups(this.createCompositeGroups());
@@ -162,7 +162,7 @@ public final class CompiledPredicateAssembler {
     }
 
     /**
-     * 将当前 scope 下的结果组装为可递归执行的 group 树。
+     * 将当前 scope 下的结果组装为可递归执行的 group 树.
      */
     public PredicateGroupSpec toPredicateGroupSpec() {
         Map<String, List<Tuple<PredicateGroupSpec>>> compositeGroups = this.createCompositeGroupSpecs(this.createCompositeGroupSpecs());
@@ -182,7 +182,7 @@ public final class CompiledPredicateAssembler {
     }
 
     /**
-     * 解析 default 根组使用的 junction 语义。
+     * 解析 default 根组使用的 junction 语义.
      */
     private PredicateGroupSpec.JunctionType resolveRootJunction() {
         return GroupJunctions.junction(this.getComputerType(Constant.DEFAULT, Constant.GLOBAL));
@@ -193,7 +193,7 @@ public final class CompiledPredicateAssembler {
     }
 
     /**
-     * 先按 group 收集规格叶子，用于构建 group 树而不是直接构建 Predicate。
+     * 先按 group 收集规格叶子, 用于构建 group 树而不是直接构建 Predicate.
      */
     private Map<String, List<Tuple<CompiledAnnotationSpec<?>>>> createStandardSpecGroups() {
         List<CompiledPredicateResult<?>> valid = this.results.stream().filter(it -> Objects.nonNull(it) && !it.isEmpty() && Objects.nonNull(it.getSpec()))
@@ -212,7 +212,7 @@ public final class CompiledPredicateAssembler {
     }
 
     /**
-     * 将同组规格叶子折叠成一层 leaf group。
+     * 将同组规格叶子折叠成一层 leaf group.
      */
     private void mergerCompositeGroupSpecs(final Map<String, List<Tuple<PredicateGroupSpec>>> map, final String value,
         final List<CompiledAnnotationSpec<?>> groupSpecs) {
@@ -220,7 +220,7 @@ public final class CompiledPredicateAssembler {
     }
 
     /**
-     * 按 group 规则将当前 group 规格路由到其父级组。
+     * 按 group 规则将当前 group 规格路由到其父级组.
      */
     private void routeCompositeGroupSpec(final Map<String, List<Tuple<PredicateGroupSpec>>> map, final String value, final PredicateGroupSpec groupSpec) {
         GroupComputerType mergeRule = groupRule(value);
@@ -241,7 +241,7 @@ public final class CompiledPredicateAssembler {
     }
 
     /**
-     * 生成第一层复合 group 规格。
+     * 生成第一层复合 group 规格.
      */
     private Map<String, List<Tuple<PredicateGroupSpec>>> createCompositeGroupSpecs() {
         Map<String, List<Tuple<PredicateGroupSpec>>> compositeGroups = new ConcurrentHashMap<String, List<Tuple<PredicateGroupSpec>>>();
@@ -258,7 +258,7 @@ public final class CompiledPredicateAssembler {
     }
 
     /**
-     * 递归折叠 group 规格树，直到只剩 default 根组。
+     * 递归折叠 group 规格树, 直到只剩 default 根组.
      */
     private Map<String, List<Tuple<PredicateGroupSpec>>> createCompositeGroupSpecs(final Map<String, List<Tuple<PredicateGroupSpec>>> map) {
         if (map.isEmpty() || (1 == map.size() && map.containsKey(Constant.DEFAULT))) {
@@ -280,21 +280,21 @@ public final class CompiledPredicateAssembler {
     }
 
     /**
-     * 读取指定 group 在当前 scope 下的合并规则。
+     * 读取指定 group 在当前 scope 下的合并规则.
      */
     private GroupComputerType groupRule(final String value) {
         return this.annotationCollection.getGroupComputerType(this.scope, value);
     }
 
     /**
-     * 返回指定 group 的布尔连接方式，未声明时回退 AND。
+     * 返回指定 group 的布尔连接方式, 未声明时回退 AND.
      */
     private Type groupRuleType(final String value) {
         return Optional.ofNullable(groupRule(value)).map(GroupComputerType::type).orElse(Type.AND);
     }
 
     /**
-     * 判断当前规格是否声明参与当前 scope。
+     * 判断当前规格是否声明参与当前 scope.
      */
     private boolean containsScope(final CompiledAnnotationSpec<?> spec) {
         if (Objects.isNull(spec)) {
@@ -315,7 +315,7 @@ public final class CompiledPredicateAssembler {
         private final V last;
 
         /**
-         * 创建一条“排序键 + 值对象”的元组。
+         * 创建一条“排序键 + 值对象”的元组.
          */
         static <V> Tuple<V> of(final Integer first, final V last) {
             return new Tuple<V>(first, last);

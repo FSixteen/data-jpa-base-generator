@@ -15,12 +15,12 @@ import javax.persistence.criteria.Root;
 import io.github.fsixteen.data.jpa.base.generator.plugins.compiler.JpaPathCompiler;
 
 /**
- * tuple-value 谓词执行器。
+ * tuple-value 谓词执行器.
  *
  * <p>
  * 该类型统一承接 {@code TupleInValues / TupleNotInValues} 的运行时执行：
- * 解析触发器、读取 tuple 数据源、归一化行、提取列值、做类型转换，再将每一行展开为
- * {@code and}，最终用 {@code or} 聚合。
+ * 解析触发器、读取 tuple 数据源、归一化行、提取列值、做类型转换, 再将每一行展开为
+ * {@code and}, 最终用 {@code or} 聚合.
  * </p>
  *
  * @author FSixteen

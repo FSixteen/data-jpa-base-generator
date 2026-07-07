@@ -22,12 +22,12 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.support.MetaAnnotation
 import io.github.fsixteen.data.jpa.base.generator.plugins.utils.BeanUtils;
 
 /**
- * 单个请求参数类型对应的 compiled 注解集合。
+ * 单个请求参数类型对应的 compiled 注解集合.
  *
  * <p>
- * 该对象承载一个 query model 类型上所有可参与构建的注解编译结果，
- * 包括 selection/existence 两类视图以及类型级分组规则。
- * 它位于“反射扫描”与“运行期创建 Predicate”之间，是当前解释器最核心的中间层之一。
+ * 该对象承载一个 query model 类型上所有可参与构建的注解编译结果,
+ * 包括 selection/existence 两类视图以及类型级分组规则.
+ * 它位于“反射扫描”与“运行期创建 Predicate”之间, 是当前解释器最核心的中间层之一.
  * </p>
  *
  * <p>
@@ -57,12 +57,12 @@ public final class AnnotationCollection {
     private Collection<CompiledAnnotationSpec<?>> predicateSpecs = new ArrayList<>();
 
     /**
-     * selection 视图缓存。
+     * selection 视图缓存.
      */
     private Collection<CompiledAnnotationSpec<?>> selectionPredicateSpecsView;
 
     /**
-     * existence 视图缓存。
+     * existence 视图缓存.
      */
     private Collection<CompiledAnnotationSpec<?>> existencePredicateSpecsView;
 
@@ -149,7 +149,7 @@ public final class AnnotationCollection {
     }
 
     /**
-     * 追加一条已编译的注解规格，并清空 selection/existence 视图缓存。
+     * 追加一条已编译的注解规格, 并清空 selection/existence 视图缓存.
      *
      * @param spec compiled 注解规格
      */
@@ -170,11 +170,11 @@ public final class AnnotationCollection {
     }
 
     /**
-     * 判断指定公开构建类型下的条件是否为空。<br>
+     * 判断指定公开构建类型下的条件是否为空. <br>
      *
      * <p>
-     * 对外仍保留 {@link BuilderType} 作为稳定边界，内部立即切换为
-     * {@link PredicateBuildTarget}。
+     * 对外仍保留 {@link BuilderType} 作为稳定边界, 内部立即切换为
+     * {@link PredicateBuildTarget}.
      * </p>
      *
      * @param type 公开构建类型
@@ -185,7 +185,7 @@ public final class AnnotationCollection {
     }
 
     /**
-     * 判断 selection 视图是否为空。<br>
+     * 判断 selection 视图是否为空. <br>
      *
      * @return boolean
      */
@@ -194,7 +194,7 @@ public final class AnnotationCollection {
     }
 
     /**
-     * 判断 existence 视图是否为空。<br>
+     * 判断 existence 视图是否为空. <br>
      *
      * @return boolean
      */
@@ -203,7 +203,7 @@ public final class AnnotationCollection {
     }
 
     /**
-     * 判断指定内部构建目标内的条件是否为空。<br>
+     * 判断指定内部构建目标内的条件是否为空. <br>
      *
      * @param target 内部构建目标
      * @return boolean
@@ -216,7 +216,7 @@ public final class AnnotationCollection {
     }
 
     /**
-     * compiled 主链路下的 selection 注解规格。<br>
+     * compiled 主链路下的 selection 注解规格. <br>
      *
      * @return compiled selection 注解规格
      */
@@ -225,7 +225,7 @@ public final class AnnotationCollection {
     }
 
     /**
-     * compiled 主链路下的 existence 注解规格。<br>
+     * compiled 主链路下的 existence 注解规格. <br>
      *
      * @return compiled existence 注解规格
      */
@@ -244,8 +244,8 @@ public final class AnnotationCollection {
      * 转换为类注解逻辑描述信息集合构造器.<br>
      *
      * <p>
-     * 公开主入口统一直接返回 compiled 主链路构造器。
-     * 对外仍保留该方法名，以保证既有外部调用链稳定。
+     * 公开主入口统一直接返回 compiled 主链路构造器.
+     * 对外仍保留该方法名, 以保证既有外部调用链稳定.
      * </p>
      *
      * @return ComputerCollection.Builder
@@ -287,13 +287,13 @@ public final class AnnotationCollection {
         }
 
         /**
-         * 扫描指定 query model 类型，并收集其中所有可识别的查询注解。
+         * 扫描指定 query model 类型, 并收集其中所有可识别的查询注解.
          *
          * <p>
          * 当前会遍历字段上的直接注解和 repeatable 注解容器；
          * 满足 {@link MetaAnnotationAttributes#isSelectionAnnotation(Class)} 或
-         * {@link MetaAnnotationAttributes#isExistenceAnnotation(Class)} 的注解，
-         * 都会在这里被编译成 {@link CompiledAnnotationSpec}。
+         * {@link MetaAnnotationAttributes#isExistenceAnnotation(Class)} 的注解,
+         * 都会在这里被编译成 {@link CompiledAnnotationSpec}.
          * </p>
          *
          * @param clazz 参与计算的 query model 类型

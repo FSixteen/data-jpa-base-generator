@@ -17,11 +17,11 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ExprType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Unique.List;
 
 /**
- * 唯一性判断等值快捷注解。
+ * 唯一性判断等值快捷注解.
  *
  * <p>
- * 该注解是 {@link Compare} 的等值语义快捷包装，并同时标记为 {@link Existed}。
- * 零配置时默认等价于“当前字段路径 = 当前字段运行时值”，但结果用于 existed/unique 判断。
+ * 该注解是 {@link Compare} 的等值语义快捷包装, 并同时标记为 {@link Existed}.
+ * 零配置时默认等价于“当前字段路径 = 当前字段运行时值”, 但结果用于 existed/unique 判断.
  * </p>
  *
  * @author FSixteen
@@ -37,21 +37,21 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Unique.Lis
 public @interface Unique {
 
     /**
-     * 当前唯一性判断的左侧 canonical 表达式。
+     * 当前唯一性判断的左侧 canonical 表达式.
      *
      * @return Expr
      */
     Expr left() default @Expr(type = ExprType.PATH);
 
     /**
-     * 当前唯一性判断的右侧 canonical 表达式。
+     * 当前唯一性判断的右侧 canonical 表达式.
      *
      * @return Expr
      */
     Expr right() default @Expr(type = ExprType.VALUE);
 
     /**
-     * 当前唯一性判断的公共选项。
+     * 当前唯一性判断的公共选项.
      *
      * @return PredicateOptions
      */
@@ -69,7 +69,7 @@ public @interface Unique {
     @interface List {
 
         /**
-         * 可重复注解容器。
+         * 可重复注解容器.
          *
          * @return Unique[]
          */

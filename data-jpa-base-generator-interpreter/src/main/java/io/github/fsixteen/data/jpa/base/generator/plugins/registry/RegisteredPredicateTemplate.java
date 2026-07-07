@@ -5,13 +5,13 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.constant.ComparableTyp
 import io.github.fsixteen.data.jpa.base.generator.plugins.expression.PredicateExpression;
 
 /**
- * 注册式谓词模板。
+ * 注册式谓词模板.
  *
  * <p>
- * 该对象表示一条完整的二元谓词模板，
- * 包括左表达式、右表达式和操作符。
- * 与只表示单个表达式片段的 {@link PredicateExpressionTemplate} 不同，
- * 它可以被 {@link RegisteredPredicateResolver} 直接解析为最终谓词。
+ * 该对象表示一条完整的二元谓词模板,
+ * 包括左表达式、右表达式和操作符.
+ * 与只表示单个表达式片段的 {@link PredicateExpressionTemplate} 不同,
+ * 它可以被 {@link RegisteredPredicateResolver} 直接解析为最终谓词.
  * </p>
  *
  * @author FSixteen

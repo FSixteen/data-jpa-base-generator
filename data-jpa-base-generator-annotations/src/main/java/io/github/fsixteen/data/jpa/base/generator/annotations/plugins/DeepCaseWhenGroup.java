@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 import io.github.fsixteen.data.jpa.base.generator.annotations.GroupComputerType;
 
 /**
- * {@link NestedCaseWhenGroup} 的最深层节点。
+ * {@link NestedCaseWhenGroup} 的最深层节点.
  *
  * @author FSixteen
  * @since 1.0.3

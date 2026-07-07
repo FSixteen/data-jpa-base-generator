@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 import io.github.fsixteen.data.jpa.base.generator.annotations.GroupComputerType;
 
 /**
- * {@link CaseWhenGroup} 的中层节点。
+ * {@link CaseWhenGroup} 的中层节点.
  *
  * @author FSixteen
  * @since 1.0.3

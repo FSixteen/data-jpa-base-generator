@@ -19,11 +19,11 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.registry.RegisteredPre
 import io.github.fsixteen.data.jpa.base.generator.plugins.support.ReflectiveInstantiator;
 
 /**
- * SPI 自动装配引导器。
+ * SPI 自动装配引导器.
  *
  * <p>
  * 该类型负责把 built-in provider 与基于 {@link java.util.ServiceLoader} 的扩展统一装配到
- * 当前解释器运行环境中，包括：
+ * 当前解释器运行环境中, 包括：
  * </p>
  * <ul>
  * <li>{@link CompiledPredicateProvider}</li>
@@ -33,7 +33,7 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.support.ReflectiveInst
  *
  * <p>
  * 正常情况下优先使用标准 {@link ServiceLoader}；
- * 若运行环境或测试类路径不支持，则回退到扫描 {@code META-INF/services/*} 资源。
+ * 若运行环境或测试类路径不支持, 则回退到扫描 {@code META-INF/services/*} 资源.
  * </p>
  *
  * @author FSixteen
@@ -47,11 +47,11 @@ public final class ServiceLoaderBootstrap {
     }
 
     /**
-     * 确保 SPI 只被装载一次。
+     * 确保 SPI 只被装载一次.
      */
     public static void ensureLoaded() {
         if (LOADED.compareAndSet(false, true)) {
-            // 内建 provider 先注册，保证没有 SPI 的内建注解也能直接走 compiled 主路径。
+            // 内建 provider 先注册, 保证没有 SPI 的内建注解也能直接走 compiled 主路径.
             BuiltInCompiledPredicateProviders.registerAll();
             loadCompiledPredicateProviders();
             loadPredicateExpressionTemplateProviders();
@@ -60,10 +60,10 @@ public final class ServiceLoaderBootstrap {
     }
 
     /**
-     * 清空“已加载”标记并重新装配 SPI。
+     * 清空“已加载”标记并重新装配 SPI.
      *
      * <p>
-     * 主要用于测试场景。
+     * 主要用于测试场景.
      * </p>
      */
     public static void reload() {
@@ -96,14 +96,14 @@ public final class ServiceLoaderBootstrap {
         }
         Map<String, T> instances = new LinkedHashMap<String, T>();
         try {
-            // 优先走标准 ServiceLoader；正常模块化场景下，这里是首选路径。
+            // 优先走标准 ServiceLoader；正常模块化场景下, 这里是首选路径.
             for (T provider : ServiceLoader.load(type, loader)) {
                 instances.put(provider.getClass().getName(), provider);
             }
         } catch (Throwable ignore) {
-            // 某些测试或非标准运行环境下，标准 ServiceLoader 可能不可用；继续走资源扫描兜底。
+            // 某些测试或非标准运行环境下, 标准 ServiceLoader 可能不可用；继续走资源扫描兜底.
         }
-        // 再扫描 META-INF/services，确保测试类路径与非模块化发布形态都能完成装配。
+        // 再扫描 META-INF/services, 确保测试类路径与非模块化发布形态都能完成装配.
         for (T provider : loadFromServicesResource(type, loader)) {
             instances.put(provider.getClass().getName(), provider);
         }

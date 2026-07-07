@@ -16,11 +16,11 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ExprType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Between.List;
 
 /**
- * 范围比较快捷注解。
+ * 范围比较快捷注解.
  *
  * <p>
- * 该注解是 {@link Range} 的 between 语义快捷包装。零配置时默认等价于
- * “当前字段路径 BETWEEN 当前字段运行时范围值[0] AND 当前字段运行时范围值[1]”。
+ * 该注解是 {@link Range} 的 between 语义快捷包装. 零配置时默认等价于
+ * “当前字段路径 BETWEEN 当前字段运行时范围值[0] AND 当前字段运行时范围值[1]”.
  * </p>
  *
  * @author FSixteen
@@ -35,28 +35,28 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Between.Li
 public @interface Between {
 
     /**
-     * 当前范围比较的左侧 canonical 表达式。
+     * 当前范围比较的左侧 canonical 表达式.
      *
      * @return Expr
      */
     Expr left() default @Expr(type = ExprType.PATH);
 
     /**
-     * 当前范围比较的起始边界表达式。
+     * 当前范围比较的起始边界表达式.
      *
      * @return Expr
      */
     Expr right() default @Expr(type = ExprType.VALUE);
 
     /**
-     * 当前范围比较的后续边界表达式列表。
+     * 当前范围比较的后续边界表达式列表.
      *
      * @return Expr[]
      */
     Expr[] extra() default {};
 
     /**
-     * 当前范围比较的公共选项。
+     * 当前范围比较的公共选项.
      *
      * @return PredicateOptions
      */
@@ -74,7 +74,7 @@ public @interface Between {
     @interface List {
 
         /**
-         * 可重复注解容器。
+         * 可重复注解容器.
          *
          * @return Between[]
          */

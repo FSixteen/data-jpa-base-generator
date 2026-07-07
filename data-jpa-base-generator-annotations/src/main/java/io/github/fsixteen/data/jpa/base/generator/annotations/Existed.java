@@ -17,12 +17,12 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Expr;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.PredicateOptions;
 
 /**
- * 存在性判断注解的基础元注解。
+ * 存在性判断注解的基础元注解.
  *
  * <p>
- * 直接使用时，其默认语义同样回落为 canonical 等值比较；
- * 更常见的用途是作为 existed 语义组合注解的统一元注解入口，
- * 让 compiled 主链路与 {@link Selectable} 共享相同的表达式读取模型。
+ * 直接使用时, 其默认语义同样回落为 canonical 等值比较；
+ * 更常见的用途是作为 existed 语义组合注解的统一元注解入口,
+ * 让 compiled 主链路与 {@link Selectable} 共享相同的表达式读取模型.
  * </p>
  *
  * @see io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal
@@ -39,32 +39,32 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.PredicateO
 public @interface Existed {
 
     /**
-     * canonical 左表达式。
+     * canonical 左表达式.
      *
      * @return Expr
      */
     Expr left() default @Expr(type = ExprType.PATH);
 
     /**
-     * canonical 右表达式。
+     * canonical 右表达式.
      *
      * @return Expr
      */
     Expr right() default @Expr(type = ExprType.VALUE);
 
     /**
-     * canonical 额外操作数。
+     * canonical 额外操作数.
      *
      * @return Expr[]
      */
     Expr[] extra() default {};
 
     /**
-     * canonical 公共选项。
+     * canonical 公共选项.
      *
      * <p>
-     * 注解层默认保持空配置，由 compiled 主链路统一补齐默认
-     * {@code scope/groups}，避免 existed 家族重复声明同一套基础选项。
+     * 注解层默认保持空配置, 由 compiled 主链路统一补齐默认
+     * {@code scope/groups}, 避免 existed 家族重复声明同一套基础选项.
      * </p>
      *
      * @return PredicateOptions
@@ -83,7 +83,7 @@ public @interface Existed {
     @interface List {
 
         /**
-         * {@link Existed} 集合。
+         * {@link Existed} 集合.
          *
          * @return {@link Existed}[]
          */

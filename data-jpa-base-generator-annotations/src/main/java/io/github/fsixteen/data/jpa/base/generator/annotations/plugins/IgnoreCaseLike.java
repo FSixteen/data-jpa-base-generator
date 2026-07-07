@@ -16,11 +16,11 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ExprType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.IgnoreCaseLike.List;
 
 /**
- * 忽略大小写的包含匹配快捷注解。
+ * 忽略大小写的包含匹配快捷注解.
  *
  * <p>
- * 该注解是 {@link TextMatch} 的忽略大小写 like 语义快捷包装。零配置时默认等价于：
- * {@code lower(root.get(currentField)) like %lower(currentFieldValue)%}。
+ * 该注解是 {@link TextMatch} 的忽略大小写 like 语义快捷包装. 零配置时默认等价于：
+ * {@code lower(root.get(currentField)) like %lower(currentFieldValue)%}.
  * </p>
  *
  * @author FSixteen
@@ -37,7 +37,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.IgnoreCase
 public @interface IgnoreCaseLike {
 
     /**
-     * 当前忽略大小写文本匹配的左侧 canonical 表达式。
+     * 当前忽略大小写文本匹配的左侧 canonical 表达式.
      *
      * @return Expr
      */
@@ -45,7 +45,7 @@ public @interface IgnoreCaseLike {
         function = @ExprFunction(name = "lower", type = String.class, args = { @ExprArg(type = ExprType.PATH) }));
 
     /**
-     * 当前忽略大小写文本匹配的目标表达式。
+     * 当前忽略大小写文本匹配的目标表达式.
      *
      * @return Expr
      */
@@ -53,7 +53,7 @@ public @interface IgnoreCaseLike {
         function = @ExprFunction(name = "lower", type = String.class, args = { @ExprArg(type = ExprType.VALUE) }));
 
     /**
-     * 当前忽略大小写文本匹配的公共选项。
+     * 当前忽略大小写文本匹配的公共选项.
      *
      * @return PredicateOptions
      */
@@ -71,7 +71,7 @@ public @interface IgnoreCaseLike {
     @interface List {
 
         /**
-         * 可重复注解容器。
+         * 可重复注解容器.
          *
          * @return IgnoreCaseLike[]
          */

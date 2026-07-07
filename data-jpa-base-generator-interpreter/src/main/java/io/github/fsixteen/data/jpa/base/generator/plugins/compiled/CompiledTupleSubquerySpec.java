@@ -6,11 +6,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 多列 tuple 子查询的 compiled 规格。
+ * 多列 tuple 子查询的 compiled 规格.
  *
  * <p>
  * 当前类型承接 {@code TupleExists / TupleNotExists} 的稳定快照：
- * 子查询实体、多列关联、可选默认附加叶子以及附加 where-group 都在这里统一汇合。
+ * 子查询实体、多列关联、可选默认附加叶子以及附加 where-group 都在这里统一汇合.
  * </p>
  *
  * @author FSixteen

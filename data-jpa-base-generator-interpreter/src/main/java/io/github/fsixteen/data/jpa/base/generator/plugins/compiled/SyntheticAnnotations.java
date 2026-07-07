@@ -20,12 +20,12 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.PredicateO
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.PredicateRef;
 
 /**
- * compiled 主链路中的合成注解工厂。
+ * compiled 主链路中的合成注解工厂.
  *
  * <p>
- * 某些能力在注解层会以“快捷字段 + 运行期补全”的方式存在，例如 `InTable` 默认等值叶子、
- * `Cases` 分支内联 canonical 比较。这些场景最终仍要落回统一注解规格，因此集中用这里构造
- * 最小可用的 synthetic annotation，避免各处重复手写匿名实现。
+ * 某些能力在注解层会以“快捷字段 + 运行期补全”的方式存在, 例如 `InTable` 默认等值叶子、
+ * `Cases` 分支内联 canonical 比较. 这些场景最终仍要落回统一注解规格, 因此集中用这里构造
+ * 最小可用的 synthetic annotation, 避免各处重复手写匿名实现.
  * </p>
  *
  * @author FSixteen
@@ -243,28 +243,28 @@ final class SyntheticAnnotations {
     }
 
     /**
-     * 构造一条 path 类型的合成表达式。
+     * 构造一条 path 类型的合成表达式.
      */
     static Expr pathExpr(final String path) {
         return expr(ExprType.PATH, path, "", "", Object.class, EMPTY_FUNCTION);
     }
 
     /**
-     * 构造一条 {@code length(path)} 形式的合成函数表达式。
+     * 构造一条 {@code length(path)} 形式的合成函数表达式.
      */
     static Expr lengthExpr(final String path) {
         return expr(ExprType.FUNCTION, "", "", "", Object.class, function("length", Integer.class, pathArg(path)));
     }
 
     /**
-     * 返回默认的 value 表达式。
+     * 返回默认的 value 表达式.
      */
     static Expr valueExpr() {
         return VALUE_EXPR;
     }
 
     /**
-     * 返回默认的 auto 表达式。
+     * 返回默认的 auto 表达式.
      */
     static Expr autoExpr() {
         return AUTO_EXPR;
@@ -338,7 +338,7 @@ final class SyntheticAnnotations {
     }
 
     /**
-     * 构造一条最小可用的合成 {@link Expr} 注解实例。
+     * 构造一条最小可用的合成 {@link Expr} 注解实例.
      */
     private static Expr expr(final ExprType type, final String path, final String valueField, final String literal, final Class<?> javaType,
         final ExprFunction function) {
@@ -383,7 +383,7 @@ final class SyntheticAnnotations {
     }
 
     /**
-     * 构造一条最小可用的合成 {@link Compare} 注解实例。
+     * 构造一条最小可用的合成 {@link Compare} 注解实例.
      */
     static Compare compare(final CompareOp op, final Expr left, final Expr right, final Expr[] extra) {
         return new Compare() {
@@ -427,28 +427,28 @@ final class SyntheticAnnotations {
     }
 
     /**
-     * 返回默认的 auto compare。
+     * 返回默认的 auto compare.
      */
     static Compare autoCompare() {
         return AUTO_COMPARE;
     }
 
     /**
-     * 返回空集合策略注解实例。
+     * 返回空集合策略注解实例.
      */
     static CollectionPolicy emptyCollectionPolicy() {
         return EMPTY_COLLECTION_POLICY;
     }
 
     /**
-     * 返回空 predicate 引用注解实例。
+     * 返回空 predicate 引用注解实例.
      */
     static PredicateRef emptyPredicateRef() {
         return EMPTY_PREDICATE_REF;
     }
 
     /**
-     * 返回空公共选项注解实例。
+     * 返回空公共选项注解实例.
      */
     static PredicateOptions emptyPredicateOptions() {
         return EMPTY_PREDICATE_OPTIONS;

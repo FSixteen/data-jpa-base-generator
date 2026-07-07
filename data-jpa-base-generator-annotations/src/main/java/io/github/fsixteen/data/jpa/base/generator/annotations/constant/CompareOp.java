@@ -1,7 +1,7 @@
 package io.github.fsixteen.data.jpa.base.generator.annotations.constant;
 
 /**
- * 通用比较操作符。
+ * 通用比较操作符.
  *
  * @author FSixteen
  * @since 1.0.3

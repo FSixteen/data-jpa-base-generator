@@ -15,12 +15,12 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.compiler.JpaPathCompil
 import io.github.fsixteen.data.jpa.base.generator.plugins.spi.CompiledPredicateProviderRegistry;
 
 /**
- * 多列 tuple 子查询执行器。
+ * 多列 tuple 子查询执行器.
  *
  * <p>
  * 当前组件负责把 {@link CompiledTupleSubquerySpec} 落成最终的
- * {@code exists/not exists} JPA Predicate。与单列 {@link CompiledSubquerySupport}
- * 的区别在于：这里的相关条件不是一条 source/correlated path，而是一组 tuple pairs。
+ * {@code exists/not exists} JPA Predicate. 与单列 {@link CompiledSubquerySupport}
+ * 的区别在于：这里的相关条件不是一条 source/correlated path, 而是一组 tuple pairs.
  * </p>
  *
  * @author FSixteen

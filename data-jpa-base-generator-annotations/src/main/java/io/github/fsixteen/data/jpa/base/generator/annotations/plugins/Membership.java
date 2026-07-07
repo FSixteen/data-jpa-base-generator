@@ -17,12 +17,12 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ExprType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Membership.List;
 
 /**
- * canonical 成员判断注解。
+ * canonical 成员判断注解.
  *
  * <p>
- * 该注解是 compiled 主链路中的统一成员判断输入模型，用于表达 in / not-in 语义下的左侧表达式、
- * 成员集合来源表达式、集合处理策略和公共选项。零配置时默认等价于
- * {@code 当前字段 in 当前字段运行时集合值}。
+ * 该注解是 compiled 主链路中的统一成员判断输入模型, 用于表达 in / not-in 语义下的左侧表达式、
+ * 成员集合来源表达式、集合处理策略和公共选项. 零配置时默认等价于
+ * {@code 当前字段 in 当前字段运行时集合值}.
  * </p>
  *
  * @author FSixteen
@@ -38,24 +38,24 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Membership
 public @interface Membership {
 
     /**
-     * 成员判断操作符，仅允许 in / not-in 语义。
+     * 成员判断操作符, 仅允许 in / not-in 语义.
      *
      * @return CompareOp
      */
     CompareOp op() default CompareOp.IN;
 
     /**
-     * 集合值处理策略。
+     * 集合值处理策略.
      *
      * @return CollectionPolicy
      */
     CollectionPolicy collection() default @CollectionPolicy();
 
     /**
-     * 成员判断的左侧 canonical 表达式。
+     * 成员判断的左侧 canonical 表达式.
      *
      * <p>
-     * 未显式配置时，默认回退为当前注解绑定字段对应的实体路径。
+     * 未显式配置时, 默认回退为当前注解绑定字段对应的实体路径.
      * </p>
      *
      * @return Expr
@@ -63,11 +63,11 @@ public @interface Membership {
     Expr left() default @Expr(type = ExprType.PATH);
 
     /**
-     * 成员集合来源表达式。
+     * 成员集合来源表达式.
      *
      * <p>
-     * 未显式配置时，默认回退为当前注解绑定字段的运行时值。
-     * 当该值需要按集合策略展开时，会先应用 {@link #collection()}，再参与成员判断。
+     * 未显式配置时, 默认回退为当前注解绑定字段的运行时值.
+     * 当该值需要按集合策略展开时, 会先应用 {@link #collection()}, 再参与成员判断.
      * </p>
      *
      * @return Expr
@@ -75,7 +75,7 @@ public @interface Membership {
     Expr right() default @Expr(type = ExprType.VALUE);
 
     /**
-     * 当前成员判断谓词的公共选项。
+     * 当前成员判断谓词的公共选项.
      *
      * @return PredicateOptions
      */

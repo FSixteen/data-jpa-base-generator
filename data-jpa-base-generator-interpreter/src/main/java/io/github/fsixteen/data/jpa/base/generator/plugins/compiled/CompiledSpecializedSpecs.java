@@ -19,19 +19,19 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SubqueryPr
 import io.github.fsixteen.data.jpa.base.generator.plugins.support.MetaAnnotationAttributes;
 
 /**
- * 特殊能力注解的编译器。
+ * 特殊能力注解的编译器.
  *
  * <p>
  * 普通比较类注解通常可直接映射为统一谓词规格；
  * 而 {@code Cases}、{@code InTable}、{@code Exists}、{@code NotExists}、
- * {@code SubqueryPredicate} 这类注解需要额外的结构化编译步骤。
- * 这些 specialized spec 的产出统一收口到这里。
+ * {@code SubqueryPredicate} 这类注解需要额外的结构化编译步骤.
+ * 这些 specialized spec 的产出统一收口到这里.
  * </p>
  *
  * <p>
- * 这里的职责是把“注解专属结构”转成 compiled 主链路可消费的中间规格，
- * 例如 case 分支列表、子查询结构与默认补全后的 Compare 叶子节点，
- * 而不是直接生成最终 JPA Predicate。
+ * 这里的职责是把“注解专属结构”转成 compiled 主链路可消费的中间规格,
+ * 例如 case 分支列表、子查询结构与默认补全后的 Compare 叶子节点,
+ * 而不是直接生成最终 JPA Predicate.
  * </p>
  *
  * @author FSixteen
@@ -43,7 +43,7 @@ public final class CompiledSpecializedSpecs {
     }
 
     /**
-     * 将一个 {@link Cases} 注解编译为不可变分支规格列表。
+     * 将一个 {@link Cases} 注解编译为不可变分支规格列表.
      */
     public static List<CompiledCaseBranchSpec> cases(final CompiledAnnotationSpec<Cases> spec) throws ReflectiveOperationException {
         Cases cases = spec.getAnnotation();
@@ -73,28 +73,28 @@ public final class CompiledSpecializedSpecs {
     }
 
     /**
-     * 将任意子查询家族注解编译为统一子查询规格。
+     * 将任意子查询家族注解编译为统一子查询规格.
      */
     public static CompiledSubquerySpec subquery(final CompiledAnnotationSpec<? extends Annotation> spec) {
         return buildSubquerySpec(CanonicalSubquerySource.of(spec));
     }
 
     /**
-     * 将 {@link InTable} 编译为统一子查询规格。
+     * 将 {@link InTable} 编译为统一子查询规格.
      */
     public static CompiledSubquerySpec inTable(final CompiledAnnotationSpec<InTable> spec) {
         return subquery(spec);
     }
 
     /**
-     * 将 {@link Exists} 编译为统一子查询规格。
+     * 将 {@link Exists} 编译为统一子查询规格.
      */
     public static CompiledSubquerySpec exists(final CompiledAnnotationSpec<Exists> spec) {
         return subquery(spec);
     }
 
     /**
-     * 为 case 分支补齐最终执行的 canonical compare 谓词。
+     * 为 case 分支补齐最终执行的 canonical compare 谓词.
      */
     private static CompiledAnnotationSpec<Compare> canonicalCasePredicateSpec(final CompiledAnnotationSpec<Cases> ownerSpec, final String fieldName,
         final io.github.fsixteen.data.jpa.base.generator.annotations.plugins.CaseThen then, final boolean hasCanonicalPredicate) {
@@ -106,7 +106,7 @@ public final class CompiledSpecializedSpecs {
     }
 
     /**
-     * 为 case 分支补齐命中判断所需的 canonical compare 谓词。
+     * 为 case 分支补齐命中判断所需的 canonical compare 谓词.
      */
     private static CompiledAnnotationSpec<Compare> canonicalCaseWhenSpec(final CompiledAnnotationSpec<Cases> ownerSpec, final String fieldName,
         final io.github.fsixteen.data.jpa.base.generator.annotations.plugins.CaseWhen when, final CompiledCaseBranchSpec.MatchMode matchMode) {
@@ -119,7 +119,7 @@ public final class CompiledSpecializedSpecs {
     }
 
     /**
-     * 将标准化子查询源信息转为统一子查询规格。
+     * 将标准化子查询源信息转为统一子查询规格.
      */
     private static CompiledSubquerySpec buildSubquerySpec(final CanonicalSubquerySource source) {
         if (SubqueryMode.IN == source.getMode()) {
@@ -191,8 +191,8 @@ public final class CompiledSpecializedSpecs {
             final io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Expr right,
             final io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Expr select, final PredicateGroupSpec predicateGroupSpec,
             final Compare whereCompare, final String defaultPath) {
-            // 所有子查询家族共享同一组 fallback 规则，避免 Exists/InTable/CanonicalSubquery
-            // 各自维护一份近似但不完全一致的默认 path 推导逻辑。
+            // 所有子查询家族共享同一组 fallback 规则, 避免 Exists/InTable/CanonicalSubquery
+            // 各自维护一份近似但不完全一致的默认 path 推导逻辑.
             String sourcePath = CompiledCanonicalCompareFactory.configuredPath(left, defaultPath);
             String rightPath = CompiledCanonicalCompareFactory.configuredPath(right, defaultPath);
             String selectPath = SubqueryMode.IN == mode ? rightPath : CompiledCanonicalCompareFactory.configuredPath(select, rightPath);
@@ -246,7 +246,7 @@ public final class CompiledSpecializedSpecs {
     }
 
     /**
-     * 为 in-table 语义补齐默认 where 叶子 compare 规格。
+     * 为 in-table 语义补齐默认 where 叶子 compare 规格.
      */
     private static CompiledAnnotationSpec<?> inTableNestedPredicateSpec(final CompiledAnnotationSpec<? extends Annotation> spec, final Compare whereCompare) {
         String leftFallback = CompiledCanonicalCompareFactory.configuredPath(spec.getPredicateCore().getLeft(), spec.getBindingPath());
@@ -258,7 +258,7 @@ public final class CompiledSpecializedSpecs {
     }
 
     /**
-     * 在元注解字段缺省为空时回退到调用方提供的默认值。
+     * 在元注解字段缺省为空时回退到调用方提供的默认值.
      */
     private static <T> T defaultIfNull(final T value, final T fallback) {
         return null == value ? fallback : value;

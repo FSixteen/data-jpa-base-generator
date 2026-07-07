@@ -16,12 +16,12 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ExprType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.IgnoreCaseEqual.List;
 
 /**
- * 忽略大小写的等值比较快捷注解。
+ * 忽略大小写的等值比较快捷注解.
  *
  * <p>
- * 该注解是 {@link Compare} 的忽略大小写等值语义快捷包装。零配置时默认等价于：
- * {@code lower(root.get(currentField)) = lower(currentFieldValue)}。
- * 业务仍可覆写 {@link #left()}、{@link #right()} 与 {@link #options()} 来表达更复杂的忽略大小写比较。
+ * 该注解是 {@link Compare} 的忽略大小写等值语义快捷包装. 零配置时默认等价于：
+ * {@code lower(root.get(currentField)) = lower(currentFieldValue)}.
+ * 业务仍可覆写 {@link #left()}、{@link #right()} 与 {@link #options()} 来表达更复杂的忽略大小写比较.
  * </p>
  *
  * @author FSixteen
@@ -38,7 +38,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.IgnoreCase
 public @interface IgnoreCaseEqual {
 
     /**
-     * 当前忽略大小写等值比较的左侧 canonical 表达式。
+     * 当前忽略大小写等值比较的左侧 canonical 表达式.
      *
      * @return Expr
      */
@@ -46,7 +46,7 @@ public @interface IgnoreCaseEqual {
         function = @ExprFunction(name = "lower", type = String.class, args = { @ExprArg(type = ExprType.PATH) }));
 
     /**
-     * 当前忽略大小写等值比较的右侧 canonical 表达式。
+     * 当前忽略大小写等值比较的右侧 canonical 表达式.
      *
      * @return Expr
      */
@@ -54,7 +54,7 @@ public @interface IgnoreCaseEqual {
         function = @ExprFunction(name = "lower", type = String.class, args = { @ExprArg(type = ExprType.VALUE) }));
 
     /**
-     * 当前忽略大小写等值比较的公共选项。
+     * 当前忽略大小写等值比较的公共选项.
      *
      * @return PredicateOptions
      */
@@ -72,7 +72,7 @@ public @interface IgnoreCaseEqual {
     @interface List {
 
         /**
-         * 可重复注解容器。
+         * 可重复注解容器.
          *
          * @return IgnoreCaseEqual[]
          */

@@ -17,12 +17,12 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ExprType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.TextMatch.List;
 
 /**
- * canonical 文本匹配注解。
+ * canonical 文本匹配注解.
  *
  * <p>
- * 该注解是 compiled 主链路中的统一文本匹配输入模型，用于表达 like、not-like、
- * starts-with、ends-with 等文本匹配语义下的左右表达式与公共选项。
- * 零配置时默认等价于 {@code 当前字段 like 当前字段运行时值}。
+ * 该注解是 compiled 主链路中的统一文本匹配输入模型, 用于表达 like、not-like、
+ * starts-with、ends-with 等文本匹配语义下的左右表达式与公共选项.
+ * 零配置时默认等价于 {@code 当前字段 like 当前字段运行时值}.
  * </p>
  *
  * @author FSixteen
@@ -38,17 +38,17 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.TextMatch.
 public @interface TextMatch {
 
     /**
-     * 文本匹配操作符，仅允许 like/not-like/starts-with/ends-with 语义。
+     * 文本匹配操作符, 仅允许 like/not-like/starts-with/ends-with 语义.
      *
      * @return CompareOp
      */
     CompareOp op() default CompareOp.LIKE;
 
     /**
-     * 文本匹配的左侧 canonical 表达式。
+     * 文本匹配的左侧 canonical 表达式.
      *
      * <p>
-     * 未显式配置时，默认回退为当前注解绑定字段对应的实体路径。
+     * 未显式配置时, 默认回退为当前注解绑定字段对应的实体路径.
      * </p>
      *
      * @return Expr
@@ -56,11 +56,11 @@ public @interface TextMatch {
     Expr left() default @Expr(type = ExprType.PATH);
 
     /**
-     * 文本匹配目标表达式。
+     * 文本匹配目标表达式.
      *
      * <p>
-     * 未显式配置时，默认回退为当前注解绑定字段的运行时值。
-     * 具体匹配方式由 {@link #op()} 决定。
+     * 未显式配置时, 默认回退为当前注解绑定字段的运行时值.
+     * 具体匹配方式由 {@link #op()} 决定.
      * </p>
      *
      * @return Expr
@@ -68,7 +68,7 @@ public @interface TextMatch {
     Expr right() default @Expr(type = ExprType.VALUE);
 
     /**
-     * 当前文本匹配谓词的公共选项。
+     * 当前文本匹配谓词的公共选项.
      *
      * @return PredicateOptions
      */

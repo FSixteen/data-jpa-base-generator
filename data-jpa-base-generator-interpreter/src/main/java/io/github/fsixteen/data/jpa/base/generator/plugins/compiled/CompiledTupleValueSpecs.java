@@ -11,11 +11,11 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.TupleNotIn
 import io.github.fsixteen.data.jpa.base.generator.plugins.support.MetaAnnotationAttributes;
 
 /**
- * tuple-value 注解的 compiled spec 构造入口。
+ * tuple-value 注解的 compiled spec 构造入口.
  *
  * <p>
- * 它负责把原始注解或组合注解上的 tuple 字段读取出来，校验 DSL 结构后转换为稳定的
- * {@link CompiledTuplePredicateSpec}。运行时值读取与 Predicate 拼装不在这里完成。
+ * 它负责把原始注解或组合注解上的 tuple 字段读取出来, 校验 DSL 结构后转换为稳定的
+ * {@link CompiledTuplePredicateSpec}. 运行时值读取与 Predicate 拼装不在这里完成.
  * </p>
  *
  * @author FSixteen

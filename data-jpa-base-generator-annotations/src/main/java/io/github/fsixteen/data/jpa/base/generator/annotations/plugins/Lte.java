@@ -16,11 +16,11 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ExprType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Lte.List;
 
 /**
- * 小于等于比较快捷注解。
+ * 小于等于比较快捷注解.
  *
  * <p>
- * 该注解是 {@link Compare} 的小于等于语义快捷包装。零配置时默认等价于
- * “当前字段路径 <= 当前字段运行时值”。
+ * 该注解是 {@link Compare} 的小于等于语义快捷包装. 零配置时默认等价于
+ * “当前字段路径 <= 当前字段运行时值”.
  * </p>
  *
  * @author FSixteen
@@ -35,21 +35,21 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Lte.List;
 public @interface Lte {
 
     /**
-     * 当前小于等于比较的左侧 canonical 表达式。
+     * 当前小于等于比较的左侧 canonical 表达式.
      *
      * @return Expr
      */
     Expr left() default @Expr(type = ExprType.PATH);
 
     /**
-     * 当前小于等于比较的右侧 canonical 表达式。
+     * 当前小于等于比较的右侧 canonical 表达式.
      *
      * @return Expr
      */
     Expr right() default @Expr(type = ExprType.VALUE);
 
     /**
-     * 当前小于等于比较的公共选项。
+     * 当前小于等于比较的公共选项.
      *
      * @return PredicateOptions
      */
@@ -67,7 +67,7 @@ public @interface Lte {
     @interface List {
 
         /**
-         * 可重复注解容器。
+         * 可重复注解容器.
          *
          * @return Lte[]
          */

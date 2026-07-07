@@ -9,11 +9,11 @@ import java.lang.annotation.Target;
 import io.github.fsixteen.data.jpa.base.generator.annotations.GroupComputerType;
 
 /**
- * {@link CaseThen} 的结构化动作分组。
+ * {@link CaseThen} 的结构化动作分组.
  *
  * <p>
- * 分组中的路径表达式基于实体 root 解析，值表达式继续从参数对象读取，
- * 适合一次生成多条叶子谓词并做 AND/OR 组合。
+ * 分组中的路径表达式基于实体 root 解析, 值表达式继续从参数对象读取,
+ * 适合一次生成多条叶子谓词并做 AND/OR 组合.
  * </p>
  *
  * @author FSixteen

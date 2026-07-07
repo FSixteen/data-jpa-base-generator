@@ -19,11 +19,11 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ExprType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Null.List;
 
 /**
- * 布尔驱动空值判断快捷注解。
+ * 布尔驱动空值判断快捷注解.
  *
  * <p>
- * 该注解是布尔驱动的空值判断快捷包装。零配置时默认作用于当前字段路径，
- * 并根据当前字段布尔值在 {@link #whenTrueUse()} / {@link #whenFalseUse()} 之间切换。
+ * 该注解是布尔驱动的空值判断快捷包装. 零配置时默认作用于当前字段路径,
+ * 并根据当前字段布尔值在 {@link #whenTrueUse()} / {@link #whenFalseUse()} 之间切换.
  * </p>
  *
  * @author FSixteen
@@ -38,28 +38,28 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Null.List;
 public @interface Null {
 
     /**
-     * 字段值为 true 时使用的空值判断方式。
+     * 字段值为 true 时使用的空值判断方式.
      *
      * @return ComputerType
      */
     ComputerType whenTrueUse() default ComputerType.IS_NULL;
 
     /**
-     * 字段值为 false 时使用的空值判断方式。
+     * 字段值为 false 时使用的空值判断方式.
      *
      * @return ComputerType
      */
     ComputerType whenFalseUse() default ComputerType.IS_NOT_NULL;
 
     /**
-     * 当前空值判断的被判断 canonical 表达式。
+     * 当前空值判断的被判断 canonical 表达式.
      *
      * @return Expr
      */
     Expr left() default @Expr(type = ExprType.PATH);
 
     /**
-     * 当前空值判断的公共选项。
+     * 当前空值判断的公共选项.
      *
      * @return PredicateOptions
      */
@@ -77,7 +77,7 @@ public @interface Null {
     @interface List {
 
         /**
-         * 可重复注解容器。
+         * 可重复注解容器.
          *
          * @return Null[]
          */
@@ -86,16 +86,16 @@ public @interface Null {
     }
 
     /**
-     * 判空表达式类型。
+     * 判空表达式类型.
      */
     enum ComputerType {
 
         /**
-         * is-null 判断。
+         * is-null 判断.
          */
         IS_NULL(Expression::isNull),
         /**
-         * is-not-null 判断。
+         * is-not-null 判断.
          */
         IS_NOT_NULL(Expression::isNotNull);
 

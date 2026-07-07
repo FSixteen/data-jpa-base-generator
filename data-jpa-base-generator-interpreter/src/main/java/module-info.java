@@ -4,8 +4,8 @@ open module io.github.fsixteen.base.plugins {
     requires java.base;
 
     /*
-     * compiled 注解规格与内省异常路径依赖 java.beans.*，
-     * 该内容存在于 java.desktop 模块中。
+     * compiled 注解规格与内省异常路径依赖 java.beans.*,
+     * 该内容存在于 java.desktop 模块中.
      */
     requires transitive java.desktop;
 

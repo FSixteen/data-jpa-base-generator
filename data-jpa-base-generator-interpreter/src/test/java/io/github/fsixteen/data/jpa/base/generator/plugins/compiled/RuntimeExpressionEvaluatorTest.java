@@ -2,6 +2,8 @@ package io.github.fsixteen.data.jpa.base.generator.plugins.compiled;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,6 +61,16 @@ public class RuntimeExpressionEvaluatorTest {
             PredicateExpression>asList(FunctionExpression.of("trim", String.class, Arrays.<PredicateExpression>asList(FieldValueExpression.literal()))));
 
         assertEquals(4, RuntimeExpressionEvaluator.evaluate(expression, null, " Demo "));
+        assertNull(RuntimeExpressionEvaluator.evaluate(expression, null, null));
+    }
+
+    @Test
+    public void shouldRejectLengthFunctionForNonStringArgument() {
+        FunctionExpression expression = FunctionExpression.of("length", Integer.class, Arrays.<PredicateExpression>asList(FieldValueExpression.literal()));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> RuntimeExpressionEvaluator.evaluate(expression, null, 42));
+
+        assertEquals("Function length(...) only supports CharSequence arguments, but got: java.lang.Integer", exception.getMessage());
     }
 
     @Test

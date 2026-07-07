@@ -9,12 +9,12 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.OptionSwi
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.PredicateOptions;
 
 /**
- * 生效后的谓词公共选项。
+ * 生效后的谓词公共选项.
  *
  * <p>
  * 该对象表示 {@code PredicateOptions} 在 compiled 主链路中经过默认值补齐、父级继承、
- * merge mode 处理和布尔开关归并之后的最终结果。
- * 运行期所有 ignore/trim/required/not/group/scope 语义都直接以它为准。
+ * merge mode 处理和布尔开关归并之后的最终结果.
+ * 运行期所有 ignore/trim/required/not/group/scope 语义都直接以它为准.
  * </p>
  *
  * @author FSixteen
@@ -51,18 +51,18 @@ public final class PredicateOptionsSpec {
     }
 
     /**
-     * 直接返回指定规格已经生效的公共选项。
+     * 直接返回指定规格已经生效的公共选项.
      */
     public static PredicateOptionsSpec of(final CompiledAnnotationSpec<?> spec) {
         return spec.getEffectiveOptions();
     }
 
     /**
-     * 解析顶层注解的最终公共选项。
+     * 解析顶层注解的最终公共选项.
      *
      * <p>
-     * 顶层 canonical 注解默认自动补齐 default scope/group 和标准忽略策略，
-     * 避免每个注解再次重复声明同一套默认值。
+     * 顶层 canonical 注解默认自动补齐 default scope/group 和标准忽略策略,
+     * 避免每个注解再次重复声明同一套默认值.
      * </p>
      *
      * @param options 注解原始 options
@@ -73,7 +73,7 @@ public final class PredicateOptionsSpec {
     }
 
     /**
-     * 解析嵌套/分支场景下基于父级的公共选项。
+     * 解析嵌套/分支场景下基于父级的公共选项.
      *
      * @param base    父级公共选项
      * @param options 当前层 options
@@ -84,7 +84,7 @@ public final class PredicateOptionsSpec {
     }
 
     /**
-     * 基于父级选项与当前层原始注解合并生成最终选项。
+     * 基于父级选项与当前层原始注解合并生成最终选项.
      */
     private static PredicateOptionsSpec merge(final PredicateOptionsSpec base, final PredicateOptions options) {
         if (Objects.isNull(base)) {
@@ -95,7 +95,7 @@ public final class PredicateOptionsSpec {
     }
 
     /**
-     * 以扁平参数形式执行一次完整的默认值、继承和 merge-mode 归并。
+     * 以扁平参数形式执行一次完整的默认值、继承和 merge-mode 归并.
      */
     static PredicateOptionsSpec merge(final String[] scope, final GroupInfo[] groups, final boolean required, final boolean negate, final boolean ignoreNull,
         final boolean ignoreEmpty, final boolean ignoreBlank, final boolean trim, final PredicateOptions options) {
@@ -111,21 +111,21 @@ public final class PredicateOptionsSpec {
     }
 
     /**
-     * 解析最终 scope 数组。
+     * 解析最终 scope 数组.
      */
     private static String[] resolveScope(final String[] inherited, final PredicateOptions options) {
         return resolveArray(inherited, options.scope(), options.scopeMode(), String[]::new);
     }
 
     /**
-     * 解析最终 group 数组。
+     * 解析最终 group 数组.
      */
     private static GroupInfo[] resolveGroups(final GroupInfo[] inherited, final PredicateOptions options) {
         return resolveArray(inherited, options.groups(), options.groupsMode(), GroupInfo[]::new);
     }
 
     /**
-     * 按 {@link OptionSwitch} 语义解析布尔选项。
+     * 按 {@link OptionSwitch} 语义解析布尔选项.
      */
     private static boolean resolveBoolean(final boolean inherited, final boolean defaultValue, final boolean currentValue, final OptionSwitch mode) {
         if (OptionSwitch.ENABLED == mode) {
@@ -138,7 +138,7 @@ public final class PredicateOptionsSpec {
     }
 
     /**
-     * 按 {@link ArrayMergeMode} 语义解析数组类选项。
+     * 按 {@link ArrayMergeMode} 语义解析数组类选项.
      */
     private static <T> T[] resolveArray(final T[] inherited, final T[] current, final ArrayMergeMode mode, final java.util.function.IntFunction<T[]> factory) {
         if (ArrayMergeMode.CLEAR == mode) {
@@ -154,56 +154,56 @@ public final class PredicateOptionsSpec {
     }
 
     /**
-     * 返回已生效的 scope 数组。
+     * 返回已生效的 scope 数组.
      */
     public String[] getScope() {
         return Arrays.copyOf(this.scope, this.scope.length);
     }
 
     /**
-     * 返回已生效的 group 数组。
+     * 返回已生效的 group 数组.
      */
     public GroupInfo[] getGroups() {
         return Arrays.copyOf(this.groups, this.groups.length);
     }
 
     /**
-     * 判断是否启用 required 语义。
+     * 判断是否启用 required 语义.
      */
     public boolean isRequired() {
         return this.required;
     }
 
     /**
-     * 判断是否启用外层 negate 语义。
+     * 判断是否启用外层 negate 语义.
      */
     public boolean isNegate() {
         return this.negate;
     }
 
     /**
-     * 判断是否忽略 null 值。
+     * 判断是否忽略 null 值.
      */
     public boolean isIgnoreNull() {
         return this.ignoreNull;
     }
 
     /**
-     * 判断是否忽略空字符串。
+     * 判断是否忽略空字符串.
      */
     public boolean isIgnoreEmpty() {
         return this.ignoreEmpty;
     }
 
     /**
-     * 判断是否忽略仅包含空白字符的字符串。
+     * 判断是否忽略仅包含空白字符的字符串.
      */
     public boolean isIgnoreBlank() {
         return this.ignoreBlank;
     }
 
     /**
-     * 判断读取到字符串后是否需要 trim。
+     * 判断读取到字符串后是否需要 trim.
      */
     public boolean isTrim() {
         return this.trim;

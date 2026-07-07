@@ -1,12 +1,12 @@
 package io.github.fsixteen.data.jpa.base.generator.plugins.compiled;
 
 /**
- * 统一谓词操作符。
+ * 统一谓词操作符.
  *
  * <p>
- * 该枚举是 compiled 执行层真正消费的操作符集合，
- * 比公开注解层的 {@code CompareOp} 更接近运行期语义。
- * 例如 like 系列在这里已经被拆成 contains / starts-with / ends-with 等可直接执行的形式。
+ * 该枚举是 compiled 执行层真正消费的操作符集合,
+ * 比公开注解层的 {@code CompareOp} 更接近运行期语义.
+ * 例如 like 系列在这里已经被拆成 contains / starts-with / ends-with 等可直接执行的形式.
  * </p>
  *
  * @author FSixteen

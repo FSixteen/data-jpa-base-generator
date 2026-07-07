@@ -11,11 +11,11 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.compiled.PredicateOper
 import io.github.fsixteen.data.jpa.base.generator.plugins.compiler.JpaExpressionResolver;
 
 /**
- * 注册式谓词模板解析器。
+ * 注册式谓词模板解析器.
  *
  * <p>
- * 该类型负责把 {@link RegisteredPredicateTemplate} 落成为最终 JPA {@link Predicate}。
- * 与 compiled 注解路径相比，它的输入不是注解规格，而是一份已经预先定义好的模板。
+ * 该类型负责把 {@link RegisteredPredicateTemplate} 落成为最终 JPA {@link Predicate}.
+ * 与 compiled 注解路径相比, 它的输入不是注解规格, 而是一份已经预先定义好的模板.
  * </p>
  *
  * @author FSixteen
@@ -27,7 +27,7 @@ public final class RegisteredPredicateResolver {
     }
 
     /**
-     * 解析一份注册式谓词模板。
+     * 解析一份注册式谓词模板.
      *
      * @param template   谓词模板
      * @param fieldValue 当前字段运行时值
@@ -38,8 +38,8 @@ public final class RegisteredPredicateResolver {
      */
     public static Predicate resolve(final RegisteredPredicateTemplate template, final Object fieldValue, final Root<?> root, final AbstractQuery<?> query,
         final CriteriaBuilder cb) {
-        // registry/template 路径最终都会汇聚到同一种表达式求值方式，
-        // 差别只在“模板从哪里来”，而不是“怎么落成 Predicate”。
+        // registry/template 路径最终都会汇聚到同一种表达式求值方式,
+        // 差别只在“模板从哪里来”, 而不是“怎么落成 Predicate”.
         Expression<?> left = JpaExpressionResolver.resolve(template.getLeft(), fieldValue, root, query, cb);
         Expression<?> right = JpaExpressionResolver.resolve(template.getRight(), fieldValue, root, query, cb);
         PredicateOperator operator = template.getOperator();

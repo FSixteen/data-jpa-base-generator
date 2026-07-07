@@ -12,12 +12,12 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.ProviderRef;
 import io.github.fsixteen.data.jpa.base.generator.plugins.support.ReflectiveInstantiator;
 
 /**
- * compiled 谓词 provider 注册表。
+ * compiled 谓词 provider 注册表.
  *
  * <p>
- * 该注册表维护“注解类型 -> {@link CompiledPredicateProvider}”映射，
- * 是当前解释器运行期路由注解到具体执行逻辑的唯一入口。
- * 内建注解、SPI 扩展注解、组合注解以及 {@code @Constraint} provider 最终都会在这里完成解析。
+ * 该注册表维护“注解类型 -> {@link CompiledPredicateProvider}”映射,
+ * 是当前解释器运行期路由注解到具体执行逻辑的唯一入口.
+ * 内建注解、SPI 扩展注解、组合注解以及 {@code @Constraint} provider 最终都会在这里完成解析.
  * </p>
  *
  * <p>
@@ -35,8 +35,8 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.support.ReflectiveInst
 public final class CompiledPredicateProviderRegistry {
 
     /**
-     * 统一记录“注解类型 -> compiled provider”映射。
-     * 内建注解、测试 SPI 和未来新增注解都汇聚到这里，避免再次分裂注册中心。
+     * 统一记录“注解类型 -> compiled provider”映射.
+     * 内建注解、测试 SPI 和未来新增注解都汇聚到这里, 避免再次分裂注册中心.
      */
     private static final Map<Class<? extends Annotation>,
         CompiledPredicateProvider> REGISTRY = new ConcurrentHashMap<Class<? extends Annotation>, CompiledPredicateProvider>();
@@ -45,7 +45,7 @@ public final class CompiledPredicateProviderRegistry {
     }
 
     /**
-     * 显式注册一条“注解类型 -> provider”映射。
+     * 显式注册一条“注解类型 -> provider”映射.
      *
      * @param annotationType 注解类型
      * @param provider       provider 实现
@@ -64,7 +64,7 @@ public final class CompiledPredicateProviderRegistry {
     }
 
     /**
-     * 按注解类型获取 provider；若无法解析则抛异常。
+     * 按注解类型获取 provider；若无法解析则抛异常.
      *
      * @param annotationType 注解类型
      * @return provider 实现

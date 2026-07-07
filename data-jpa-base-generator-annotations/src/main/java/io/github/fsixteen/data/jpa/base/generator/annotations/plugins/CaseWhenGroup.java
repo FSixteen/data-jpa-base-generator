@@ -9,10 +9,10 @@ import java.lang.annotation.Target;
 import io.github.fsixteen.data.jpa.base.generator.annotations.GroupComputerType;
 
 /**
- * {@link CaseWhen} 的结构化命中分组。
+ * {@link CaseWhen} 的结构化命中分组.
  *
  * <p>
- * 分组中的表达式统一基于参数对象运行时求值，适合表达多叶子 AND/OR 分支命中逻辑。
+ * 分组中的表达式统一基于参数对象运行时求值, 适合表达多叶子 AND/OR 分支命中逻辑.
  * </p>
  *
  * @author FSixteen

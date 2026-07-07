@@ -14,9 +14,9 @@ import java.lang.annotation.Target;
  *
  * @author FSixteen
  * @since 1.0.0
- * @deprecated 当前 compiled 主链路已不再读取此注解。如需控制分组内谓词执行顺序，
+ * @deprecated 当前 compiled 主链路已不再读取此注解. 如需控制分组内谓词执行顺序,
  *             请使用
- *             {@link io.github.fsixteen.data.jpa.base.generator.annotations.GroupInfo#order()}。
+ *             {@link io.github.fsixteen.data.jpa.base.generator.annotations.GroupInfo#order()}.
  */
 @Target({ FIELD, METHOD })
 @Retention(RUNTIME)

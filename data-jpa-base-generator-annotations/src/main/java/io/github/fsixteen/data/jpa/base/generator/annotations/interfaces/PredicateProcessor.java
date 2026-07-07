@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.persistence.criteria.Predicate;
 
 /**
- * `Cases` 分支命中后的谓词处理器。
+ * `Cases` 分支命中后的谓词处理器.
  *
  * @author FSixteen
  * @since 1.0.3

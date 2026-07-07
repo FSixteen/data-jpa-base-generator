@@ -7,13 +7,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import io.github.fsixteen.data.jpa.base.generator.plugins.spi.ServiceLoaderBootstrap;
 
 /**
- * 注册式谓词模板注册表。
+ * 注册式谓词模板注册表.
  *
  * <p>
- * 该注册表维护“模板名 -> {@link RegisteredPredicateTemplateProvider}”映射，
- * 用于把一整套已定义好的左右表达式与操作符模板按名称暴露给运行期解析器。
+ * 该注册表维护“模板名 -> {@link RegisteredPredicateTemplateProvider}”映射,
+ * 用于把一整套已定义好的左右表达式与操作符模板按名称暴露给运行期解析器.
  * 与 {@link PredicateExpressionRegistry} 的区别在于：
- * 前者只管理单个表达式模板，这里管理完整的谓词模板。
+ * 前者只管理单个表达式模板, 这里管理完整的谓词模板.
  * </p>
  *
  * @author FSixteen

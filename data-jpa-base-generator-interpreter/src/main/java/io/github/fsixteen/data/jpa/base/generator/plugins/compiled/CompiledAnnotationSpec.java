@@ -18,18 +18,18 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.support.MetaAnnotation
 import io.github.fsixteen.data.jpa.base.generator.plugins.support.ReadablePropertySupport;
 
 /**
- * 单个注解的编译结果。
+ * 单个注解的编译结果.
  *
  * <p>
  * 该对象把一个注解在运行期真正需要的信息收口为一份 immutable 规格：
- * 包括注解类型、默认绑定字段、集合策略、canonical 左右表达式、操作符、有效公共选项以及角色信息。
- * compiled provider 在执行时只依赖它，而不再重新解析原始注解。
+ * 包括注解类型、默认绑定字段、集合策略、canonical 左右表达式、操作符、有效公共选项以及角色信息.
+ * compiled provider 在执行时只依赖它, 而不再重新解析原始注解.
  * </p>
  *
  * <p>
- * 从职责上看，它是“原始注解模型”与“统一谓词规格 {@link CompiledPredicateSpec}”之间的桥接层。
- * 它还负责把快捷注解上的零配置默认值补齐为稳定 canonical 语义，
- * 例如 `@Length` 的目标路径推断、`PredicateOptions` 的默认值补齐与父级继承合并。
+ * 从职责上看, 它是“原始注解模型”与“统一谓词规格 {@link CompiledPredicateSpec}”之间的桥接层.
+ * 它还负责把快捷注解上的零配置默认值补齐为稳定 canonical 语义,
+ * 例如 `@Length` 的目标路径推断、`PredicateOptions` 的默认值补齐与父级继承合并.
  * </p>
  *
  * @param <A> 原始注解类型
@@ -47,7 +47,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     private final CompiledPredicateRoleSpec role;
 
     /**
-     * 当前注解默认绑定的参数字段路径。
+     * 当前注解默认绑定的参数字段路径.
      */
     private final String bindingPath;
 
@@ -113,7 +113,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 基于参数对象类型、注解实例和绑定字段创建一份 compiled 规格。
+     * 基于参数对象类型、注解实例和绑定字段创建一份 compiled 规格.
      *
      * @param <A>        注解类型
      * @param objClass   参数对象类型
@@ -126,7 +126,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 基于参数对象类型、注解实例和绑定 getter 创建一份 compiled 规格。
+     * 基于参数对象类型、注解实例和绑定 getter 创建一份 compiled 规格.
      *
      * @param <A>         注解类型
      * @param objClass    参数对象类型
@@ -139,7 +139,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 为不依赖具体字段绑定的注解创建 compiled 规格。
+     * 为不依赖具体字段绑定的注解创建 compiled 规格.
      *
      * @param <A>        注解类型
      * @param objClass   参数对象类型
@@ -151,7 +151,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 基于父级已生效选项创建一份可继承上下文的 compiled 规格。
+     * 基于父级已生效选项创建一份可继承上下文的 compiled 规格.
      *
      * @param <A>              注解类型
      * @param objClass         参数对象类型
@@ -166,11 +166,11 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 基于当前注解规格，覆写 canonical 表达式后返回一份新规格。
+     * 基于当前注解规格, 覆写 canonical 表达式后返回一份新规格.
      *
      * <p>
-     * 主要用于快捷注解、Cases 分支和某些 specialized spec 在编译阶段做表达式重写，
-     * 而不破坏原始编译结果。
+     * 主要用于快捷注解、Cases 分支和某些 specialized spec 在编译阶段做表达式重写,
+     * 而不破坏原始编译结果.
      * </p>
      *
      * @param left  新左表达式
@@ -183,7 +183,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回当前注解的 compare 核心规格。
+     * 返回当前注解的 compare 核心规格.
      *
      * @return compare 核心规格
      */
@@ -192,7 +192,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回当前规格所属的参数对象类型。
+     * 返回当前规格所属的参数对象类型.
      *
      * @return 参数对象类型
      */
@@ -201,7 +201,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回原始注解实例。
+     * 返回原始注解实例.
      *
      * @return 原始注解实例
      */
@@ -210,7 +210,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回原始注解类型。
+     * 返回原始注解类型.
      *
      * @return 原始注解类型
      */
@@ -219,7 +219,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回当前注解在 selection/existence 语义下的参与角色。
+     * 返回当前注解在 selection/existence 语义下的参与角色.
      *
      * @return 角色规格
      */
@@ -228,7 +228,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回默认绑定到实体路径的参数字段名。
+     * 返回默认绑定到实体路径的参数字段名.
      *
      * @return 绑定路径
      */
@@ -237,7 +237,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回当前注解绑定的参数字段名称。
+     * 返回当前注解绑定的参数字段名称.
      *
      * @return 参数字段名称
      */
@@ -246,7 +246,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回当前注解绑定的参数字段反射对象。
+     * 返回当前注解绑定的参数字段反射对象.
      *
      * @return 参数字段反射对象
      */
@@ -255,7 +255,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回当前字段的可读属性描述器。
+     * 返回当前字段的可读属性描述器.
      *
      * @return 可读属性描述器
      */
@@ -264,7 +264,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回当前规格的集合处理策略。
+     * 返回当前规格的集合处理策略.
      *
      * @return 集合处理策略
      */
@@ -273,7 +273,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回已生效的 scope 列表。
+     * 返回已生效的 scope 列表.
      *
      * @return 生效后的 scope 列表
      */
@@ -282,7 +282,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回已生效的 group 列表。
+     * 返回已生效的 group 列表.
      *
      * @return 生效后的 group 列表
      */
@@ -291,7 +291,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回左侧 canonical 表达式。
+     * 返回左侧 canonical 表达式.
      *
      * @return 左侧 canonical 表达式
      */
@@ -300,7 +300,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回右侧 canonical 表达式。
+     * 返回右侧 canonical 表达式.
      *
      * @return 右侧 canonical 表达式
      */
@@ -309,7 +309,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回附加表达式列表。
+     * 返回附加表达式列表.
      *
      * @return 附加表达式列表
      */
@@ -318,7 +318,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回原始公共选项注解。
+     * 返回原始公共选项注解.
      *
      * @return 原始公共选项注解
      */
@@ -327,7 +327,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回 compare 操作符。
+     * 返回 compare 操作符.
      *
      * @return compare 操作符
      */
@@ -336,7 +336,12 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 返回默认值补齐和继承合并后的公共选项。
+     * 返回默认值补齐和继承合并后的公共选项.
+     *
+     * <p>
+     * 该结果在构造阶段已经完成根级默认值补齐与父级选项合并,
+     * 执行链路应统一依赖这里, 而不是重新回到原始注解做分散判断.
+     * </p>
      *
      * @return 生效后的公共选项
      */
@@ -345,10 +350,10 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 从请求参数对象中读取当前注解绑定字段的运行时值。
+     * 从请求参数对象中读取当前注解绑定字段的运行时值.
      *
      * <p>
-     * 这是 compiled 主链路的标准读取入口。
+     * 这是 compiled 主链路的标准读取入口.
      * </p>
      *
      * @param args 请求参数对象
@@ -362,7 +367,7 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 读取字段值，并在启用 {@code trim} 且值为字符串时执行裁剪。
+     * 读取字段值, 并在启用 {@code trim} 且值为字符串时执行裁剪.
      *
      * @param args 请求参数对象
      * @return 标准化后的字段值
@@ -381,11 +386,11 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 根据当前注解的有效选项判断某个值是否应被忽略。
+     * 根据当前注解的有效选项判断某个值是否应被忽略.
      *
      * <p>
      * 当前只处理 null / 空串 / 空白串 这三类标准忽略语义；
-     * 更复杂的集合元素过滤规则由 collection policy 侧单独处理。
+     * 更复杂的集合元素过滤规则由 collection policy 侧单独处理.
      * </p>
      *
      * @param fieldValue 值
@@ -403,7 +408,12 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 解析参数字段对应的只读属性描述器。
+     * 解析参数字段对应的只读属性描述器.
+     *
+     * <p>
+     * 这里统一通过 {@link ReadablePropertySupport} 收敛字段注解与 getter 注解的读取模型,
+     * 只要求属性可读, 不要求 setter 存在.
+     * </p>
      *
      * @param objClass       参数对象类型
      * @param valueFieldName 参数字段名
@@ -414,7 +424,12 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 统一读取原始注解或元注解中的指定属性值。
+     * 统一读取原始注解或元注解中的指定属性值.
+     *
+     * <p>
+     * 该入口屏蔽了“直接注解声明”和“组合注解经元注解继承”的差异,
+     * 让 compiled 规格构造阶段只面向统一的 canonical 属性模型工作.
+     * </p>
      *
      * @param <T>        期望返回类型
      * @param annotation 原始注解或元注解实例
@@ -427,24 +442,23 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 在注解字段缺省为空时回退到指定默认值。
+     * 在注解字段缺省为空时回退到指定默认值.
      *
      * @param <T>          值类型
      * @param value        原始值
      * @param defaultValue 默认值
-     * @return value 非空时返回 value，否则返回 defaultValue
+     * @return value 非空时返回 value, 否则返回 defaultValue
      */
     private static <T> T defaultIfNull(final T value, final T defaultValue) {
         return null != value ? value : defaultValue;
     }
 
     /**
-     * 针对 `@Length` 家族在零配置场景下补齐默认左表达式。
+     * 针对 `@Length` 家族在零配置场景下补齐默认左表达式.
      *
      * <p>
-     * 当左表达式仍是声明层默认的 `length(path)` 且 path 为空时，
-     * compiled 阶段会根据当前绑定属性名推断真实目标路径，
-     * 例如 `nameLength -> name`。
+     * 只有当左表达式仍是声明层默认的 `length(path)` 空路径模板时,
+     * 才会根据当前绑定属性名推断真实目标路径；业务显式声明过的路径或函数表达式不会被覆盖.
      * </p>
      *
      * @param left           原始左表达式
@@ -460,7 +474,12 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 判断给定表达式是否仍是 `@Length` 声明层的默认空路径表达式。
+     * 判断给定表达式是否仍是 `@Length` 声明层的默认空路径表达式.
+     *
+     * <p>
+     * 仅当顶层函数为 `length` 且唯一参数是未填写路径的 `PATH` 表达式时,
+     * 才允许后续执行自动路径推断.
+     * </p>
      *
      * @param expr 表达式
      * @return 是否是待推断目标路径的默认 length 表达式
@@ -471,11 +490,11 @@ public final class CompiledAnnotationSpec<A extends Annotation> {
     }
 
     /**
-     * 按 `@Length` 的零配置规则推断目标路径。
+     * 按 `@Length` 的零配置规则推断目标路径.
      *
      * <p>
-     * 当字段名以 `Length` 结尾且前缀非空时，去掉后缀并按 JavaBean 规则 decapitalize；
-     * 否则直接返回原字段名。
+     * 当字段名以 `Length` 结尾且前缀非空时, 去掉后缀并按 JavaBean 规则 decapitalize；
+     * 否则直接返回原字段名.
      * </p>
      *
      * @param valueFieldName 当前绑定属性名

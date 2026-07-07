@@ -16,13 +16,13 @@ import java.util.Set;
  * 提供两类能力：
  * </p>
  * <ul>
- * <li><b>结构扫描</b> — 遍历类及其父类声明的全部字段和方法，用于注解扫描阶段收集 query model 上的候选属性.</li>
- * <li><b>属性解析</b> — 识别 Java Bean getter 方法并提取属性名，用于注解绑定字段名的推断.</li>
+ * <li><b>结构扫描</b> — 遍历类及其父类声明的全部字段和方法, 用于注解扫描阶段收集 query model 上的候选属性.</li>
+ * <li><b>属性解析</b> — 识别 Java Bean getter 方法并提取属性名, 用于注解绑定字段名的推断.</li>
  * </ul>
  *
  * <p>
- * 该工具不处理 getter/setter 可读性判断，也不依赖 {@code java.beans.PropertyDescriptor}；
- * 所有逻辑基于方法签名直接推导，避免反射开销，适合编译期高频调用.
+ * 该工具不处理 getter/setter 可读性判断, 也不依赖 {@code java.beans.PropertyDescriptor}；
+ * 所有逻辑基于方法签名直接推导, 避免反射开销, 适合编译期高频调用.
  * </p>
  *
  * @author FSixteen

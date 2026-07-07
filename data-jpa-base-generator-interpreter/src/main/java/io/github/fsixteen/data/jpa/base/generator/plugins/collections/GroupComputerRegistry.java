@@ -12,11 +12,11 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.GroupComputerType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.GroupComputerType.Type;
 
 /**
- * `@GroupComputerType` 元数据的只读运行时视图。
+ * `@GroupComputerType` 元数据的只读运行时视图.
  *
  * <p>
- * 外部公开入口仍然通过 `AnnotationCollection/ComputerCollection` 暴露分组合并规则，
- * 但内部不再让 `AnnotationCollection` 同时承担“注解编译结果容器”和“分组元数据注册表”两种职责。
+ * 外部公开入口仍然通过 `AnnotationCollection/ComputerCollection` 暴露分组合并规则,
+ * 但内部不再让 `AnnotationCollection` 同时承担“注解编译结果容器”和“分组元数据注册表”两种职责.
  * </p>
  *
  * @author FSixteen

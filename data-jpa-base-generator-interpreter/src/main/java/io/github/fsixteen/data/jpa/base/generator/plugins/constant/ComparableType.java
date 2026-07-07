@@ -3,12 +3,12 @@ package io.github.fsixteen.data.jpa.base.generator.plugins.constant;
 import io.github.fsixteen.data.jpa.base.generator.plugins.compiled.PredicateOperator;
 
 /**
- * 历史比较语义枚举。
+ * 历史比较语义枚举.
  *
  * <p>
- * 该枚举统一承载比较、like、in、between 和 null-check 相关的历史语义分类，
- * 供 compiled 主链路内部继续复用。
- * 它比公开注解层的 {@code CompareOp} 更贴近运行时分类，但仍保留了历史命名习惯。
+ * 该枚举统一承载比较、like、in、between 和 null-check 相关的历史语义分类,
+ * 供 compiled 主链路内部继续复用.
+ * 它比公开注解层的 {@code CompareOp} 更贴近运行时分类, 但仍保留了历史命名习惯.
  * </p>
  *
  * @author FSixteen

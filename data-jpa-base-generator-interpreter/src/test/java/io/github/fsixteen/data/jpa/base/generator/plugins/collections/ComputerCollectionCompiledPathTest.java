@@ -541,6 +541,19 @@ public class ComputerCollectionCompiledPathTest {
     }
 
     @Test
+    public void shouldIgnoreNullLengthInCollectionItemsLikeJpaPath() {
+        AnnotationCollection collection = AnnotationCollection.Builder.of(LengthInWithNullItemsQueryModel.class).build();
+        CriteriaBuilder cb = proxy(CriteriaBuilder.class, "cb");
+        Root<?> root = proxy(Root.class, "root");
+
+        ComputerCollection computerCollection = CompiledPredicateFacade.build(collection, new LengthInWithNullItemsQueryModel(), root, null, cb,
+            BuilderType.SELECTED);
+
+        assertEquals(1, computerCollection.getPredicateResults().size());
+        assertEquals(null, computerCollection.getPredicateResults().iterator().next().getPredicate());
+    }
+
+    @Test
     public void shouldBuildRepeatableLengthAnnotations() {
         AnnotationCollection collection = AnnotationCollection.Builder.of(RepeatableLengthQueryModel.class).build();
         CriteriaBuilder cb = proxy(CriteriaBuilder.class, "cb");
@@ -1636,6 +1649,19 @@ public class ComputerCollectionCompiledPathTest {
 
         public List<Integer> getAliasLengthOptions() {
             return this.aliasLengthOptions;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final class LengthInWithNullItemsQueryModel {
+
+        @Length(op = CompareOp.IN, left = @Expr(type = ExprType.FUNCTION,
+            function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "name") })))
+        private List<Integer> nameLengthOptions = Arrays.asList((Integer) null);
+
+        public List<Integer> getNameLengthOptions() {
+            return this.nameLengthOptions;
         }
 
     }

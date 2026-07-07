@@ -9,12 +9,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * canonical provider 扩展元注解。
+ * canonical provider 扩展元注解.
  *
  * <p>
- * 该注解只服务于“注解类型 -> compiled provider”的绑定关系，因此只允许标注在
- * annotation type 上。运行时 registry 会统一读取 {@link #provider()} 并实例化
- * {@code io.github.fsixteen.data.jpa.base.generator.plugins.spi.CompiledPredicateProvider}。
+ * 该注解只服务于“注解类型 -> compiled provider”的绑定关系, 因此只允许标注在
+ * annotation type 上. 运行时 registry 会统一读取 {@link #provider()} 并实例化
+ * {@code io.github.fsixteen.data.jpa.base.generator.plugins.spi.CompiledPredicateProvider}.
  * </p>
  *
  * <p>
@@ -38,11 +38,11 @@ import java.lang.annotation.Target;
 public @interface Constraint {
 
     /**
-     * compiled predicate provider 的结构化引用。
+     * compiled predicate provider 的结构化引用.
      *
      * <p>
      * 推荐实现
-     * {@code io.github.fsixteen.data.jpa.base.generator.plugins.spi.CompiledPredicateProvider}。
+     * {@code io.github.fsixteen.data.jpa.base.generator.plugins.spi.CompiledPredicateProvider}.
      * </p>
      *
      * @return ProviderRef

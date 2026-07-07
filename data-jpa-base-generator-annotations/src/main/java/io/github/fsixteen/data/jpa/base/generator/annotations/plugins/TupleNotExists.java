@@ -15,11 +15,11 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.PredicateRole;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.TupleNotExists.List;
 
 /**
- * 多列 tuple not-exists 子查询快捷注解。
+ * 多列 tuple not-exists 子查询快捷注解.
  *
  * <p>
- * 该注解与 {@link TupleExists} 共享相同的列映射与子查询内部过滤模型，
- * 仅在最终 compiled 执行阶段生成 {@code not exists (...)}。
+ * 该注解与 {@link TupleExists} 共享相同的列映射与子查询内部过滤模型,
+ * 仅在最终 compiled 执行阶段生成 {@code not exists (...)}.
  * </p>
  *
  * @author FSixteen
@@ -34,21 +34,21 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.TupleNotEx
 public @interface TupleNotExists {
 
     /**
-     * 子查询实体。
+     * 子查询实体.
      *
      * @return Class
      */
     Class<?> targetEntity();
 
     /**
-     * 多列映射集合。
+     * 多列映射集合.
      *
      * @return TuplePair[]
      */
     TuplePair[] pairs();
 
     /**
-     * 子查询内部的单个默认附加比较条件。
+     * 子查询内部的单个默认附加比较条件.
      *
      * @return Compare
      */
@@ -56,14 +56,14 @@ public @interface TupleNotExists {
         right = @Expr(type = io.github.fsixteen.data.jpa.base.generator.annotations.constant.ExprType.AUTO));
 
     /**
-     * 子查询内部的附加分组树。
+     * 子查询内部的附加分组树.
      *
      * @return SubqueryGroup
      */
     SubqueryGroup where() default @SubqueryGroup();
 
     /**
-     * 当前 tuple not-exists 的公共选项。
+     * 当前 tuple not-exists 的公共选项.
      *
      * @return PredicateOptions
      */

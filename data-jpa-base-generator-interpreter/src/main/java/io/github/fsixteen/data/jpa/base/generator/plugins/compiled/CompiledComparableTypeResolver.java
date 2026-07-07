@@ -4,10 +4,10 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.CompareOp
 import io.github.fsixteen.data.jpa.base.generator.plugins.constant.ComparableType;
 
 /**
- * compiled 主链路中 {@link CompareOp} 到 {@link ComparableType} 的统一解析器。
+ * compiled 主链路中 {@link CompareOp} 到 {@link ComparableType} 的统一解析器.
  *
  * <p>
- * provider 分发、运行时 case 判断和内建 support 都应依赖这里，避免相同语义映射在多个类里重复维护。
+ * provider 分发、运行时 case 判断和内建 support 都应依赖这里, 避免相同语义映射在多个类里重复维护.
  * </p>
  *
  * @author FSixteen
@@ -19,7 +19,12 @@ public final class CompiledComparableTypeResolver {
     }
 
     /**
-     * 将注解层 {@link CompareOp} 与集合拆分语义解析为统一比较类别。
+     * 将注解层 {@link CompareOp} 与集合拆分语义解析为统一比较类别.
+     *
+     * <p>
+     * 该映射是 compiled 主链路与纯运行时链路共享的语义基准.
+     * 特别是 `IN/NOT_IN` 会结合 `split` 标志决定是否落到拆分字符串集合的变体类型.
+     * </p>
      *
      * @param op    compare 操作符
      * @param split 是否启用字符串拆分集合语义

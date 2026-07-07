@@ -7,12 +7,12 @@ import java.util.Objects;
 import io.github.fsixteen.data.jpa.base.generator.annotations.constant.TargetType;
 
 /**
- * {@link TargetType} 运行时转换器。
+ * {@link TargetType} 运行时转换器.
  *
  * <p>
- * 该类型将旧的 {@link TargetType} 输入语义下沉为统一转换入口，
+ * 该类型将旧的 {@link TargetType} 输入语义下沉为统一转换入口,
  * 主要服务于 {@code CollectionPolicy}、split/range 值解析和其它仍通过
- * {@link TargetType} 声明目标类型的场景。
+ * {@link TargetType} 声明目标类型的场景.
  * </p>
  *
  * @author FSixteen
@@ -23,6 +23,19 @@ public final class TargetTypeConverters {
     private TargetTypeConverters() {
     }
 
+    /**
+     * 按旧版 {@link TargetType} 语义解析单个字符串值.
+     *
+     * <p>
+     * 该方法是旧版目标类型声明到统一 {@link LiteralCodecs} 解析链路的桥接层.
+     * 当目标类型为空时, 按 {@link TargetType#DEFAULT} 处理.
+     * </p>
+     *
+     * @param raw        原始字符串值
+     * @param targetType 目标类型声明
+     * @param format     日期时间格式
+     * @return 解析后的目标值
+     */
     public static Object parse(final String raw, final TargetType targetType, final String format) {
         TargetType actualType = Objects.isNull(targetType) ? TargetType.DEFAULT : targetType;
         switch (actualType) {
@@ -66,6 +79,15 @@ public final class TargetTypeConverters {
         }
     }
 
+    /**
+     * 按旧版 {@link TargetType} 语义拆分并解析集合值.
+     *
+     * @param raw        原始集合字符串
+     * @param decollator 分隔符
+     * @param targetType 目标类型声明
+     * @param format     日期时间格式
+     * @return 解析后的集合值列表
+     */
     public static List<Object> parseCollection(final String raw, final String decollator, final TargetType targetType, final String format) {
         List<String> tokens = LiteralCodecs.split(raw, decollator);
         List<Object> values = new ArrayList<Object>(tokens.size());

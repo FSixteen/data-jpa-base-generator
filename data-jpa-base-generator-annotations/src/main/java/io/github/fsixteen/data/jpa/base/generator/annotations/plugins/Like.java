@@ -16,11 +16,11 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ExprType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Like.List;
 
 /**
- * 模糊匹配快捷注解。
+ * 模糊匹配快捷注解.
  *
  * <p>
- * 该注解是 {@link TextMatch} 的 like 语义快捷包装。零配置时默认等价于
- * “当前字段路径 LIKE %当前字段运行时值%”。
+ * 该注解是 {@link TextMatch} 的 like 语义快捷包装. 零配置时默认等价于
+ * “当前字段路径 LIKE %当前字段运行时值%”.
  * </p>
  *
  * @author FSixteen
@@ -35,21 +35,21 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Like.List;
 public @interface Like {
 
     /**
-     * 当前文本匹配的左侧 canonical 表达式。
+     * 当前文本匹配的左侧 canonical 表达式.
      *
      * @return Expr
      */
     Expr left() default @Expr(type = ExprType.PATH);
 
     /**
-     * 当前文本匹配的目标表达式。
+     * 当前文本匹配的目标表达式.
      *
      * @return Expr
      */
     Expr right() default @Expr(type = ExprType.VALUE);
 
     /**
-     * 当前文本匹配的公共选项。
+     * 当前文本匹配的公共选项.
      *
      * @return PredicateOptions
      */
@@ -67,7 +67,7 @@ public @interface Like {
     @interface List {
 
         /**
-         * 可重复注解容器。
+         * 可重复注解容器.
          *
          * @return Like[]
          */

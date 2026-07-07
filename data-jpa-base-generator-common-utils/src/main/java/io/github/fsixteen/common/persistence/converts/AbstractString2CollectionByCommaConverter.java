@@ -70,7 +70,7 @@ public abstract class AbstractString2CollectionByCommaConverter<T extends Collec
                 char current = input.charAt(offset);
                 // 检查是否是转义字符
                 if (current == ESCAPED_CHAR) {
-                    // 如果是转义字符，跳过下一个字符
+                    // 如果是转义字符, 跳过下一个字符
                     offset++;
                     continue;
                 }

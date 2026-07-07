@@ -27,19 +27,19 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.spi.CompiledPredicateP
 import io.github.fsixteen.data.jpa.base.generator.plugins.spi.CompiledPredicateProviderRegistry;
 
 /**
- * 运行期构建结果集合。
+ * 运行期构建结果集合.
  *
  * <p>
- * 该对象承接 {@link AnnotationCollection} 的 compiled 注解规格，
- * 结合具体的请求参数对象、JPA {@code Root}/{@code CriteriaBuilder} 等运行期上下文，
- * 生成 selection 或 existence 目标下的 {@link CompiledPredicateResult} 集合。
+ * 该对象承接 {@link AnnotationCollection} 的 compiled 注解规格,
+ * 结合具体的请求参数对象、JPA {@code Root}/{@code CriteriaBuilder} 等运行期上下文,
+ * 生成 selection 或 existence 目标下的 {@link CompiledPredicateResult} 集合.
  * </p>
  *
  * <p>
- * 对外它仍保留历史上的稳定 API 面，例如 {@link #getPredicate(CriteriaBuilder)}、
+ * 对外它仍保留历史上的稳定 API 面, 例如 {@link #getPredicate(CriteriaBuilder)}、
  * {@link #getPredicateArray(CriteriaBuilder)} 和
  * {@link #getPredicateGroupSpec()}；
- * 但内部实际构建已经完全收敛到 compiled provider 和 compiled assembler。
+ * 但内部实际构建已经完全收敛到 compiled provider 和 compiled assembler.
  * </p>
  *
  * @author FSixteen
@@ -61,7 +61,7 @@ public final class ComputerCollection {
     }
 
     /**
-     * 返回公开边界上的构建类型。
+     * 返回公开边界上的构建类型.
      *
      * @return BuilderType
      */
@@ -78,7 +78,7 @@ public final class ComputerCollection {
     }
 
     /**
-     * 返回本次运行期构建所基于的注解集合。
+     * 返回本次运行期构建所基于的注解集合.
      *
      * @return AnnotationCollection
      */
@@ -140,7 +140,7 @@ public final class ComputerCollection {
     }
 
     /**
-     * compiled 主链路下的谓词结果集合。<br>
+     * compiled 主链路下的谓词结果集合. <br>
      *
      * @return compiled 谓词结果
      */
@@ -179,7 +179,7 @@ public final class ComputerCollection {
      * @return List&lt;Predicate&gt;
      */
     public List<Predicate> getPredicateList(final CriteriaBuilder cb, final String scope) {
-        // 统一交给 compiled 组装器做分组与合并，避免内部再维护第二套 group 逻辑。
+        // 统一交给 compiled 组装器做分组与合并, 避免内部再维护第二套 group 逻辑.
         return CompiledPredicateAssembler.of(this.annotationCollection, new ArrayList<CompiledPredicateResult<?>>(this.predicateResults), cb, scope)
             .toPredicateList();
     }
@@ -207,11 +207,11 @@ public final class ComputerCollection {
     }
 
     /**
-     * 获取 compiled 主链路下的谓词分组树。<br>
+     * 获取 compiled 主链路下的谓词分组树. <br>
      *
      * <p>
-     * 该方法不会改变现有 {@link #getPredicate(CriteriaBuilder)} 的对外行为，
-     * 但为复杂对象、子查询和后续 exists/not exists 能力提供统一的分组结构出口。
+     * 该方法不会改变现有 {@link #getPredicate(CriteriaBuilder)} 的对外行为,
+     * 但为复杂对象、子查询和后续 exists/not exists 能力提供统一的分组结构出口.
      * </p>
      *
      * @return 分组树
@@ -221,7 +221,7 @@ public final class ComputerCollection {
     }
 
     /**
-     * 获取指定 scope 的 compiled 谓词分组树。<br>
+     * 获取指定 scope 的 compiled 谓词分组树. <br>
      *
      * @param scope 范围查询分组
      * @return 分组树
@@ -309,7 +309,7 @@ public final class ComputerCollection {
         }
 
         /**
-         * 创建 compiled predicate 结果。
+         * 创建 compiled predicate 结果.
          *
          * @param spec    compiled 注解规格
          * @param results compiled 结果容器
@@ -317,8 +317,8 @@ public final class ComputerCollection {
          */
         private Builder addPredicateResult(final CompiledAnnotationSpec<?> spec, final Collection<CompiledPredicateResult<?>> results) {
             try {
-                // 主路径现在统一只接受 compiled provider。
-                // built-in 注解、SPI 注解以及 @Constraint 自定义注解都会先收敛到 registry。
+                // 主路径现在统一只接受 compiled provider.
+                // built-in 注解、SPI 注解以及 @Constraint 自定义注解都会先收敛到 registry.
                 CompiledPredicateProvider provider = CompiledPredicateProviderRegistry.require(spec.getAnnotationType());
                 results.add(CompiledPredicateResult.of(spec, provider.create(spec, this.args, this.root, this.query, this.cb)));
             } catch (IllegalArgumentException e) {
@@ -329,7 +329,7 @@ public final class ComputerCollection {
         }
 
         /**
-         * 批量创建 compiled predicate 结果。
+         * 批量创建 compiled predicate 结果.
          *
          * @param specs   compiled 注解规格容器
          * @param results compiled 结果容器
@@ -341,11 +341,11 @@ public final class ComputerCollection {
         }
 
         /**
-         * 按公开边界上的 {@link BuilderType} 创建运行期构建结果。
+         * 按公开边界上的 {@link BuilderType} 创建运行期构建结果.
          *
          * <p>
          * 该方法主要服务于既有外部调用链；进入内部后会立即映射为
-         * {@link PredicateBuildTarget}。
+         * {@link PredicateBuildTarget}.
          * </p>
          *
          * @param type 外部稳定入口仍使用的构建类型
@@ -356,7 +356,7 @@ public final class ComputerCollection {
         }
 
         /**
-         * 创建 selection 构建结果。
+         * 创建 selection 构建结果.
          *
          * @return ComputerCollection
          */
@@ -365,7 +365,7 @@ public final class ComputerCollection {
         }
 
         /**
-         * 创建 existence 构建结果。
+         * 创建 existence 构建结果.
          *
          * @return ComputerCollection
          */

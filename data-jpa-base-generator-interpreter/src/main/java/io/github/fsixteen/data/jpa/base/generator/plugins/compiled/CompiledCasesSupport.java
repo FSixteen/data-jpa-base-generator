@@ -13,16 +13,16 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.interfaces.Predica
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Cases;
 
 /**
- * {@link Cases} 的运行期执行器。
+ * {@link Cases} 的运行期执行器.
  *
  * <p>
  * 该类型负责在 compiled 主链路下执行分支选择逻辑：
- * 先读取字段运行时值，再按 {@link CompiledCaseBranchSpec} 的命中规则逐个匹配，
- * 最后根据分支动作模式生成 canonical 谓词或调用自定义 processor。
+ * 先读取字段运行时值, 再按 {@link CompiledCaseBranchSpec} 的命中规则逐个匹配,
+ * 最后根据分支动作模式生成 canonical 谓词或调用自定义 processor.
  * </p>
  *
  * <p>
- * 它不再解析原始注解，只消费编译阶段产出的分支规格。
+ * 它不再解析原始注解, 只消费编译阶段产出的分支规格.
  * </p>
  *
  * @author FSixteen
@@ -36,7 +36,7 @@ public final class CompiledCasesSupport {
     }
 
     /**
-     * 执行一个 {@link Cases} 注解的分支选择并生成最终谓词。
+     * 执行一个 {@link Cases} 注解的分支选择并生成最终谓词.
      */
     public static javax.persistence.criteria.Predicate create(final CompiledAnnotationSpec<Cases> spec, final Object args, final Root<?> root,
         final AbstractQuery<?> query, final CriteriaBuilder cb) {
@@ -64,10 +64,10 @@ public final class CompiledCasesSupport {
     }
 
     /**
-     * 按编译阶段确定的匹配模式判断当前分支是否命中。
+     * 按编译阶段确定的匹配模式判断当前分支是否命中.
      */
     private static boolean matchesBranch(final CompiledCaseBranchSpec branch, final Object args, final Object currentFieldValue) {
-        // 分支命中规则已在编译阶段固化，这里只按模式执行。
+        // 分支命中规则已在编译阶段固化, 这里只按模式执行.
         if (branch.isCanonicalMatch()) {
             return RuntimePredicateEvaluator.matches(branch.getCanonicalWhenSpec(), args, currentFieldValue);
         }
@@ -84,11 +84,11 @@ public final class CompiledCasesSupport {
     }
 
     /**
-     * 根据分支动作模式生成 canonical 谓词或调用自定义 processor。
+     * 根据分支动作模式生成 canonical 谓词或调用自定义 processor.
      */
     private static javax.persistence.criteria.Predicate createResolvedBranchPredicate(final CompiledCaseBranchSpec branch, final Object args,
         final Object fieldValue, final Root<?> root, final AbstractQuery<?> query, final CriteriaBuilder cb) {
-        // 执行动作同样由编译阶段一次定型，运行期不再回看 then 配置细节。
+        // 执行动作同样由编译阶段一次定型, 运行期不再回看 then 配置细节.
         if (branch.usesProcessorAction()) {
             return branch.getProcessor().create(PredicateProcessorContext.of(canonicalAnnotation(branch.getCanonicalWhenSpec()),
                 canonicalAnnotation(branch.getCanonicalPredicateSpec()), args, branch.getFieldName(), fieldValue, root, query, cb));
@@ -103,7 +103,7 @@ public final class CompiledCasesSupport {
     }
 
     /**
-     * 按分支级别生效选项规范化当前字段值。
+     * 按分支级别生效选项规范化当前字段值.
      */
     private static Object branchFieldValue(final Object fieldValue, final PredicateOptionsSpec options) {
         Object normalized = options.isTrim() && fieldValue instanceof String ? String.class.cast(fieldValue).trim() : fieldValue;
@@ -126,7 +126,7 @@ public final class CompiledCasesSupport {
     }
 
     /**
-     * 从 compiled compare 规格中提取其原始 compare 注解实例。
+     * 从 compiled compare 规格中提取其原始 compare 注解实例.
      */
     private static io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Compare canonicalAnnotation(
         final CompiledAnnotationSpec<io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Compare> spec) {

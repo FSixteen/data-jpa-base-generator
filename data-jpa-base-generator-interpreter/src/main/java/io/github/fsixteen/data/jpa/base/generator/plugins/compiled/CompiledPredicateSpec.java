@@ -7,12 +7,12 @@ import java.util.List;
 import io.github.fsixteen.data.jpa.base.generator.plugins.expression.PredicateExpression;
 
 /**
- * 统一谓词规格。
+ * 统一谓词规格.
  *
  * <p>
- * 该对象表示“一个谓词在统一执行层里最终应该如何计算”，
- * 即把操作符、左右表达式、附加操作数和生效后的公共选项统一收口到同一模型中。
- * compiled provider、纯运行时判定器和调试测试都围绕它工作。
+ * 该对象表示“一个谓词在统一执行层里最终应该如何计算”,
+ * 即把操作符、左右表达式、附加操作数和生效后的公共选项统一收口到同一模型中.
+ * compiled provider、纯运行时判定器和调试测试都围绕它工作.
  * </p>
  *
  * @author FSixteen

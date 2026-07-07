@@ -16,10 +16,10 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ExprType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.IsNotNull.List;
 
 /**
- * 非空判断快捷注解。
+ * 非空判断快捷注解.
  *
  * <p>
- * 该注解是 {@link NullCheck} 的 is-not-null 语义快捷包装。零配置时默认作用于当前字段路径。
+ * 该注解是 {@link NullCheck} 的 is-not-null 语义快捷包装. 零配置时默认作用于当前字段路径.
  * </p>
  *
  * @author FSixteen
@@ -34,14 +34,14 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.IsNotNull.
 public @interface IsNotNull {
 
     /**
-     * 当前空值判断的被判断 canonical 表达式。
+     * 当前空值判断的被判断 canonical 表达式.
      *
      * @return Expr
      */
     Expr left() default @Expr(type = ExprType.PATH);
 
     /**
-     * 当前空值判断的公共选项。
+     * 当前空值判断的公共选项.
      *
      * @return PredicateOptions
      */
@@ -59,7 +59,7 @@ public @interface IsNotNull {
     @interface List {
 
         /**
-         * 可重复注解容器。
+         * 可重复注解容器.
          *
          * @return IsNotNull[]
          */

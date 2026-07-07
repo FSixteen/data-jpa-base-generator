@@ -485,7 +485,7 @@ public interface BaseDeleteService<T extends IdEntity<ID>, ID extends Serializab
     }
 
     /**
-     * 只按 getter 读取属性，避免联合主键对象必须声明 setter。
+     * 只按 getter 读取属性, 避免联合主键对象必须声明 setter.
      *
      * @param bean         bean
      * @param propertyName 属性名

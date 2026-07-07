@@ -6,12 +6,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * tuple-value 谓词的 compiled 规格。
+ * tuple-value 谓词的 compiled 规格.
  *
  * <p>
- * 该类型连接“标准注解宿主规格”和“tuple 列映射规格”。宿主字段仍通过
+ * 该类型连接“标准注解宿主规格”和“tuple 列映射规格”. 宿主字段仍通过
  * {@link CompiledAnnotationSpec} 统一承接 options、bindingPath 与运行时值读取；tuple
- * 特有的 {@code tupleField / negate / columns} 则在这里补齐。
+ * 特有的 {@code tupleField / negate / columns} 则在这里补齐.
  * </p>
  *
  * @author FSixteen

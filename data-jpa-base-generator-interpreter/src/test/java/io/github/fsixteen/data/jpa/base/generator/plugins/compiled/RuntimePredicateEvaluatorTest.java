@@ -2,6 +2,7 @@ package io.github.fsixteen.data.jpa.base.generator.plugins.compiled;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
@@ -111,6 +112,39 @@ public class RuntimePredicateEvaluatorTest {
             Integer.valueOf(5)));
     }
 
+    @Test
+    public void shouldTreatRuntimeLengthNullLikeSqlNull() throws Exception {
+        Field field = RuntimeQueryModel.class.getDeclaredField("nameLength");
+        Length annotation = field.getAnnotation(Length.class);
+        CompiledAnnotationSpec<Length> spec = CompiledAnnotationSpec.of(RuntimeQueryModel.class, annotation, field);
+
+        assertFalse(RuntimePredicateEvaluator.matches(spec,
+            new RuntimeQueryModel(" Demo ", Arrays.asList(3, 7), Arrays.asList("ACTIVE", "PENDING"), null, "ACTIVE", "active", "ACTIVE", 0, null),
+            Integer.valueOf(0)));
+    }
+
+    @Test
+    public void shouldRejectRuntimeBetweenValueWhenSizeIsNotExactlyTwo() throws Exception {
+        Field field = RuntimeQueryModel.class.getDeclaredField("invalidLengthRange");
+        Length annotation = field.getAnnotation(Length.class);
+        CompiledAnnotationSpec<Length> spec = CompiledAnnotationSpec.of(RuntimeQueryModel.class, annotation, field);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+            () -> RuntimePredicateEvaluator.matches(spec, new RuntimeQueryModel(), Arrays.asList(Integer.valueOf(1), Integer.valueOf(3), Integer.valueOf(5))));
+
+        assertTrue(exception.getMessage().contains("requires exactly 2 values"), exception.getMessage());
+        assertTrue(exception.getMessage().contains("invalidLengthRange"), exception.getMessage());
+    }
+
+    @Test
+    public void shouldIgnoreNullCollectionItemsForRuntimeLengthInPredicate() throws Exception {
+        Field field = RuntimeQueryModel.class.getDeclaredField("nameLengthOptions");
+        Length annotation = field.getAnnotation(Length.class);
+        CompiledAnnotationSpec<Length> spec = CompiledAnnotationSpec.of(RuntimeQueryModel.class, annotation, field);
+
+        assertFalse(RuntimePredicateEvaluator.matches(spec, new RuntimeQueryModel(), Arrays.asList((Integer) null)));
+    }
+
     private static final class RuntimeQueryModel {
 
         @Equal(left = @Expr(type = ExprType.LITERAL, literal = "demo-x"),
@@ -149,6 +183,14 @@ public class RuntimePredicateEvaluatorTest {
         private Integer nameLength = Integer.valueOf(6);
 
         private String name = "Length";
+
+        @Length(op = io.github.fsixteen.data.jpa.base.generator.annotations.constant.CompareOp.BETWEEN, left = @Expr(type = ExprType.FUNCTION,
+            function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "name") })))
+        private List<Integer> invalidLengthRange = Arrays.asList(Integer.valueOf(3), Integer.valueOf(7));
+
+        @Length(op = io.github.fsixteen.data.jpa.base.generator.annotations.constant.CompareOp.IN, left = @Expr(type = ExprType.FUNCTION,
+            function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "name") })))
+        private List<Integer> nameLengthOptions = Arrays.asList(Integer.valueOf(6));
 
         private RuntimeQueryModel() {
         }
@@ -215,6 +257,16 @@ public class RuntimePredicateEvaluatorTest {
         @SuppressWarnings("unused")
         public String getName() {
             return this.name;
+        }
+
+        @SuppressWarnings("unused")
+        public List<Integer> getInvalidLengthRange() {
+            return this.invalidLengthRange;
+        }
+
+        @SuppressWarnings("unused")
+        public List<Integer> getNameLengthOptions() {
+            return this.nameLengthOptions;
         }
 
     }

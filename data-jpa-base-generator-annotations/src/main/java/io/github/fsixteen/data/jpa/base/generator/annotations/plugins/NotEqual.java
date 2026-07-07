@@ -16,11 +16,11 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.constant.ExprType;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NotEqual.List;
 
 /**
- * 不等值比较快捷注解。
+ * 不等值比较快捷注解.
  *
  * <p>
- * 该注解是 {@link Compare} 的不等值语义快捷包装。零配置时默认等价于
- * “当前字段路径 != 当前字段运行时值”。
+ * 该注解是 {@link Compare} 的不等值语义快捷包装. 零配置时默认等价于
+ * “当前字段路径 != 当前字段运行时值”.
  * </p>
  *
  * @author FSixteen
@@ -35,21 +35,21 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NotEqual.L
 public @interface NotEqual {
 
     /**
-     * 当前不等值比较的左侧 canonical 表达式。
+     * 当前不等值比较的左侧 canonical 表达式.
      *
      * @return Expr
      */
     Expr left() default @Expr(type = ExprType.PATH);
 
     /**
-     * 当前不等值比较的右侧 canonical 表达式。
+     * 当前不等值比较的右侧 canonical 表达式.
      *
      * @return Expr
      */
     Expr right() default @Expr(type = ExprType.VALUE);
 
     /**
-     * 当前不等值比较的公共选项。
+     * 当前不等值比较的公共选项.
      *
      * @return PredicateOptions
      */
@@ -67,7 +67,7 @@ public @interface NotEqual {
     @interface List {
 
         /**
-         * {@link NotEqual} 集合。
+         * {@link NotEqual} 集合.
          *
          * @return NotEqual[]
          */
