@@ -55,13 +55,26 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 为 Cases 分支场景执行一条已补齐的 canonical compare 谓词。
+     *
+     * <p>
+     * 与普通 selection/existence 谓词不同，这里读取的是“当前分支上下文中的字段值”，
+     * 因而不走注解自身的默认字段读取链路。
+     * </p>
+     *
+     * @param spec       当前分支使用的 compiled 注解规格
+     * @param args       请求参数对象
+     * @param fieldValue 当前分支上下文字段值
+     * @param root       查询根节点
+     * @param query      当前查询对象
+     * @param cb         CriteriaBuilder
+     * @return 生成的谓词；当表达式不可解析或值应被忽略时返回 {@code null}
      */
     public static Predicate createCasePredicate(final CompiledAnnotationSpec<? extends Annotation> spec, final Object args, final Object fieldValue,
         final Root<?> root, final AbstractQuery<?> query, final CriteriaBuilder cb) {
         ComparableType type = CompiledComparableTypeResolver.resolve(spec.getPredicateCore().getOp(), spec.getCollectionPolicy().isSplit());
         if (type.isRange()) {
             CompiledPredicateSpec predicateSpec = CompiledPredicateSpecs.between(type.getOperator(), spec);
-            Collection<?> betweenValue = transitionBetweenValue(fieldValue);
+            Collection<?> betweenValue = requireBetweenValue(spec, fieldValue);
             Optional<Expression<?>> leftExpression = resolveSingle(spec, predicateSpec.getLeft(), args, fieldValue, root, query, cb);
             Optional<RangeExpressions> rightExpression = resolveRange(spec, predicateSpec, args, betweenValue, root, query, cb);
             if (!leftExpression.isPresent() || !rightExpression.isPresent()) {
@@ -101,6 +114,14 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 执行普通 compare 谓词。
+     *
+     * @param spec  compiled 注解规格
+     * @param args  请求参数对象
+     * @param root  查询根节点
+     * @param query 当前查询对象
+     * @param cb    CriteriaBuilder
+     * @param type  已解析的比较类别
+     * @return 生成的谓词；当字段值被忽略或表达式不可解析时返回 {@code null}
      */
     public static Predicate createComparable(final CompiledAnnotationSpec<? extends Annotation> spec, final Object args, final Root<?> root,
         final AbstractQuery<?> query, final CriteriaBuilder cb, final ComparableType type) {
@@ -114,6 +135,14 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 执行 like 家族谓词。
+     *
+     * @param spec  compiled 注解规格
+     * @param args  请求参数对象
+     * @param root  查询根节点
+     * @param query 当前查询对象
+     * @param cb    CriteriaBuilder
+     * @param type  已解析的 like 比较类别
+     * @return 生成的谓词；当字段值被忽略或表达式不可解析时返回 {@code null}
      */
     public static Predicate createLike(final CompiledAnnotationSpec<? extends Annotation> spec, final Object args, final Root<?> root,
         final AbstractQuery<?> query, final CriteriaBuilder cb, final ComparableType type) {
@@ -127,11 +156,20 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 执行 between / not-between 谓词。
+     *
+     * @param spec  compiled 注解规格
+     * @param args  请求参数对象
+     * @param root  查询根节点
+     * @param query 当前查询对象
+     * @param cb    CriteriaBuilder
+     * @param type  已解析的区间比较类别
+     * @return 生成的谓词；当字段值被忽略或表达式不可解析时返回 {@code null}
+     * @throws IllegalArgumentException 当运行时值无法归一化为恰好两个区间端点时抛出
      */
     public static Predicate createBetween(final CompiledAnnotationSpec<? extends Annotation> spec, final Object args, final Root<?> root,
         final AbstractQuery<?> query, final CriteriaBuilder cb, final ComparableType type) {
         Object rawFieldValue = readFieldValue(spec, args);
-        Collection<?> fieldValue = transitionBetweenValue(rawFieldValue);
+        Collection<?> fieldValue = requireBetweenValue(spec, rawFieldValue);
         Predicate nullPredicate = requiredNullPredicate(spec, fieldValue, root);
         if (null != nullPredicate || spec.shouldIgnore(fieldValue)) {
             return nullPredicate;
@@ -151,6 +189,14 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 执行 in / not-in 谓词。
+     *
+     * @param spec  compiled 注解规格
+     * @param args  请求参数对象
+     * @param root  查询根节点
+     * @param query 当前查询对象
+     * @param cb    CriteriaBuilder
+     * @param type  已解析的成员比较类别
+     * @return 生成的谓词；当集合为空、元素全被过滤或表达式不可解析时返回 {@code null}
      */
     public static Predicate createIn(final CompiledAnnotationSpec<? extends Annotation> spec, final Object args, final Root<?> root,
         final AbstractQuery<?> query, final CriteriaBuilder cb, final ComparableType type) {
@@ -181,6 +227,13 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 执行布尔开关式 null 谓词。
+     *
+     * @param spec  `@Null` 的 compiled 注解规格
+     * @param args  请求参数对象
+     * @param root  查询根节点
+     * @param query 当前查询对象
+     * @param cb    CriteriaBuilder
+     * @return 生成的谓词；当字段值不是布尔值、被忽略或表达式不可解析时返回 {@code null}
      */
     public static Predicate createNull(final CompiledAnnotationSpec<Null> spec, final Object args, final Root<?> root, final AbstractQuery<?> query,
         final CriteriaBuilder cb) {
@@ -201,6 +254,14 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 执行 is-null / is-not-null 谓词。
+     *
+     * @param spec    compiled 注解规格
+     * @param args    请求参数对象
+     * @param root    查询根节点
+     * @param query   当前查询对象
+     * @param cb      CriteriaBuilder
+     * @param notNull {@code true} 生成 `is not null`，否则生成 `is null`
+     * @return 生成的谓词；当开关值不为 `true`、被忽略或表达式不可解析时返回 {@code null}
      */
     public static Predicate createIsNull(final CompiledAnnotationSpec<? extends Annotation> spec, final Object args, final Root<?> root,
         final AbstractQuery<?> query, final CriteriaBuilder cb, final boolean notNull) {
@@ -224,6 +285,15 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 将单值 canonical 表达式解析为 JPA {@link Expression}。
+     *
+     * @param spec       compiled 注解规格
+     * @param expression 待解析表达式
+     * @param args       请求参数对象
+     * @param fieldValue 当前运行时字段值
+     * @param root       查询根节点
+     * @param query      当前查询对象
+     * @param cb         CriteriaBuilder
+     * @return 解析成功时返回表达式，否则返回空
      */
     private static Optional<Expression<?>> resolveSingle(final CompiledAnnotationSpec<? extends Annotation> spec, final PredicateExpression expression,
         final Object args, final Object fieldValue, final Root<?> root, final AbstractQuery<?> query, final CriteriaBuilder cb) {
@@ -238,6 +308,20 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 将集合语义表达式解析为 JPA {@link Expression}。
+     *
+     * <p>
+     * 这里额外处理了集合 cardinality 的 `FIELD_VALUE / FIELD_VALUE_PATH / LITERAL` 三种特殊落地方式，
+     * 其余情况回退到单值解析链路。
+     * </p>
+     *
+     * @param spec       compiled 注解规格
+     * @param expression 待解析表达式
+     * @param args       请求参数对象
+     * @param fieldValue 当前集合值
+     * @param root       查询根节点
+     * @param query      当前查询对象
+     * @param cb         CriteriaBuilder
+     * @return 解析成功时返回表达式，否则返回空
      */
     private static Optional<Expression<?>> resolveCollection(final CompiledAnnotationSpec<? extends Annotation> spec, final PredicateExpression expression,
         final Object args, final List<?> fieldValue, final Root<?> root, final AbstractQuery<?> query, final CriteriaBuilder cb) {
@@ -265,6 +349,15 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 解析 between 比较所需的起止表达式。
+     *
+     * @param spec          compiled 注解规格
+     * @param predicateSpec between 谓词规格
+     * @param args          请求参数对象
+     * @param fieldValue    当前区间值
+     * @param root          查询根节点
+     * @param query         当前查询对象
+     * @param cb            CriteriaBuilder
+     * @return 起止表达式都可解析时返回区间表达式包装，否则返回空
      */
     private static Optional<RangeExpressions> resolveRange(final CompiledAnnotationSpec<? extends Annotation> spec, final CompiledPredicateSpec predicateSpec,
         final Object args, final Collection<?> fieldValue, final Root<?> root, final AbstractQuery<?> query, final CriteriaBuilder cb) {
@@ -304,6 +397,9 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 将运行时值规范为 between 语义需要的二元集合。
+     *
+     * @param fieldValue 运行时值
+     * @return 二元集合；无法归一化时返回 {@code null}
      */
     private static Collection<?> transitionBetweenValue(final Object fieldValue) {
         if (Objects.isNull(fieldValue)) {
@@ -321,7 +417,27 @@ public final class CompiledBuiltInPredicateSupport {
     }
 
     /**
+     * 校验当前运行时值是否满足 between 语义要求。
+     *
+     * @param spec       compiled 注解规格
+     * @param fieldValue 原始运行时值
+     * @return 归一化后的二元集合；原始值为 null 时允许返回 {@code null}
+     * @throws IllegalArgumentException 当值非空但无法归一化为恰好两个端点时抛出
+     */
+    private static Collection<?> requireBetweenValue(final CompiledAnnotationSpec<? extends Annotation> spec, final Object fieldValue) {
+        Collection<?> normalized = transitionBetweenValue(fieldValue);
+        if (Objects.nonNull(fieldValue) && Objects.isNull(normalized)) {
+            throw new IllegalArgumentException("Field '" + spec.getValueFieldName() + "' requires exactly 2 values for BETWEEN semantics");
+        }
+        return normalized;
+    }
+
+    /**
      * 将运行时值规范为 in 语义需要的集合。
+     *
+     * @param spec       compiled 注解规格
+     * @param fieldValue 原始运行时值
+     * @return 归一化后的集合；原始值为 null 时返回 {@code null}
      */
     private static Collection<?> transitionInValue(final CompiledAnnotationSpec<? extends Annotation> spec, final Object fieldValue) {
         if (Objects.isNull(fieldValue)) {
@@ -345,6 +461,9 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 将任意值尽可能归一为集合形式。
+     *
+     * @param fieldValue 原始值
+     * @return 集合形式；原始值为 null 时返回 {@code null}
      */
     private static Collection<?> transitionCollectionValue(final Object fieldValue) {
         if (Objects.isNull(fieldValue)) {
@@ -361,12 +480,21 @@ public final class CompiledBuiltInPredicateSupport {
         return Arrays.asList(fieldValue);
     }
 
+    /**
+     * 判断当前注解是否声明了 split 集合策略。
+     *
+     * @param spec compiled 注解规格
+     * @return 是否启用 split
+     */
     private static boolean isSplitAnnotation(final CompiledAnnotationSpec<? extends Annotation> spec) {
         return spec.getCollectionPolicy().isSplit();
     }
 
     /**
      * 解析当前规格声明的集合元素过滤规则。
+     *
+     * @param spec compiled 注解规格
+     * @return 集合元素过滤谓词；未声明任何过滤规则时返回恒等谓词
      */
     private static java.util.function.Predicate<Object> filterBySpec(final CompiledAnnotationSpec<? extends Annotation> spec) {
         CompiledCollectionPolicySpec collectionPolicy = spec.getCollectionPolicy();
@@ -386,6 +514,10 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 读取并按 trim 规则规范化绑定字段值。
+     *
+     * @param spec compiled 注解规格
+     * @param args 请求参数对象
+     * @return 读取并标准化后的字段值
      */
     private static Object readFieldValue(final CompiledAnnotationSpec<? extends Annotation> spec, final Object args) {
         return spec.readAndTrim(args);
@@ -393,6 +525,18 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 解析左右表达式后执行一条标准二元比较谓词。
+     *
+     * @param spec                       compiled 注解规格
+     * @param args                       请求参数对象
+     * @param fieldValue                 当前字段值
+     * @param root                       查询根节点
+     * @param query                      当前查询对象
+     * @param cb                         CriteriaBuilder
+     * @param operator                   目标谓词操作符
+     * @param reverse                    是否在生成后应用公共选项里的 `not`
+     * @param resolveNullAsEqualityCheck 是否将 `EQ/NEQ + null` 转换为 `is null/is not
+     *                                   null`
+     * @return 生成的谓词；当表达式不可解析时返回 {@code null}
      */
     private static Predicate createResolvedBinaryPredicate(final CompiledAnnotationSpec<? extends Annotation> spec, final Object args, final Object fieldValue,
         final Root<?> root, final AbstractQuery<?> query, final CriteriaBuilder cb, final PredicateOperator operator, final boolean reverse,
@@ -416,6 +560,15 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 同时解析二元比较的左右表达式。
+     *
+     * @param spec          compiled 注解规格
+     * @param predicateSpec 二元谓词规格
+     * @param args          请求参数对象
+     * @param fieldValue    当前字段值
+     * @param root          查询根节点
+     * @param query         当前查询对象
+     * @param cb            CriteriaBuilder
+     * @return 左右表达式都解析成功时返回包装结果，否则返回空
      */
     private static Optional<BinaryExpressions> resolveBinaryExpressions(final CompiledAnnotationSpec<? extends Annotation> spec,
         final CompiledPredicateSpec predicateSpec, final Object args, final Object fieldValue, final Root<?> root, final AbstractQuery<?> query,
@@ -430,6 +583,11 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 在 required 且字段值为 null 时生成短路谓词。
+     *
+     * @param spec       compiled 注解规格
+     * @param fieldValue 当前字段值
+     * @param root       查询根节点
+     * @return required 且值为 null 时返回 `path is null`，否则返回 {@code null}
      */
     private static Predicate requiredNullPredicate(final CompiledAnnotationSpec<? extends Annotation> spec, final Object fieldValue, final Root<?> root) {
         return spec.getEffectiveOptions().isRequired() && Objects.isNull(fieldValue) ? root.get(spec.getBindingPath()).isNull() : null;
@@ -437,25 +595,59 @@ public final class CompiledBuiltInPredicateSupport {
 
     /**
      * 如公共选项声明了 not，则对当前谓词做一次取反。
+     *
+     * @param spec      compiled 注解规格
+     * @param predicate 原始谓词
+     * @return 需要取反时返回取反后的谓词，否则返回原谓词
      */
     private static Predicate reverseIfRequired(final CompiledAnnotationSpec<? extends Annotation> spec, final Predicate predicate) {
         return spec.getEffectiveOptions().isNegate() ? predicate.not() : predicate;
     }
 
+    /**
+     * 生成 between 谓词。
+     *
+     * @param cb    CriteriaBuilder
+     * @param left  左表达式
+     * @param range 起止表达式包装
+     * @return between 谓词
+     */
     private static Predicate betweenPredicate(final CriteriaBuilder cb, final Expression<?> left, final RangeExpressions range) {
         return betweenComparable(cb, left, range.start, range.end);
     }
 
+    /**
+     * 在受控类型收窄后调用 Criteria API 的 `between`。
+     *
+     * @param <Y>   comparable 元素类型
+     * @param cb    CriteriaBuilder
+     * @param left  左表达式
+     * @param start 起始表达式
+     * @param end   结束表达式
+     * @return between 谓词
+     */
     @SuppressWarnings({ "unchecked" })
     private static <Y extends Comparable<? super Y>> Predicate betweenComparable(final CriteriaBuilder cb, final Expression<?> left, final Expression<?> start,
         final Expression<?> end) {
         return cb.between((Expression<? extends Y>) left, (Expression<? extends Y>) start, (Expression<? extends Y>) end);
     }
 
+    /**
+     * 将值视为集合；不是集合时返回 {@code null}。
+     *
+     * @param fieldValue 原始值
+     * @return 集合视图或 {@code null}
+     */
     private static Collection<?> asCollection(final Object fieldValue) {
         return fieldValue instanceof Collection<?> ? (Collection<?>) fieldValue : null;
     }
 
+    /**
+     * 将对象数组或原始类型数组统一转换为 `Object[]`。
+     *
+     * @param fieldValue 原始值
+     * @return 对象数组；不是数组时返回 {@code null}
+     */
     private static Object[] asObjectArray(final Object fieldValue) {
         if (Objects.isNull(fieldValue) || !fieldValue.getClass().isArray()) {
             return null;
@@ -471,6 +663,9 @@ public final class CompiledBuiltInPredicateSupport {
         return normalized;
     }
 
+    /**
+     * 二元表达式解析结果包装。
+     */
     private static final class BinaryExpressions {
 
         private final Expression<?> left;
@@ -484,6 +679,9 @@ public final class CompiledBuiltInPredicateSupport {
 
     }
 
+    /**
+     * 区间起止表达式包装。
+     */
     private static final class RangeExpressions {
 
         private final Expression<?> start;

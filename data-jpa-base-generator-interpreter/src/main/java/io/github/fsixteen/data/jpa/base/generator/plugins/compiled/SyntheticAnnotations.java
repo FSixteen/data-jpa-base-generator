@@ -14,6 +14,8 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Compare;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Expr;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.ExprArg;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.ExprFunction;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NestedExprArg;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NestedExprFunction;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.PredicateOptions;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.PredicateRef;
 
@@ -32,6 +34,8 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.PredicateR
 final class SyntheticAnnotations {
 
     private static final ExprArg[] EMPTY_EXPR_ARGS = new ExprArg[0];
+
+    private static final NestedExprArg[] EMPTY_NESTED_EXPR_ARGS = new NestedExprArg[0];
 
     private static final Expr[] EMPTY_EXPRS = new Expr[0];
 
@@ -59,6 +63,30 @@ final class SyntheticAnnotations {
         @Override
         public ExprArg[] args() {
             return EMPTY_EXPR_ARGS;
+        }
+
+    };
+
+    private static final NestedExprFunction EMPTY_NESTED_FUNCTION = new NestedExprFunction() {
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return NestedExprFunction.class;
+        }
+
+        @Override
+        public String name() {
+            return "";
+        }
+
+        @Override
+        public Class<?> type() {
+            return Object.class;
+        }
+
+        @Override
+        public NestedExprArg[] args() {
+            return EMPTY_NESTED_EXPR_ARGS;
         }
 
     };
@@ -222,6 +250,13 @@ final class SyntheticAnnotations {
     }
 
     /**
+     * 构造一条 {@code length(path)} 形式的合成函数表达式。
+     */
+    static Expr lengthExpr(final String path) {
+        return expr(ExprType.FUNCTION, "", "", "", Object.class, function("length", Integer.class, pathArg(path)));
+    }
+
+    /**
      * 返回默认的 value 表达式。
      */
     static Expr valueExpr() {
@@ -233,6 +268,73 @@ final class SyntheticAnnotations {
      */
     static Expr autoExpr() {
         return AUTO_EXPR;
+    }
+
+    private static ExprFunction function(final String name, final Class<?> type, final ExprArg... args) {
+        return new ExprFunction() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return ExprFunction.class;
+            }
+
+            @Override
+            public String name() {
+                return name;
+            }
+
+            @Override
+            public Class<?> type() {
+                return type;
+            }
+
+            @Override
+            public ExprArg[] args() {
+                return null == args ? EMPTY_EXPR_ARGS : args.clone();
+            }
+
+        };
+    }
+
+    private static ExprArg pathArg(final String path) {
+        return new ExprArg() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return ExprArg.class;
+            }
+
+            @Override
+            public ExprType type() {
+                return ExprType.PATH;
+            }
+
+            @Override
+            public String path() {
+                return path;
+            }
+
+            @Override
+            public String valueField() {
+                return "";
+            }
+
+            @Override
+            public String literal() {
+                return "";
+            }
+
+            @Override
+            public Class<?> javaType() {
+                return Object.class;
+            }
+
+            @Override
+            public NestedExprFunction function() {
+                return EMPTY_NESTED_FUNCTION;
+            }
+
+        };
     }
 
     /**

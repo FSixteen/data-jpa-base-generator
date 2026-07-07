@@ -41,8 +41,8 @@ class CanonicalShortcutAnnotationContractTest {
     private static final Set<Class<? extends Annotation>> PURE_NULL_SHORTCUTS = new HashSet<Class<? extends Annotation>>(
         Arrays.<Class<? extends Annotation>>asList(IsNull.class, IsNotNull.class, Null.class));
 
-    private static final Set<Class<? extends Annotation>> PURE_CANONICAL_DSL_SHORTCUTS = new HashSet<Class<? extends Annotation>>(
-        Arrays.<Class<? extends Annotation>>asList(Compare.class, SplitIn.class, SplitNotIn.class, FilterIn.class, FilterNotIn.class, Unique.class));
+    private static final Set<Class<? extends Annotation>> PURE_CANONICAL_DSL_SHORTCUTS = new HashSet<Class<? extends Annotation>>(Arrays.<
+        Class<? extends Annotation>>asList(Compare.class, SplitIn.class, SplitNotIn.class, FilterIn.class, FilterNotIn.class, Unique.class, Length.class));
 
     private static final Set<String> LEGACY_METHODS = new HashSet<String>(
         Arrays.asList("scope", "groups", "field", "fieldType", "fieldLiteral", "fieldFunction", "fieldProcessor", "valueType", "valueLiteral", "valueFunction",
@@ -55,6 +55,7 @@ class CanonicalShortcutAnnotationContractTest {
         assertExactMethods(SplitNotIn.class, "collection", "left", "right", "options");
         assertExactMethods(FilterIn.class, "collection", "left", "right", "options");
         assertExactMethods(FilterNotIn.class, "collection", "left", "right", "options");
+        assertExactMethods(Length.class, "op", "left", "right", "extra", "options");
         PURE_CANONICAL_DSL_SHORTCUTS.forEach(annotation -> {
             assertNoLegacyMethods(annotation);
             assertNotDeprecatedShortcut(annotation);
@@ -252,6 +253,7 @@ class CanonicalShortcutAnnotationContractTest {
         assertDirectCustomMetaAnnotations(EndWith.class, TextMatch.class);
         assertDirectCustomMetaAnnotations(IgnoreCaseEqual.class, Compare.class);
         assertDirectCustomMetaAnnotations(IgnoreCaseLike.class, TextMatch.class);
+        assertDirectCustomMetaAnnotations(Length.class, PredicateRole.class, Compare.class);
         assertDirectCustomMetaAnnotations(IsNull.class, NullCheck.class);
         assertDirectCustomMetaAnnotations(IsNotNull.class, NullCheck.class);
         assertDirectCustomMetaAnnotations(Exists.class, PredicateRole.class, SubqueryPredicate.class);

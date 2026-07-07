@@ -54,6 +54,14 @@ public class RuntimeExpressionEvaluatorTest {
     }
 
     @Test
+    public void shouldEvaluateLengthFunction() {
+        FunctionExpression expression = FunctionExpression.of("length", Integer.class, Arrays.<
+            PredicateExpression>asList(FunctionExpression.of("trim", String.class, Arrays.<PredicateExpression>asList(FieldValueExpression.literal()))));
+
+        assertEquals(4, RuntimeExpressionEvaluator.evaluate(expression, null, " Demo "));
+    }
+
+    @Test
     public void shouldEvaluateCoalesceFunction() {
         RuntimeArgs args = new RuntimeArgs();
         FunctionExpression expression = FunctionExpression.of("coalesce", String.class, Arrays.<PredicateExpression>asList(

@@ -20,6 +20,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.ExprArg;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.ExprFunction;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.In;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.IsNull;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Length;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NestedExprArg;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NestedExprFunction;
 
@@ -82,7 +83,8 @@ public class RuntimePredicateEvaluatorTest {
 
         assertTrue(RuntimePredicateEvaluator.matches(spec, new RuntimeQueryModel(), "ACTIVE"));
         assertFalse(RuntimePredicateEvaluator.matches(spec,
-            new RuntimeQueryModel(" Demo ", Arrays.asList(3, 7), Arrays.asList("ACTIVE", "PENDING"), null, "INACTIVE", "active", "ACTIVE"), "INACTIVE"));
+            new RuntimeQueryModel(" Demo ", Arrays.asList(3, 7), Arrays.asList("ACTIVE", "PENDING"), null, "INACTIVE", "active", "ACTIVE", 6, "Length"),
+            "INACTIVE"));
     }
 
     @Test
@@ -93,7 +95,20 @@ public class RuntimePredicateEvaluatorTest {
 
         assertTrue(RuntimePredicateEvaluator.matches(spec, new RuntimeQueryModel(), "ACTIVE"));
         assertFalse(RuntimePredicateEvaluator.matches(spec,
-            new RuntimeQueryModel(" Demo ", Arrays.asList(3, 7), Arrays.asList("ACTIVE", "PENDING"), null, "ACTIVE", "disabled", "ACTIVE"), "ACTIVE"));
+            new RuntimeQueryModel(" Demo ", Arrays.asList(3, 7), Arrays.asList("ACTIVE", "PENDING"), null, "ACTIVE", "disabled", "ACTIVE", 6, "Length"),
+            "ACTIVE"));
+    }
+
+    @Test
+    public void shouldMatchRuntimeLengthPredicate() throws Exception {
+        Field field = RuntimeQueryModel.class.getDeclaredField("nameLength");
+        Length annotation = field.getAnnotation(Length.class);
+        CompiledAnnotationSpec<Length> spec = CompiledAnnotationSpec.of(RuntimeQueryModel.class, annotation, field);
+
+        assertTrue(RuntimePredicateEvaluator.matches(spec, new RuntimeQueryModel(), Integer.valueOf(6)));
+        assertFalse(RuntimePredicateEvaluator.matches(spec,
+            new RuntimeQueryModel(" Demo ", Arrays.asList(3, 7), Arrays.asList("ACTIVE", "PENDING"), null, "ACTIVE", "active", "ACTIVE", 5, "Length"),
+            Integer.valueOf(5)));
     }
 
     private static final class RuntimeQueryModel {
@@ -130,15 +145,20 @@ public class RuntimePredicateEvaluatorTest {
                 function = @ExprFunction(name = "lower", type = String.class, args = { @ExprArg(type = ExprType.PATH, path = "normalizedStatus") })))
         private String normalizedStatus = "active";
 
+        @Length
+        private Integer nameLength = Integer.valueOf(6);
+
+        private String name = "Length";
+
         private RuntimeQueryModel() {
         }
 
         private RuntimeQueryModel(final String keyword, final List<Integer> scoreRange, final List<String> statuses, final String deletedAt) {
-            this(keyword, scoreRange, statuses, deletedAt, "ACTIVE", "active", "ACTIVE");
+            this(keyword, scoreRange, statuses, deletedAt, "ACTIVE", "active", "ACTIVE", 6, "Length");
         }
 
         private RuntimeQueryModel(final String keyword, final List<Integer> scoreRange, final List<String> statuses, final String deletedAt,
-            final String statusMirror, final String normalizedStatus, final String status) {
+            final String statusMirror, final String normalizedStatus, final String status, final Integer nameLength, final String name) {
             this.keyword = keyword;
             this.scoreRange = scoreRange;
             this.statuses = statuses;
@@ -146,6 +166,8 @@ public class RuntimePredicateEvaluatorTest {
             this.statusMirror = statusMirror;
             this.normalizedStatus = normalizedStatus;
             this.status = status;
+            this.nameLength = nameLength;
+            this.name = name;
         }
 
         private String status = "ACTIVE";
@@ -183,6 +205,16 @@ public class RuntimePredicateEvaluatorTest {
         @SuppressWarnings("unused")
         public String getStatus() {
             return this.status;
+        }
+
+        @SuppressWarnings("unused")
+        public Integer getNameLength() {
+            return this.nameLength;
+        }
+
+        @SuppressWarnings("unused")
+        public String getName() {
+            return this.name;
         }
 
     }

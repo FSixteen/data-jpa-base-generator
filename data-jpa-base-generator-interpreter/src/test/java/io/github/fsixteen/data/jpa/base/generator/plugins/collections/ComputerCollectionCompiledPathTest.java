@@ -3,10 +3,12 @@ package io.github.fsixteen.data.jpa.base.generator.plugins.collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Arrays;
@@ -61,6 +63,7 @@ import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.In;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.InTable;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.IsNotNull;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.IsNull;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Length;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.LessThan;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.LessThanOrEqualTo;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Like;
@@ -183,9 +186,11 @@ public class ComputerCollectionCompiledPathTest {
     public void shouldRegisterBuiltInCompiledProvidersForShortcutAnnotations() {
         CompiledPredicateProviderRegistry.reference(Gt.class);
         CompiledPredicateProviderRegistry.reference(SplitIn.class);
+        CompiledPredicateProviderRegistry.reference(Length.class);
 
         assertTrue(CompiledPredicateProviderRegistry.containsKey(Gt.class));
         assertTrue(CompiledPredicateProviderRegistry.containsKey(SplitIn.class));
+        assertTrue(CompiledPredicateProviderRegistry.containsKey(Length.class));
     }
 
     @Test
@@ -424,6 +429,174 @@ public class ComputerCollectionCompiledPathTest {
 
         assertEquals(1, computerCollection.getPredicateResults().size());
         assertEquals("lower(root.keyword) = lower(trim(root.keyword))", debug(computerCollection.getPredicateResults().iterator().next().getPredicate()));
+    }
+
+    @Test
+    public void shouldBuildLengthPredicatesThroughCompiledMainPath() {
+        AnnotationCollection collection = AnnotationCollection.Builder.of(LengthQueryModel.class).build();
+        CriteriaBuilder cb = proxy(CriteriaBuilder.class, "cb");
+        Root<?> root = proxy(Root.class, "root");
+
+        ComputerCollection computerCollection = CompiledPredicateFacade.build(collection, new LengthQueryModel(), root, null, cb, BuilderType.SELECTED);
+        assertEquals(1, computerCollection.getPredicateResults().size());
+        assertEquals("length(root.name) >= 3", debug(computerCollection.getPredicateResults().iterator().next().getPredicate()));
+    }
+
+    @Test
+    public void shouldBuildExtendedLengthPredicatesThroughCompiledMainPath() {
+        AnnotationCollection collection = AnnotationCollection.Builder.of(ExtendedLengthQueryModel.class).build();
+        CriteriaBuilder cb = proxy(CriteriaBuilder.class, "cb");
+        Root<?> root = proxy(Root.class, "root");
+
+        ComputerCollection computerCollection = CompiledPredicateFacade.build(collection, new ExtendedLengthQueryModel(), root, null, cb, BuilderType.SELECTED);
+        List<String> predicates = computerCollection.getPredicateResults().stream().map(it -> debug(it.getPredicate())).collect(Collectors.toList());
+
+        assertEquals(7, predicates.size());
+        assertTrue(predicates.contains("length(root.name) = 4"), predicates.toString());
+        assertTrue(predicates.contains("length(root.alias) != 2"), predicates.toString());
+        assertTrue(predicates.contains("length(root.nickName) < 12"), predicates.toString());
+        assertTrue(predicates.contains("length(root.code) <= 8"), predicates.toString());
+        assertTrue(predicates.contains("length(root.serial) > 6"), predicates.toString());
+        assertTrue(predicates.contains("length(root.memo) BETWEEN 3 AND 9"), predicates.toString());
+        assertTrue(predicates.contains("length(root.description) NOT BETWEEN 5 AND 10"), predicates.toString());
+    }
+
+    @Test
+    public void shouldBuildCustomLengthExpressionsThroughCompiledMainPath() {
+        AnnotationCollection collection = AnnotationCollection.Builder.of(CustomLengthExpressionQueryModel.class).build();
+        CriteriaBuilder cb = proxy(CriteriaBuilder.class, "cb");
+        Root<?> root = proxy(Root.class, "root");
+
+        ComputerCollection computerCollection = CompiledPredicateFacade.build(collection, new CustomLengthExpressionQueryModel(), root, null, cb,
+            BuilderType.SELECTED);
+        List<String> predicates = computerCollection.getPredicateResults().stream().map(it -> debug(it.getPredicate())).collect(Collectors.toList());
+
+        assertEquals(3, predicates.size());
+        assertTrue(predicates.contains("length(root.alias) = 5"), predicates.toString());
+        assertTrue(predicates.contains("length(root.code) = 7"), predicates.toString());
+        assertTrue(predicates.contains("NOT (length(root.summary) >= 11)"), predicates.toString());
+    }
+
+    @Test
+    public void shouldBuildComposedLengthShortcutThroughCompiledMainPath() {
+        AnnotationCollection collection = AnnotationCollection.Builder.of(ComposedLengthQueryModel.class).build();
+        CriteriaBuilder cb = proxy(CriteriaBuilder.class, "cb");
+        Root<?> root = proxy(Root.class, "root");
+
+        ComputerCollection computerCollection = CompiledPredicateFacade.build(collection, new ComposedLengthQueryModel(), root, null, cb, BuilderType.SELECTED);
+
+        assertEquals(1, computerCollection.getPredicateResults().size());
+        assertEquals("length(root.displayName) >= 6", debug(computerCollection.getPredicateResults().iterator().next().getPredicate()));
+    }
+
+    @Test
+    public void shouldBuildZeroConfigLengthUsingTrimmedFieldSuffix() {
+        AnnotationCollection collection = AnnotationCollection.Builder.of(ZeroConfigLengthQueryModel.class).build();
+        CriteriaBuilder cb = proxy(CriteriaBuilder.class, "cb");
+        Root<?> root = proxy(Root.class, "root");
+
+        ComputerCollection computerCollection = CompiledPredicateFacade.build(collection, new ZeroConfigLengthQueryModel(), root, null, cb,
+            BuilderType.SELECTED);
+
+        assertEquals(1, computerCollection.getPredicateResults().size());
+        assertEquals("length(root.name) = 4", debug(computerCollection.getPredicateResults().iterator().next().getPredicate()));
+    }
+
+    @Test
+    public void shouldBuildZeroConfigLengthFromGetterAnnotation() {
+        AnnotationCollection collection = AnnotationCollection.Builder.of(GetterLengthQueryModel.class).build();
+        CriteriaBuilder cb = proxy(CriteriaBuilder.class, "cb");
+        Root<?> root = proxy(Root.class, "root");
+
+        ComputerCollection computerCollection = CompiledPredicateFacade.build(collection, new GetterLengthQueryModel(), root, null, cb, BuilderType.SELECTED);
+
+        assertEquals(1, computerCollection.getPredicateResults().size());
+        assertEquals("length(root.name) = 4", debug(computerCollection.getPredicateResults().iterator().next().getPredicate()));
+    }
+
+    @Test
+    public void shouldBuildZeroConfigLengthUsingFieldNameWhenNoSuffix() {
+        AnnotationCollection collection = AnnotationCollection.Builder.of(InvalidZeroConfigLengthTargetQueryModel.class).build();
+        CriteriaBuilder cb = proxy(CriteriaBuilder.class, "cb");
+        Root<?> root = proxy(Root.class, "root");
+
+        ComputerCollection computerCollection = CompiledPredicateFacade.build(collection, new InvalidZeroConfigLengthTargetQueryModel(), root, null, cb,
+            BuilderType.SELECTED);
+
+        assertEquals(1, computerCollection.getPredicateResults().size());
+        assertEquals("length(root.charCount) = 4", debug(computerCollection.getPredicateResults().iterator().next().getPredicate()));
+    }
+
+    @Test
+    public void shouldRejectInvalidLengthBetweenValueInsteadOfIgnoringIt() {
+        AnnotationCollection collection = AnnotationCollection.Builder.of(InvalidLengthBetweenValueQueryModel.class).build();
+        CriteriaBuilder cb = proxy(CriteriaBuilder.class, "cb");
+        Root<?> root = proxy(Root.class, "root");
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+            () -> CompiledPredicateFacade.build(collection, new InvalidLengthBetweenValueQueryModel(), root, null, cb, BuilderType.SELECTED));
+
+        assertTrue(exception.getMessage().contains("requires exactly 2 values"), exception.getMessage());
+        assertTrue(exception.getMessage().contains("memoLength"), exception.getMessage());
+    }
+
+    @Test
+    public void shouldBuildRepeatableLengthAnnotations() {
+        AnnotationCollection collection = AnnotationCollection.Builder.of(RepeatableLengthQueryModel.class).build();
+        CriteriaBuilder cb = proxy(CriteriaBuilder.class, "cb");
+        Root<?> root = proxy(Root.class, "root");
+
+        ComputerCollection computerCollection = CompiledPredicateFacade.build(collection, new RepeatableLengthQueryModel(), root, null, cb,
+            BuilderType.SELECTED);
+        List<String> predicates = computerCollection.getPredicateResults().stream().map(it -> debug(it.getPredicate())).collect(Collectors.toList());
+
+        assertEquals(2, predicates.size());
+        assertTrue(predicates.contains("length(root.name) >= 3"), predicates.toString());
+        assertTrue(predicates.contains("length(root.alias) <= 8"), predicates.toString());
+    }
+
+    @Test
+    public void shouldBuildLengthInAndNotInPredicates() {
+        AnnotationCollection collection = AnnotationCollection.Builder.of(LengthInQueryModel.class).build();
+        CriteriaBuilder cb = proxy(CriteriaBuilder.class, "cb");
+        Root<?> root = proxy(Root.class, "root");
+
+        ComputerCollection computerCollection = CompiledPredicateFacade.build(collection, new LengthInQueryModel(), root, null, cb, BuilderType.SELECTED);
+        List<String> predicates = computerCollection.getPredicateResults().stream().map(it -> debug(it.getPredicate())).collect(Collectors.toList());
+
+        assertEquals(2, predicates.size());
+        assertTrue(predicates.contains("length(root.name) IN (SELECT [3, 5])"), predicates.toString());
+        assertTrue(predicates.contains("length(root.alias) NOT IN (SELECT [2, 4])"), predicates.toString());
+    }
+
+    @Test
+    public void shouldIgnoreNullLengthValueByDefault() {
+        AnnotationCollection collection = AnnotationCollection.Builder.of(NullableLengthQueryModel.class).build();
+        CriteriaBuilder cb = proxy(CriteriaBuilder.class, "cb");
+        Root<?> root = proxy(Root.class, "root");
+
+        ComputerCollection computerCollection = CompiledPredicateFacade.build(collection, new NullableLengthQueryModel(), root, null, cb, BuilderType.SELECTED);
+
+        assertEquals(1, computerCollection.getPredicateResults().size());
+        assertEquals(null, computerCollection.getPredicateResults().iterator().next().getPredicate());
+    }
+
+    @Test
+    public void shouldRejectUnsupportedLengthCompareOpDuringCompilation() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+            () -> AnnotationCollection.Builder.of(InvalidLengthQueryModel.class).build());
+
+        assertTrue(exception.getMessage().contains("@Length"), exception.getMessage());
+        assertTrue(exception.getMessage().contains("CompareOp.LIKE"), exception.getMessage());
+    }
+
+    @Test
+    public void shouldRejectUnsupportedLengthCompareOpForComposedAnnotations() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+            () -> AnnotationCollection.Builder.of(InvalidComposedLengthQueryModel.class).build());
+
+        assertTrue(exception.getMessage().contains("@InvalidComposedLength"), exception.getMessage());
+        assertTrue(exception.getMessage().contains("CompareOp.LIKE"), exception.getMessage());
     }
 
     @Test
@@ -1188,6 +1361,281 @@ public class ComputerCollectionCompiledPathTest {
 
         public void setKeyword(final String keyword) {
             this.keyword = keyword;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final class LengthQueryModel {
+
+        @Length(op = CompareOp.GTE, left = @Expr(type = ExprType.FUNCTION,
+            function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "name") })))
+        private Integer nameLength = Integer.valueOf(3);
+
+        public Integer getNameLength() {
+            return this.nameLength;
+        }
+
+        public void setNameLength(final Integer nameLength) {
+            this.nameLength = nameLength;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final class ExtendedLengthQueryModel {
+
+        @Length(op = CompareOp.EQ, left = @Expr(type = ExprType.FUNCTION,
+            function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "name") })))
+        private Integer nameLength = Integer.valueOf(4);
+
+        @Length(op = CompareOp.NE, left = @Expr(type = ExprType.FUNCTION,
+            function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "alias") })))
+        private Integer aliasLength = Integer.valueOf(2);
+
+        @Length(op = CompareOp.LT, left = @Expr(type = ExprType.FUNCTION,
+            function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "nickName") })))
+        private Integer nickNameLength = Integer.valueOf(12);
+
+        @Length(op = CompareOp.LTE, left = @Expr(type = ExprType.FUNCTION,
+            function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "code") })))
+        private Integer codeLength = Integer.valueOf(8);
+
+        @Length(op = CompareOp.GT, left = @Expr(type = ExprType.FUNCTION,
+            function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "serial") })))
+        private Integer serialLength = Integer.valueOf(6);
+
+        @Length(op = CompareOp.BETWEEN, left = @Expr(type = ExprType.FUNCTION,
+            function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "memo") })))
+        private List<Integer> memoLength = Arrays.asList(Integer.valueOf(3), Integer.valueOf(9));
+
+        @Length(op = CompareOp.NOT_BETWEEN, left = @Expr(type = ExprType.FUNCTION,
+            function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "description") })))
+        private List<Integer> descriptionLength = Arrays.asList(Integer.valueOf(5), Integer.valueOf(10));
+
+        public Integer getNameLength() {
+            return this.nameLength;
+        }
+
+        public Integer getAliasLength() {
+            return this.aliasLength;
+        }
+
+        public Integer getNickNameLength() {
+            return this.nickNameLength;
+        }
+
+        public Integer getCodeLength() {
+            return this.codeLength;
+        }
+
+        public Integer getSerialLength() {
+            return this.serialLength;
+        }
+
+        public List<Integer> getMemoLength() {
+            return this.memoLength;
+        }
+
+        public List<Integer> getDescriptionLength() {
+            return this.descriptionLength;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final class CustomLengthExpressionQueryModel {
+
+        @Length(op = CompareOp.EQ, left = @Expr(type = ExprType.FUNCTION,
+            function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "alias") })))
+        private Integer aliasLength = Integer.valueOf(5);
+
+        @Length(op = CompareOp.EQ,
+            left = @Expr(type = ExprType.FUNCTION,
+                function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "code") })),
+            right = @Expr(type = ExprType.VALUE, valueField = "expectedCodeLength"))
+        private Integer ignoredValue = Integer.valueOf(0);
+
+        private Integer expectedCodeLength = Integer.valueOf(7);
+
+        @Length(op = CompareOp.GTE,
+            left = @Expr(type = ExprType.FUNCTION,
+                function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "summary") })),
+            options = @PredicateOptions(not = true))
+        private Integer summaryLength = Integer.valueOf(11);
+
+        public Integer getAliasLength() {
+            return this.aliasLength;
+        }
+
+        public Integer getIgnoredValue() {
+            return this.ignoredValue;
+        }
+
+        public Integer getExpectedCodeLength() {
+            return this.expectedCodeLength;
+        }
+
+        public Integer getSummaryLength() {
+            return this.summaryLength;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final class NullableLengthQueryModel {
+
+        @Length(op = CompareOp.GT, left = @Expr(type = ExprType.FUNCTION,
+            function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "name") })))
+        private Integer nameLength;
+
+        public Integer getNameLength() {
+            return this.nameLength;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final class InvalidLengthQueryModel {
+
+        @Length(op = CompareOp.LIKE)
+        private Integer invalidLength = Integer.valueOf(3);
+
+        public Integer getInvalidLength() {
+            return this.invalidLength;
+        }
+
+        public void setInvalidLength(final Integer invalidLength) {
+            this.invalidLength = invalidLength;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final class InvalidComposedLengthQueryModel {
+
+        @InvalidComposedLength
+        private Integer invalidLength = Integer.valueOf(3);
+
+        public Integer getInvalidLength() {
+            return this.invalidLength;
+        }
+
+        public void setInvalidLength(final Integer invalidLength) {
+            this.invalidLength = invalidLength;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final class ComposedLengthQueryModel {
+
+        @MinDisplayNameLength
+        private Integer displayNameLength = Integer.valueOf(6);
+
+        public Integer getDisplayNameLength() {
+            return this.displayNameLength;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final class ZeroConfigLengthQueryModel {
+
+        @Length
+        private Integer nameLength = Integer.valueOf(4);
+
+        public Integer getNameLength() {
+            return this.nameLength;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final class InvalidZeroConfigLengthTargetQueryModel {
+
+        @Length
+        private Integer charCount = Integer.valueOf(4);
+
+        public Integer getCharCount() {
+            return this.charCount;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final class GetterLengthQueryModel {
+
+        private final Integer nameLength = Integer.valueOf(4);
+
+        @Length
+        public Integer getNameLength() {
+            return this.nameLength;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final class InvalidLengthBetweenValueQueryModel {
+
+        @Length(op = CompareOp.BETWEEN, left = @Expr(type = ExprType.FUNCTION,
+            function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "memo") })))
+        private List<Integer> memoLength = Arrays.asList(Integer.valueOf(3));
+
+        public List<Integer> getMemoLength() {
+            return this.memoLength;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final class RepeatableLengthQueryModel {
+
+        @Length(op = CompareOp.GTE,
+            left = @Expr(type = ExprType.FUNCTION,
+                function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "name") })),
+            right = @Expr(type = ExprType.VALUE, valueField = "minNameLength"))
+        @Length(op = CompareOp.LTE,
+            left = @Expr(type = ExprType.FUNCTION,
+                function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "alias") })),
+            right = @Expr(type = ExprType.VALUE, valueField = "maxAliasLength"))
+        private Integer ignored = Integer.valueOf(0);
+
+        private Integer minNameLength = Integer.valueOf(3);
+
+        private Integer maxAliasLength = Integer.valueOf(8);
+
+        public Integer getIgnored() {
+            return this.ignored;
+        }
+
+        public Integer getMinNameLength() {
+            return this.minNameLength;
+        }
+
+        public Integer getMaxAliasLength() {
+            return this.maxAliasLength;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final class LengthInQueryModel {
+
+        @Length(op = CompareOp.IN, left = @Expr(type = ExprType.FUNCTION,
+            function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "name") })))
+        private List<Integer> nameLengthOptions = Arrays.asList(Integer.valueOf(3), Integer.valueOf(5));
+
+        @Length(op = CompareOp.NOT_IN, left = @Expr(type = ExprType.FUNCTION,
+            function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "alias") })))
+        private List<Integer> aliasLengthOptions = Arrays.asList(Integer.valueOf(2), Integer.valueOf(4));
+
+        public List<Integer> getNameLengthOptions() {
+            return this.nameLengthOptions;
+        }
+
+        public List<Integer> getAliasLengthOptions() {
+            return this.aliasLengthOptions;
         }
 
     }
@@ -2710,6 +3158,19 @@ public class ComputerCollectionCompiledPathTest {
         right = @Expr(type = ExprType.PATH, path = "userId"), select = @Expr(type = ExprType.PATH, path = "id"), where = @SubqueryGroup(
             compare = { @Compare(left = @Expr(type = ExprType.PATH, path = "tenantId"), right = @Expr(type = ExprType.VALUE, valueField = "tenantId")) }))
     public @interface ComposedExistsSelectable {
+    }
+
+    @Target({ ElementType.FIELD, ElementType.METHOD })
+    @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+    @Length(op = CompareOp.LIKE)
+    public @interface InvalidComposedLength {
+    }
+
+    @Target({ ElementType.FIELD, ElementType.METHOD })
+    @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+    @Length(op = CompareOp.GTE, left = @Expr(type = ExprType.FUNCTION,
+        function = @ExprFunction(name = "length", type = Integer.class, args = { @ExprArg(type = ExprType.PATH, path = "displayName") })))
+    public @interface MinDisplayNameLength {
     }
 
 }

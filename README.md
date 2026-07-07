@@ -19,6 +19,79 @@
 - `data-jpa-base-generator-bom`
   BOM 依赖管理
 
+## 环境与兼容性
+
+- 使用 Java 11 开发与构建
+- 主源码以 Java 8 目标字节码发布，便于在 Java 8 运行环境中集成
+- 依赖基线当前对齐到：
+  - Spring Framework `5.3.39`
+  - Spring Boot `2.7.18`
+  - Spring Data JPA `2.7.18`
+  - Hibernate `5.6.15.Final`
+  - Jakarta Persistence API `2.2.3`
+  - Jakarta Validation API `2.0.2`
+
+仓库内常用命令：
+
+- `mvn test`
+  运行全部测试
+- `mvn package`
+  完整打包
+- `mvn -pl data-jpa-base-generator-interpreter -am test`
+  只编译并测试解释器及其依赖模块
+
+## 依赖引入
+
+推荐优先通过 BOM 锁定版本：
+
+```xml
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>io.github.fsixteen</groupId>
+      <artifactId>data-jpa-base-generator-bom</artifactId>
+      <version>1.1.0</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+```
+
+按能力选择模块：
+
+```xml
+<dependencies>
+  <dependency>
+    <groupId>io.github.fsixteen</groupId>
+    <artifactId>data-jpa-base-generator-annotations</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>io.github.fsixteen</groupId>
+    <artifactId>data-jpa-base-generator-interpreter</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>io.github.fsixteen</groupId>
+    <artifactId>data-jpa-base-generator-entities</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>io.github.fsixteen</groupId>
+    <artifactId>data-jpa-base-generator-service</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>io.github.fsixteen</groupId>
+    <artifactId>data-jpa-base-generator-controller</artifactId>
+  </dependency>
+</dependencies>
+```
+
+通常场景建议：
+
+- 只需要注解 DSL 和手动构建 `Specification`：`annotations + interpreter`
+- 需要基础查询模型、分页接口、通用实体：再加 `entities`
+- 需要默认 CRUD service/controller：再加 `service + controller`
+- 需要常见 converter / serializer / 工具类：加 `common-utils`
+
 ## 当前架构
 
 当前代码的稳定事实只有一套：
@@ -65,6 +138,165 @@ Predicate predicate = collection.toComputerCollection()
 - `CompiledPredicateFacade.selectionPredicateArray(...) / existencePredicateArray(...)`
 
 `@PredicateRole` 目前以 `selection / existence` 为主命名；`selectable / existed` 仍作为兼容别名被识别。
+
+## 最小使用示例
+
+定义查询对象：
+
+```java
+public class UserQuery implements Entity, BasePageRequest {
+
+    @Equal
+    private String status;
+
+    @Length(op = CompareOp.GTE)
+    private Integer nameLength;
+
+    @Between(left = @Expr(path = "createdAt"))
+    private List<String> createdAtRange;
+
+    private int page = 0;
+
+    private int size = 20;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public Integer getNameLength() {
+        return nameLength;
+    }
+
+    public List<String> getCreatedAtRange() {
+        return createdAtRange;
+    }
+
+    @Override
+    public int getPage() {
+        return page;
+    }
+
+    @Override
+    public int getSize() {
+        return size;
+    }
+}
+```
+
+其中 `@Length` 的零配置默认会把 `nameLength` 推断为目标路径 `name`，即生成类似 `length(root.name) >= ?` 的谓词；如果字段名不以 `Length` 结尾，则直接使用当前字段名本身作为目标路径。
+
+手动构建查询谓词：
+
+```java
+final UserQuery args = new UserQuery();
+final AnnotationCollection collection = CollectionCache.getAnnotationCollection(UserQuery.class);
+
+Specification<UserEntity> specification = (root, query, cb) ->
+    CompiledPredicateFacade.selectionPredicate(collection, args, root, query, cb);
+```
+
+如果需要保持历史公开入口，也可以继续使用：
+
+```java
+final AnnotationCollection collection = CollectionCache.getAnnotationCollection(UserQuery.class);
+Predicate predicate = collection.toComputerCollection()
+    .withArgs(args)
+    .withSpecification(root, query, cb)
+    .build(BuilderType.SELECTED)
+    .getPredicate(cb);
+```
+
+## Service / Controller 集成
+
+### 1. Repository
+
+基础仓储接口是：
+
+```java
+public interface UserDao extends BaseDao<UserEntity, Long> {
+}
+```
+
+`BaseDao` 已经组合了 `JpaRepository` 和 `JpaSpecificationExecutor`。
+
+### 2. Service
+
+如果只需要查询能力，实现 `BaseSelectService` 即可：
+
+```java
+public class UserSelectServiceImpl implements BaseSelectService<UserEntity, Long, UserQuery> {
+
+    private final UserDao userDao;
+
+    public UserSelectServiceImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    @Override
+    public BaseDao<UserEntity, Long> getDao() {
+        return userDao;
+    }
+}
+```
+
+`BaseSelectService` 默认会：
+
+- 从 `CollectionCache` 获取查询对象注解缓存
+- 通过 `CompiledPredicateFacade.selectionPredicate(...)` 构建查询条件
+- 把固定条件 `selectFixedPredicate()` 与注解条件统一合并
+- 根据 `BasePageRequest#getPage()` 和 `getSize()` 生成分页请求
+
+插入、更新、删除和聚合场景可分别复用：
+
+- `BaseInsertService`
+- `BaseUpdateService`
+- `BaseDeleteService`
+- `BaseService`
+- `AbstractBaseAggService`
+
+### 3. Controller
+
+如果需要通用 REST 端点，可以直接复用基类接口：
+
+- `BaseSelectController`
+- `BaseInsertController`
+- `BaseUpdateController`
+- `BaseDeleteController`
+- `BaseController`
+
+其中 `BaseSelectController` 默认提供：
+
+- `POST /select`
+  分页查询
+- `POST /select/all`
+  完整查询
+
+单条详情查询 `findById(...)` 已抽成无映射逻辑方法，业务控制器可以根据主键类型选择 `@PathVariable` 或 `@RequestBody` 暴露端点。
+
+### 4. Spring 配置与自动装配
+
+- `data-jpa-base-generator-service` 通过 `spring.factories` 注册了 `AppContextInitializer`
+- `DataJpaGeneratorConfig` 可选注入全局默认排序 `Supplier<Sort>`
+- `data-jpa-base-generator-controller` 提供 `@FsnPreAuthorize` 相关自动配置
+
+示例：
+
+```java
+@Bean
+public DataJpaGeneratorConfig dataJpaGeneratorConfig() {
+    return new DataJpaGeneratorConfig()
+        .withDefaultSortColumns(() -> Sort.by(Sort.Direction.DESC, "id"));
+}
+```
+
+`@FsnPreAuthorize` 目前支持在类型级别声明以下操作的权限表达式：
+
+- `insert`
+- `update`
+- `delete`
+- `select`
+- `selectAll`
+- `selectOne`
 
 ## 注解参考
 
@@ -180,6 +412,9 @@ Predicate predicate = collection.toComputerCollection()
 - `@IgnoreCaseEqual`
   忽略大小写相等，内部会把左右两边统一包成 `lower(...)`。
   示例：`@IgnoreCaseEqual private String status = "ACTIVE";`
+- `@Length`
+  字符串长度比较快捷包装，默认把形如 `nameLength` 的属性推断到目标路径 `name`，并生成 `length(name)` 比较。
+  示例：`@Length(op = CompareOp.GTE) private Integer nameLength = 3;`
 
 ### 6. 文本匹配快捷注解
 

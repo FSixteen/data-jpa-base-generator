@@ -76,6 +76,8 @@ public final class RuntimeExpressionEvaluator {
             values.add(evaluate(arg, args, currentFieldValue));
         }
         switch (functionName) {
+            case "length":
+                return Integer.valueOf(toString(values, 0).length());
             case "lower":
                 return toString(values, 0).toLowerCase(Locale.ROOT);
             case "upper":

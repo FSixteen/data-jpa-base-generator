@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -301,20 +302,56 @@ public final class AnnotationCollection {
         public Builder with(Class<?> clazz) {
             this.ac.setClazz(clazz);
             for (Field field : BeanUtils.getAllFields(clazz)) {
-                for (Annotation anno : field.getDeclaredAnnotations()) {
-                    Class<? extends Annotation> annotationType = anno.annotationType();
-                    if (this.verifyAnnotation(annotationType)) {
-                        /* 同一元素, 同一注解只存在一次 */
-                        this.ac.addSpec(CompiledAnnotationSpec.of(clazz, anno, field));
-                    } else {
-                        /* 同一元素, 同一注解存在多次, anno值为该注解的集合体 */
-                        for (Annotation ele : this.invokeAnnotationValue(anno)) {
-                            this.ac.addSpec(CompiledAnnotationSpec.of(clazz, ele, field));
-                        }
-                    }
+                this.collectFieldAnnotations(clazz, field);
+            }
+            for (Method method : BeanUtils.getAllMethods(clazz)) {
+                if (BeanUtils.isReadablePropertyMethod(method)) {
+                    this.collectMethodAnnotations(clazz, method);
                 }
             }
             return this;
+        }
+
+        private void collectFieldAnnotations(final Class<?> clazz, final Field field) {
+            for (Annotation anno : field.getDeclaredAnnotations()) {
+                Class<? extends Annotation> annotationType = anno.annotationType();
+                if (this.verifyAnnotation(annotationType)) {
+                    Annotation[] repeatedMetaAnnotations = this.resolveRepeatablePredicateMetaAnnotations(annotationType);
+                    if (repeatedMetaAnnotations.length > 0) {
+                        for (Annotation repeatedMetaAnnotation : repeatedMetaAnnotations) {
+                            this.ac.addSpec(CompiledAnnotationSpec.of(clazz, repeatedMetaAnnotation, field));
+                        }
+                    } else {
+                        /* 同一元素, 同一注解只存在一次 */
+                        this.ac.addSpec(CompiledAnnotationSpec.of(clazz, anno, field));
+                    }
+                } else {
+                    /* 同一元素, 同一注解存在多次, anno值为该注解的集合体 */
+                    for (Annotation ele : this.invokeAnnotationValue(anno)) {
+                        this.ac.addSpec(CompiledAnnotationSpec.of(clazz, ele, field));
+                    }
+                }
+            }
+        }
+
+        private void collectMethodAnnotations(final Class<?> clazz, final Method method) {
+            for (Annotation anno : method.getDeclaredAnnotations()) {
+                Class<? extends Annotation> annotationType = anno.annotationType();
+                if (this.verifyAnnotation(annotationType)) {
+                    Annotation[] repeatedMetaAnnotations = this.resolveRepeatablePredicateMetaAnnotations(annotationType);
+                    if (repeatedMetaAnnotations.length > 0) {
+                        for (Annotation repeatedMetaAnnotation : repeatedMetaAnnotations) {
+                            this.ac.addSpec(CompiledAnnotationSpec.of(clazz, repeatedMetaAnnotation, method));
+                        }
+                    } else {
+                        this.ac.addSpec(CompiledAnnotationSpec.of(clazz, anno, method));
+                    }
+                } else {
+                    for (Annotation ele : this.invokeAnnotationValue(anno)) {
+                        this.ac.addSpec(CompiledAnnotationSpec.of(clazz, ele, method));
+                    }
+                }
+            }
         }
 
         private Annotation[] invokeAnnotationValue(Annotation anno) {
@@ -328,6 +365,18 @@ public final class AnnotationCollection {
                 // Nothing
             }
             return new Annotation[0];
+        }
+
+        private Annotation[] resolveRepeatablePredicateMetaAnnotations(final Class<? extends Annotation> annotationType) {
+            List<Annotation> annotations = new ArrayList<Annotation>();
+            for (Annotation metaAnnotation : annotationType.getAnnotations()) {
+                for (Annotation annotation : this.invokeAnnotationValue(metaAnnotation)) {
+                    if (this.verifyAnnotation(annotation.annotationType())) {
+                        annotations.add(annotation);
+                    }
+                }
+            }
+            return annotations.toArray(new Annotation[annotations.size()]);
         }
 
         private boolean verifyAnnotation(Class<?> clazz) {

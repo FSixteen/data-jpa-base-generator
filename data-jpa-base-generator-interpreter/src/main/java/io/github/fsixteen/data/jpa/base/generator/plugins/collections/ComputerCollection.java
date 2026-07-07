@@ -323,6 +323,7 @@ public final class ComputerCollection {
                 results.add(CompiledPredicateResult.of(spec, provider.create(spec, this.args, this.root, this.query, this.cb)));
             } catch (IllegalArgumentException e) {
                 LOG.error(e.getMessage(), e);
+                throw e;
             }
             return this;
         }
