@@ -66,7 +66,8 @@ public @interface InTable {
      * <p>
      * 该字段是 `InTable` 当前推荐的 canonical 入口, 可直接表达
      * 字段对字段、字段对函数、非等值比较等子查询内部匹配条件.
-     * 未显式配置时, 编译器会自动回退为“外层 source 路径 = 子查询 select 路径”.
+     * 未显式配置任何 compare 语义时, 编译器不会再自动补一条隐式叶子比较；
+     * 仅保留 `left()/right()` 所表达的外层 `in (subquery)` 外壳语义.
      * </p>
      *
      * @return Compare

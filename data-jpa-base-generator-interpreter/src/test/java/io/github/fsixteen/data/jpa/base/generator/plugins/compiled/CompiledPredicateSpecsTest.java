@@ -379,12 +379,7 @@ public class CompiledPredicateSpecsTest {
         assertEquals("status", inTableSpec.getSourcePath());
         assertEquals(SpecQueryModel.class, inTableSpec.getFromEntity());
         assertEquals("currentStatus", inTableSpec.getSelectPath());
-        assertEquals(Compare.class, inTableSpec.getNestedPredicateSpec().getAnnotationType());
-        assertEquals("status", inTableSpec.getNestedPredicateSpec().getBindingPath());
-        assertEquals(ExprType.PATH, inTableSpec.getNestedPredicateSpec().getLeft().type());
-        assertEquals("status", inTableSpec.getNestedPredicateSpec().getLeft().path());
-        assertEquals(ExprType.PATH, inTableSpec.getNestedPredicateSpec().getRight().type());
-        assertEquals("currentStatus", inTableSpec.getNestedPredicateSpec().getRight().path());
+        assertNull(inTableSpec.getNestedPredicateSpec());
         assertEquals(PredicateGroupSpec.JunctionType.AND, inTableSpec.getPredicateGroupSpec().getJunctionType());
         assertTrue(inTableSpec.getPredicateGroupSpec().isEmpty());
     }
@@ -399,6 +394,7 @@ public class CompiledPredicateSpecsTest {
 
         assertEquals("outer.status", inTableSpec.getSourcePath());
         assertEquals("inner.currentStatus", inTableSpec.getSelectPath());
+        assertNull(inTableSpec.getNestedPredicateSpec());
     }
 
     @Test
@@ -411,6 +407,7 @@ public class CompiledPredicateSpecsTest {
 
         assertEquals("outer.status", inTableSpec.getSourcePath());
         assertEquals("inner.currentStatus", inTableSpec.getSelectPath());
+        assertNull(inTableSpec.getNestedPredicateSpec());
     }
 
     @Test
@@ -438,10 +435,24 @@ public class CompiledPredicateSpecsTest {
         CompiledAnnotationSpec<InTable> spec = CompiledAnnotationSpec.of(SpecQueryModel.class, anno, field);
         CompiledSubquerySpec inTableSpec = CompiledSpecializedSpecs.inTable(spec);
 
-        assertEquals(Compare.class, inTableSpec.getNestedPredicateSpec().getAnnotationType());
+        assertNull(inTableSpec.getNestedPredicateSpec());
         assertEquals(1, inTableSpec.getPredicateGroupSpec().getAnnotations().size());
         assertEquals(1, inTableSpec.getPredicateGroupSpec().getGroups().size());
         assertEquals(PredicateGroupSpec.JunctionType.OR, inTableSpec.getPredicateGroupSpec().getGroups().get(0).getJunctionType());
+    }
+
+    @Test
+    public void shouldNotReuseOuterInTableLeftPathAsImplicitSubqueryWhereLeaf() throws Exception {
+        Field field = OuterOnlyInTableQueryModel.class.getDeclaredField("keyword");
+        InTable anno = field.getAnnotation(InTable.class);
+
+        CompiledAnnotationSpec<InTable> spec = CompiledAnnotationSpec.of(OuterOnlyInTableQueryModel.class, anno, field);
+        CompiledSubquerySpec inTableSpec = CompiledSpecializedSpecs.inTable(spec);
+
+        assertEquals("orgId", inTableSpec.getSourcePath());
+        assertEquals("id", inTableSpec.getSelectPath());
+        assertNull(inTableSpec.getNestedPredicateSpec());
+        assertEquals(3, inTableSpec.getPredicateGroupSpec().getAnnotations().size());
     }
 
     @Test
@@ -1679,6 +1690,71 @@ public class CompiledPredicateSpecsTest {
 
         public void setStructuredCompareInCodes(final List<String> structuredCompareInCodes) {
             this.structuredCompareInCodes = structuredCompareInCodes;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    private static final class OuterOnlyInTableQueryModel {
+
+        @InTable(targetEntity = OrgLookupQueryModel.class, left = @Expr(type = ExprType.PATH, path = "orgId"), right = @Expr(type = ExprType.PATH, path = "id"),
+            where = @SubqueryGroup(junction = io.github.fsixteen.data.jpa.base.generator.annotations.GroupComputerType.Type.OR,
+                compare = { @Compare(op = CompareOp.LIKE, left = @Expr(type = ExprType.PATH, path = "orgCode")),
+                    @Compare(op = CompareOp.LIKE, left = @Expr(type = ExprType.PATH, path = "orgUscc")),
+                    @Compare(op = CompareOp.LIKE, left = @Expr(type = ExprType.PATH, path = "orgName")) }))
+        private String keyword = "demo";
+
+        public String getKeyword() {
+            return this.keyword;
+        }
+
+        public void setKeyword(final String keyword) {
+            this.keyword = keyword;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    private static final class OrgLookupQueryModel {
+
+        private Integer id;
+
+        private String orgCode;
+
+        private String orgUscc;
+
+        private String orgName;
+
+        public Integer getId() {
+            return this.id;
+        }
+
+        public void setId(final Integer id) {
+            this.id = id;
+        }
+
+        public String getOrgCode() {
+            return this.orgCode;
+        }
+
+        public void setOrgCode(final String orgCode) {
+            this.orgCode = orgCode;
+        }
+
+        public String getOrgUscc() {
+            return this.orgUscc;
+        }
+
+        public void setOrgUscc(final String orgUscc) {
+            this.orgUscc = orgUscc;
+        }
+
+        public String getOrgName() {
+            return this.orgName;
+        }
+
+        public void setOrgName(final String orgName) {
+            this.orgName = orgName;
         }
 
     }

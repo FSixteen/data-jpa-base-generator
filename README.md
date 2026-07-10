@@ -493,6 +493,7 @@ public DataJpaGeneratorConfig dataJpaGeneratorConfig() {
   示例：`@NotExists(targetEntity = AuditEntity.class, left = @Expr(path = "id"), right = @Expr(path = "userId"), select = @Expr(path = "id")) private Boolean missAudit = Boolean.TRUE;`
 - `@InTable`
   单列 `in(subquery)` 快捷包装, 支持 `whereCompare` 和 `where`.
+  未显式配置 `whereCompare` 时, 只保留 `left/right` 定义的外层 `in (subquery)` 外壳, 不再自动补默认子查询内部叶子比较.
   示例：`@InTable(targetEntity = AuditEntity.class, left = @Expr(path = "id"), right = @Expr(path = "userId")) private Integer userId = 1;`
 - `@Unique`
   唯一性快捷包装, 本质是基于 `Existed/Compare` 的语义封装.
@@ -625,6 +626,7 @@ public DataJpaGeneratorConfig dataJpaGeneratorConfig() {
 - `mode` 编译后直接写入 `CompiledSubquerySpec`
 
 `@InTable` 当前仍是单列 `in(subquery)` 模型, 不负责多列 tuple 子查询.
+其 `left()` 表示外层路径, `right()` 表示子查询 `select` 路径；子查询内部附加过滤仅来自显式 `whereCompare` 或 `where`.
 
 ## Cases 模型
 

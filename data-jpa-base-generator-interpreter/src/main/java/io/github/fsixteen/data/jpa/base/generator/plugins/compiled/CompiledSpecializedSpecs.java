@@ -124,7 +124,7 @@ public final class CompiledSpecializedSpecs {
     private static CompiledSubquerySpec buildSubquerySpec(final CanonicalSubquerySource source) {
         if (SubqueryMode.IN == source.getMode()) {
             return CompiledSubquerySpec.of(source.getMode(), source.getTargetEntity(), source.getRightPath(), source.getSourcePath(),
-                inTableNestedPredicateSpec(source.getOwnerSpec(), source.getWhereCompare()), source.getPredicateGroupSpec());
+                inTableNestedPredicateSpec(source.getOwnerSpec(), source.getRightPath(), source.getWhereCompare()), source.getPredicateGroupSpec());
         }
         return CompiledSubquerySpec.of(source.getMode(), source.getTargetEntity(), source.getSelectPath(), source.getSourcePath(), source.getRightPath(), null,
             source.getPredicateGroupSpec());
@@ -246,15 +246,14 @@ public final class CompiledSpecializedSpecs {
     }
 
     /**
-     * 为 in-table 语义补齐默认 where 叶子 compare 规格.
+     * 为 in-table 语义编译子查询内部默认叶子 compare 规格.
      */
-    private static CompiledAnnotationSpec<?> inTableNestedPredicateSpec(final CompiledAnnotationSpec<? extends Annotation> spec, final Compare whereCompare) {
-        String leftFallback = CompiledCanonicalCompareFactory.configuredPath(spec.getPredicateCore().getLeft(), spec.getBindingPath());
-        String rightFallback = CompiledCanonicalCompareFactory.configuredPath(spec.getPredicateCore().getRight(), spec.getBindingPath());
+    private static CompiledAnnotationSpec<?> inTableNestedPredicateSpec(final CompiledAnnotationSpec<? extends Annotation> spec, final String selectPath,
+        final Compare whereCompare) {
         if (null != whereCompare && CompiledCanonicalCompareFactory.hasConfiguredCompare(whereCompare)) {
-            return CompiledCanonicalCompareFactory.compareSpec(spec.getObjClass(), spec.getValueField(), whereCompare, leftFallback, rightFallback);
+            return CompiledCanonicalCompareFactory.compareSpec(spec.getObjClass(), spec.getValueField(), whereCompare, selectPath, selectPath);
         }
-        return CompiledCanonicalCompareFactory.eqPathCompareSpec(spec.getObjClass(), spec.getValueField(), leftFallback, rightFallback);
+        return null;
     }
 
     /**

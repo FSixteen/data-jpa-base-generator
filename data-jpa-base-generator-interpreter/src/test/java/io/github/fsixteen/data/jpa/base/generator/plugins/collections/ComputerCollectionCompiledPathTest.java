@@ -701,6 +701,21 @@ public class ComputerCollectionCompiledPathTest {
     }
 
     @Test
+    public void shouldNotReuseOuterInTablePathInsideSubqueryWhereAtRuntime() {
+        AnnotationCollection collection = AnnotationCollection.Builder.of(OuterOnlyInTableQueryModel.class).build();
+        CriteriaBuilder cb = proxy(CriteriaBuilder.class, "cb");
+        Root<?> root = proxy(Root.class, "root");
+        AbstractQuery<?> query = proxy(AbstractQuery.class, "query");
+
+        ComputerCollection computerCollection = CompiledPredicateFacade.build(collection, new OuterOnlyInTableQueryModel(), root, query, cb,
+            BuilderType.SELECTED);
+
+        assertEquals(1, computerCollection.getPredicateResults().size());
+        assertEquals("root.outer.orgId IN (SELECT subroot.id WHERE subroot.orgCode LIKE %demo% OR subroot.orgUscc LIKE %demo% OR subroot.orgName LIKE %demo%)",
+            debug(computerCollection.getPredicateResults().iterator().next().getPredicate()));
+    }
+
+    @Test
     public void shouldBuildCasesThroughCompiledMainPath() {
         CriteriaBuilder cb = proxy(CriteriaBuilder.class, "cb");
         Root<?> root = proxy(Root.class, "root");
@@ -1965,6 +1980,72 @@ public class ComputerCollectionCompiledPathTest {
 
         public void setStatus(final String status) {
             this.status = status;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final class OuterOnlyInTableQueryModel {
+
+        @InTable(targetEntity = OrgLookupQueryModel.class, left = @Expr(type = ExprType.PATH, path = "outer.orgId"),
+            right = @Expr(type = ExprType.PATH, path = "id"),
+            where = @SubqueryGroup(junction = io.github.fsixteen.data.jpa.base.generator.annotations.GroupComputerType.Type.OR,
+                compare = { @Compare(op = CompareOp.LIKE, left = @Expr(type = ExprType.PATH, path = "orgCode")),
+                    @Compare(op = CompareOp.LIKE, left = @Expr(type = ExprType.PATH, path = "orgUscc")),
+                    @Compare(op = CompareOp.LIKE, left = @Expr(type = ExprType.PATH, path = "orgName")) }))
+        private String key = "demo";
+
+        public String getKey() {
+            return this.key;
+        }
+
+        public void setKey(final String key) {
+            this.key = key;
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final class OrgLookupQueryModel {
+
+        private String id;
+
+        private String orgCode;
+
+        private String orgUscc;
+
+        private String orgName;
+
+        public String getId() {
+            return this.id;
+        }
+
+        public void setId(final String id) {
+            this.id = id;
+        }
+
+        public String getOrgCode() {
+            return this.orgCode;
+        }
+
+        public void setOrgCode(final String orgCode) {
+            this.orgCode = orgCode;
+        }
+
+        public String getOrgUscc() {
+            return this.orgUscc;
+        }
+
+        public void setOrgUscc(final String orgUscc) {
+            this.orgUscc = orgUscc;
+        }
+
+        public String getOrgName() {
+            return this.orgName;
+        }
+
+        public void setOrgName(final String orgName) {
+            this.orgName = orgName;
         }
 
     }
