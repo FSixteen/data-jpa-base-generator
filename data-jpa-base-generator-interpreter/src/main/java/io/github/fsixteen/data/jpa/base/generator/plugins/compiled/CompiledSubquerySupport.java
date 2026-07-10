@@ -54,6 +54,20 @@ public final class CompiledSubquerySupport {
         return selectTyped(spec, subQuery);
     }
 
+    /**
+     * 在受控泛型上下文中为子查询创建根节点并设置 `select` 投影.
+     *
+     * <p>
+     * 这里显式保留 `Subquery<T>` 泛型, 是为了让 `select` 路径表达式与子查询返回类型保持一致.
+     * 这样 `InTable` 一类依赖 `subquery` 元素类型与外层列类型完全对齐的场景,
+     * 在 Hibernate 6 的严格类型校验下也能稳定通过.
+     * </p>
+     *
+     * @param spec     已编译的子查询规格
+     * @param subQuery 当前待装配的强类型子查询
+     * @param <T>      子查询 `select` 元素类型
+     * @return 子查询的根节点
+     */
     private static <T> Root<?> selectTyped(final CompiledSubquerySpec spec, final Subquery<T> subQuery) {
         Root<?> subRoot = subQuery.from(spec.getFromEntity());
         subQuery.select(pathExpression(subRoot, spec.getSelectPath()));
@@ -170,8 +184,33 @@ public final class CompiledSubquerySupport {
         if (spec.shouldIgnore(fieldValue)) {
             return null;
         }
-        Path<?> outerColumn = JpaPathCompiler.compile(root, subquerySpec.getSourcePath());
-        Subquery<?> subQuery = createSubquery(subquerySpec, outerColumn, spec.getAnnotationType(), args, root, query, cb);
+        return createTypedInTable(spec, subquerySpec, args, root, query, cb);
+    }
+
+    /**
+     * 在受控泛型上下文中执行 `in (subquery)` 语义.
+     *
+     * <p>
+     * 该方法会先把外层源路径编译为 {@link Path}{@code <T>}, 再创建返回同一类型
+     * 的 {@link Subquery}{@code <T>}, 最终生成 `outerColumn.in(subQuery)`.
+     * 这样可以确保 `c1 in (subquery)` 两侧元素类型严格一致, 避免 Spring Boot 3 /
+     * Hibernate 6 下因右侧被推断成过宽类型而触发比较异常.
+     * </p>
+     *
+     * @param spec         当前 compiled 注解规格
+     * @param subquerySpec 已编译的子查询规格
+     * @param args         当前请求参数对象
+     * @param root         外层查询根节点
+     * @param query        当前查询对象
+     * @param cb           CriteriaBuilder
+     * @param <T>          `IN` 比较元素类型
+     * @return 生成的 `in (subquery)` 谓词
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> Predicate createTypedInTable(final CompiledAnnotationSpec<? extends Annotation> spec, final CompiledSubquerySpec subquerySpec,
+        final Object args, final Root<?> root, final AbstractQuery<?> query, final CriteriaBuilder cb) {
+        Path<T> outerColumn = (Path<T>) JpaPathCompiler.compile(root, subquerySpec.getSourcePath());
+        Subquery<T> subQuery = castSubquery(createSubquery(subquerySpec, outerColumn, spec.getAnnotationType(), args, root, query, cb));
         return applyOuterNegate(spec, outerColumn.in(subQuery));
     }
 
@@ -307,10 +346,30 @@ public final class CompiledSubquerySupport {
         return true;
     }
 
+    /**
+     * 将点路径编译结果收窄为与 `Subquery<T>` 对齐的 `Expression<T>`.
+     *
+     * @param root 子查询根节点
+     * @param path `select` 路径
+     * @param <T>  目标投影类型
+     * @return 与子查询泛型对齐的路径表达式
+     */
     @SuppressWarnings("unchecked")
     private static <T> Expression<T> pathExpression(final Root<?> root, final String path) {
         // Subquery.select 需要与 Subquery<T> 对齐的精确 Expression<T>；点路径编译后只能在这里做一次受控收窄.
         return (Expression<T>) JpaPathCompiler.compileExpression(root, path);
+    }
+
+    /**
+     * 将无界子查询引用桥接为调用方当前需要的强类型子查询引用.
+     *
+     * @param subQuery 待桥接的子查询
+     * @param <T>      调用方期望的子查询元素类型
+     * @return 收窄后的强类型子查询引用
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> Subquery<T> castSubquery(final Subquery<?> subQuery) {
+        return (Subquery<T>) subQuery;
     }
 
 }

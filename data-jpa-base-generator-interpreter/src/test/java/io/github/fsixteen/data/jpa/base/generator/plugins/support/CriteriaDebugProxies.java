@@ -28,7 +28,7 @@ public final class CriteriaDebugProxies {
     }
 
     public static String debug(final Object proxy) {
-        return ((DebugNode) proxy).debug();
+        return proxy instanceof DebugNode ? ((DebugNode) proxy).debug() : String.valueOf(proxy);
     }
 
     @SuppressWarnings("unchecked")

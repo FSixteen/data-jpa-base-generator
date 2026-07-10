@@ -11,7 +11,6 @@ import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.github.fsixteen.data.jpa.base.generator.plugins.compiled.BuiltInCompiledPredicateProviders;
 import io.github.fsixteen.data.jpa.base.generator.plugins.registry.PredicateExpressionRegistry;
@@ -41,7 +40,7 @@ import io.github.fsixteen.data.jpa.base.generator.plugins.support.ReflectiveInst
  */
 public final class ServiceLoaderBootstrap {
 
-    private static final AtomicBoolean LOADED = new AtomicBoolean(false);
+    private static volatile boolean loaded;
 
     private ServiceLoaderBootstrap() {
     }
@@ -50,12 +49,20 @@ public final class ServiceLoaderBootstrap {
      * 确保 SPI 只被装载一次.
      */
     public static void ensureLoaded() {
-        if (LOADED.compareAndSet(false, true)) {
-            // 内建 provider 先注册, 保证没有 SPI 的内建注解也能直接走 compiled 主路径.
+        if (loaded) {
+            return;
+        }
+        synchronized (ServiceLoaderBootstrap.class) {
+            if (loaded) {
+                return;
+            }
+            // 所有 built-in 与 SPI provider 注册完成后, 再把 loaded 对外可见；
+            // 避免冷启动并发请求观察到“已加载”但注册表尚未填满的中间态.
             BuiltInCompiledPredicateProviders.registerAll();
             loadCompiledPredicateProviders();
             loadPredicateExpressionTemplateProviders();
             loadRegisteredPredicateTemplateProviders();
+            loaded = true;
         }
     }
 
@@ -66,8 +73,8 @@ public final class ServiceLoaderBootstrap {
      * 主要用于测试场景.
      * </p>
      */
-    public static void reload() {
-        LOADED.set(false);
+    public static synchronized void reload() {
+        loaded = false;
         ensureLoaded();
     }
 

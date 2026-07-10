@@ -1,7 +1,16 @@
 package io.github.fsixteen.data.jpa.base.generator.plugins.spi;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -9,6 +18,8 @@ import javax.persistence.criteria.Root;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitIn;
 import io.github.fsixteen.data.jpa.base.generator.plugins.collections.AnnotationCollection;
 import io.github.fsixteen.data.jpa.base.generator.plugins.collections.ComputerCollection;
 import io.github.fsixteen.data.jpa.base.generator.plugins.compiled.CompiledPredicateFacade;
@@ -89,6 +100,44 @@ public class ServiceLoaderBootstrapTest {
             .withSpecification(root, null, cb).build(BuilderType.SELECTED).getPredicate(cb);
 
         assertEquals("root.status = root.audit.currentStatus", CriteriaDebugProxies.debug(predicate));
+    }
+
+    @Test
+    public void shouldLoadBuiltInAndMetaProvidersSafelyUnderConcurrentColdStart() throws Exception {
+        CompiledPredicateProviderRegistry.clear();
+        ServiceLoaderBootstrap.reload();
+        CompiledPredicateProviderRegistry.clear();
+        resetBootstrapLoadedFlagForConcurrentTest();
+
+        ExecutorService executor = Executors.newFixedThreadPool(8);
+        CountDownLatch start = new CountDownLatch(1);
+        List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
+        for (int i = 0; i < 8; i++) {
+            tasks.add(() -> {
+                start.await();
+                assertNotNull(CompiledPredicateProviderRegistry.require(Equal.class));
+                assertNotNull(CompiledPredicateProviderRegistry.require(SplitIn.class));
+                return null;
+            });
+        }
+        List<Future<Object>> futures = new ArrayList<Future<Object>>();
+        try {
+            for (Callable<Object> task : tasks) {
+                futures.add(executor.submit(task));
+            }
+            start.countDown();
+            for (Future<Object> future : futures) {
+                future.get();
+            }
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
+    private static void resetBootstrapLoadedFlagForConcurrentTest() throws Exception {
+        java.lang.reflect.Field field = ServiceLoaderBootstrap.class.getDeclaredField("loaded");
+        field.setAccessible(true);
+        field.set(null, false);
     }
 
     public static final class CompiledQueryModel {

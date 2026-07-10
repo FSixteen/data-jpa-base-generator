@@ -76,7 +76,7 @@ public final class CompiledBuiltInPredicateSupport {
             CompiledPredicateSpec predicateSpec = CompiledPredicateSpecs.between(type.getOperator(), spec);
             Collection<?> betweenValue = requireBetweenValue(spec, fieldValue);
             Optional<Expression<?>> leftExpression = resolveSingle(spec, predicateSpec.getLeft(), args, fieldValue, root, query, cb);
-            Optional<RangeExpressions> rightExpression = resolveRange(spec, predicateSpec, args, betweenValue, root, query, cb);
+            Optional<RangeExpressions> rightExpression = resolveRange(spec, predicateSpec, leftExpression, args, betweenValue, root, query, cb);
             if (!leftExpression.isPresent() || !rightExpression.isPresent()) {
                 return null;
             }
@@ -94,12 +94,11 @@ public final class CompiledBuiltInPredicateSupport {
             }
             CompiledPredicateSpec predicateSpec = CompiledPredicateSpecs.in(type.getOperator(), spec);
             Optional<Expression<?>> leftExpression = resolveSingle(spec, predicateSpec.getLeft(), args, normalizedValues, root, query, cb);
-            Optional<Expression<?>> rightExpression = resolveCollection(spec, predicateSpec.getRight(), args, normalizedValues, root, query, cb);
-            if (!leftExpression.isPresent() || !rightExpression.isPresent()) {
+            Optional<Predicate> predicate = resolveInPredicate(spec, predicateSpec.getRight(), leftExpression, args, normalizedValues, root, query, cb);
+            if (!predicate.isPresent()) {
                 return null;
             }
-            Predicate predicate = leftExpression.get().in(rightExpression.get());
-            return type.isNegated() ? predicate.not() : predicate;
+            return type.isNegated() ? predicate.get().not() : predicate.get();
         }
         if (type.isNullCheck()) {
             Optional<Expression<?>> leftExpression = resolveSingle(spec, CompiledPredicateSpecs.nullCheck(type.getOperator(), spec).getLeft(), args, fieldValue,
@@ -176,7 +175,7 @@ public final class CompiledBuiltInPredicateSupport {
         }
         CompiledPredicateSpec predicateSpec = CompiledPredicateSpecs.between(type.getOperator(), spec);
         Optional<Expression<?>> leftExpression = resolveSingle(spec, predicateSpec.getLeft(), args, fieldValue, root, query, cb);
-        Optional<RangeExpressions> rightExpression = resolveRange(spec, predicateSpec, args, fieldValue, root, query, cb);
+        Optional<RangeExpressions> rightExpression = resolveRange(spec, predicateSpec, leftExpression, args, fieldValue, root, query, cb);
         if (!leftExpression.isPresent() || !rightExpression.isPresent()) {
             return null;
         }
@@ -214,15 +213,14 @@ public final class CompiledBuiltInPredicateSupport {
         }
         CompiledPredicateSpec predicateSpec = CompiledPredicateSpecs.in(type.getOperator(), spec);
         Optional<Expression<?>> leftExpression = resolveSingle(spec, predicateSpec.getLeft(), args, normalizedValues, root, query, cb);
-        Optional<Expression<?>> rightExpression = resolveCollection(spec, predicateSpec.getRight(), args, normalizedValues, root, query, cb);
-        if (!leftExpression.isPresent() || !rightExpression.isPresent()) {
+        Optional<Predicate> predicate = resolveInPredicate(spec, predicateSpec.getRight(), leftExpression, args, normalizedValues, root, query, cb);
+        if (!predicate.isPresent()) {
             return null;
         }
-        Predicate predicate = leftExpression.get().in(rightExpression.get());
         if (type.isNegated()) {
-            predicate = predicate.not();
+            return reverseIfRequired(spec, predicate.get().not());
         }
-        return reverseIfRequired(spec, predicate);
+        return reverseIfRequired(spec, predicate.get());
     }
 
     /**
@@ -297,13 +295,38 @@ public final class CompiledBuiltInPredicateSupport {
      */
     private static Optional<Expression<?>> resolveSingle(final CompiledAnnotationSpec<? extends Annotation> spec, final PredicateExpression expression,
         final Object args, final Object fieldValue, final Root<?> root, final AbstractQuery<?> query, final CriteriaBuilder cb) {
+        return resolveSingle(spec, expression, args, fieldValue, root, query, cb, null);
+    }
+
+    /**
+     * 将单值 canonical 表达式解析为 JPA {@link Expression}, 并在必要时按锚点类型约束右值.
+     *
+     * <p>
+     * 该重载主要服务于 compare/between/in 等“左值已知、右值待解析”的场景.
+     * 当右值来自运行时字段值或固定字面量时, 会借助锚点表达式的 Java 类型做归一化,
+     * 以规避 Hibernate 6 的严格类型不匹配问题.
+     * </p>
+     *
+     * @param spec       compiled 注解规格
+     * @param expression 待解析表达式
+     * @param args       请求参数对象
+     * @param fieldValue 当前运行时字段值
+     * @param root       查询根节点
+     * @param query      当前查询对象
+     * @param cb         CriteriaBuilder
+     * @param anchor     类型锚点表达式；为空时回退到表达式自身类型
+     * @return 解析成功时返回表达式, 否则返回空
+     */
+    private static Optional<Expression<?>> resolveSingle(final CompiledAnnotationSpec<? extends Annotation> spec, final PredicateExpression expression,
+        final Object args, final Object fieldValue, final Root<?> root, final AbstractQuery<?> query, final CriteriaBuilder cb, final Expression<?> anchor) {
         if (Objects.isNull(expression)) {
             return Optional.empty();
         }
         if (!JpaExpressionResolver.canResolve(expression, args, fieldValue)) {
             return Optional.empty();
         }
-        return Optional.ofNullable(JpaExpressionResolver.resolve(expression, args, fieldValue, root, query, cb));
+        return Optional
+            .ofNullable(JpaExpressionResolver.resolve(expression, args, fieldValue, root, query, cb, anchor, spec.getCollectionPolicy().getTargetFormat()));
     }
 
     /**
@@ -321,17 +344,18 @@ public final class CompiledBuiltInPredicateSupport {
      * @param root       查询根节点
      * @param query      当前查询对象
      * @param cb         CriteriaBuilder
+     * @param anchor     左侧类型锚点；当集合元素来自 literal/runtime 值时用于元素归一化
      * @return 解析成功时返回表达式, 否则返回空
      */
     private static Optional<Expression<?>> resolveCollection(final CompiledAnnotationSpec<? extends Annotation> spec, final PredicateExpression expression,
-        final Object args, final List<?> fieldValue, final Root<?> root, final AbstractQuery<?> query, final CriteriaBuilder cb) {
+        final Object args, final List<?> fieldValue, final Root<?> root, final AbstractQuery<?> query, final CriteriaBuilder cb, final Expression<?> anchor) {
         if (Objects.isNull(expression)) {
             return Optional.empty();
         }
         if (expression instanceof FieldValueExpression && ExpressionCardinality.COLLECTION == expression.getCardinality()) {
             Object runtimeValue = RuntimeValueResolver.resolve((FieldValueExpression) expression, args, fieldValue);
             if (ExpressionSource.FIELD_VALUE == expression.getSource()) {
-                return Optional.of(cb.literal(runtimeValue));
+                return Optional.of(JpaExpressionResolver.literal(cb, runtimeValue, anchor, spec.getCollectionPolicy().getTargetFormat()));
             }
             if (ExpressionSource.FIELD_VALUE_PATH == expression.getSource()) {
                 Collection<?> runtimeCollection = transitionCollectionValue(runtimeValue);
@@ -341,26 +365,84 @@ public final class CompiledBuiltInPredicateSupport {
         }
         if (expression instanceof LiteralExpression && ExpressionCardinality.COLLECTION == expression.getCardinality()) {
             LiteralExpression literalExpression = (LiteralExpression) expression;
-            return Optional.of(cb.literal(
-                LiteralCodecs.parseCollection(literalExpression.getRawValue(), spec.getCollectionPolicy().getDecollator(), literalExpression.getJavaType())));
+            return Optional
+                .of(JpaExpressionResolver.literal(cb,
+                    JpaExpressionResolver.normalizeCollectionForExpression(LiteralCodecs.parseCollection(literalExpression.getRawValue(),
+                        spec.getCollectionPolicy().getDecollator(), literalExpression.getJavaType()), anchor, spec.getCollectionPolicy().getTargetFormat()),
+                    anchor, spec.getCollectionPolicy().getTargetFormat()));
         }
-        return resolveSingle(spec, expression, args, fieldValue, root, query, cb);
+        return resolveSingle(spec, expression, args, fieldValue, root, query, cb, anchor);
+    }
+
+    /**
+     * 解析 `IN / NOT IN` 右侧表达式并直接生成成员谓词.
+     *
+     * <p>
+     * 与普通“先解右值再 `left.in(right)`”不同, 该入口会优先处理集合 runtime/literal
+     * 值, 并逐项按左表达式类型做归一化. 这样可以避免把 `Collection<String>`、
+     * `Collection<Serializable>` 等过宽值直接送进 Hibernate 6 的成员比较逻辑.
+     * </p>
+     *
+     * @param spec           compiled 注解规格
+     * @param right          右侧 canonical 表达式
+     * @param leftExpression 左侧表达式包装
+     * @param args           请求参数对象
+     * @param fieldValue     当前集合值
+     * @param root           查询根节点
+     * @param query          当前查询对象
+     * @param cb             CriteriaBuilder
+     * @return 解析成功时返回最终成员谓词, 否则返回空
+     */
+    private static Optional<Predicate> resolveInPredicate(final CompiledAnnotationSpec<? extends Annotation> spec, final PredicateExpression right,
+        final Optional<Expression<?>> leftExpression, final Object args, final List<?> fieldValue, final Root<?> root, final AbstractQuery<?> query,
+        final CriteriaBuilder cb) {
+        if (!leftExpression.isPresent() || Objects.isNull(right)) {
+            return Optional.empty();
+        }
+        if (right instanceof FieldValueExpression && ExpressionCardinality.COLLECTION == right.getCardinality()) {
+            Object runtimeValue = RuntimeValueResolver.resolve((FieldValueExpression) right, args, fieldValue);
+            if (ExpressionSource.FIELD_VALUE == right.getSource()) {
+                Collection<?> collection = transitionCollectionValue(runtimeValue);
+                return null == collection ? Optional.<Predicate>empty()
+                    : Optional.of(leftExpression.get().in(JpaExpressionResolver.normalizeCollectionForExpression(collection, leftExpression.get(),
+                        spec.getCollectionPolicy().getTargetFormat())));
+            }
+            if (ExpressionSource.FIELD_VALUE_PATH == right.getSource()) {
+                Collection<?> runtimeCollection = transitionCollectionValue(runtimeValue);
+                if (null == runtimeCollection) {
+                    return Optional.empty();
+                }
+                Object pathValue = 1 == runtimeCollection.size() ? runtimeCollection.iterator().next() : runtimeCollection;
+                return Optional.of(leftExpression.get().in(JpaPathCompiler.compile(root, Objects.toString(pathValue))));
+            }
+        }
+        if (right instanceof LiteralExpression && ExpressionCardinality.COLLECTION == right.getCardinality()) {
+            LiteralExpression literalExpression = (LiteralExpression) right;
+            Collection<Object> values = LiteralCodecs.parseCollection(literalExpression.getRawValue(), spec.getCollectionPolicy().getDecollator(),
+                literalExpression.getJavaType());
+            return Optional.of(leftExpression.get()
+                .in(JpaExpressionResolver.normalizeCollectionForExpression(values, leftExpression.get(), spec.getCollectionPolicy().getTargetFormat())));
+        }
+        Optional<Expression<?>> rightExpression = resolveCollection(spec, right, args, fieldValue, root, query, cb, leftExpression.get());
+        return rightExpression.isPresent() ? Optional.of(leftExpression.get().in(rightExpression.get())) : Optional.<Predicate>empty();
     }
 
     /**
      * 解析 between 比较所需的起止表达式.
      *
-     * @param spec          compiled 注解规格
-     * @param predicateSpec between 谓词规格
-     * @param args          请求参数对象
-     * @param fieldValue    当前区间值
-     * @param root          查询根节点
-     * @param query         当前查询对象
-     * @param cb            CriteriaBuilder
+     * @param spec           compiled 注解规格
+     * @param predicateSpec  between 谓词规格
+     * @param leftExpression 左侧表达式包装；存在时会作为右侧端点的类型锚点
+     * @param args           请求参数对象
+     * @param fieldValue     当前区间值
+     * @param root           查询根节点
+     * @param query          当前查询对象
+     * @param cb             CriteriaBuilder
      * @return 起止表达式都可解析时返回区间表达式包装, 否则返回空
      */
     private static Optional<RangeExpressions> resolveRange(final CompiledAnnotationSpec<? extends Annotation> spec, final CompiledPredicateSpec predicateSpec,
-        final Object args, final Collection<?> fieldValue, final Root<?> root, final AbstractQuery<?> query, final CriteriaBuilder cb) {
+        final Optional<Expression<?>> leftExpression, final Object args, final Collection<?> fieldValue, final Root<?> root, final AbstractQuery<?> query,
+        final CriteriaBuilder cb) {
         PredicateExpression right = predicateSpec.getRight();
         if (Objects.isNull(right)) {
             return Optional.empty();
@@ -373,7 +455,11 @@ public final class CompiledBuiltInPredicateSupport {
             }
             List<?> values = rangeValue instanceof List<?> ? (List<?>) rangeValue : new ArrayList<Object>(rangeValue);
             if (ExpressionSource.FIELD_VALUE == right.getSource()) {
-                return Optional.of(RangeExpressions.of(cb.literal(values.get(0)), cb.literal(values.get(1))));
+                return leftExpression.isPresent()
+                    ? Optional.of(RangeExpressions.of(
+                        JpaExpressionResolver.literal(cb, values.get(0), leftExpression.get(), spec.getCollectionPolicy().getTargetFormat()),
+                        JpaExpressionResolver.literal(cb, values.get(1), leftExpression.get(), spec.getCollectionPolicy().getTargetFormat())))
+                    : Optional.of(RangeExpressions.of(literal(cb, values.get(0)), literal(cb, values.get(1))));
             }
             if (ExpressionSource.FIELD_VALUE_PATH == right.getSource()) {
                 return Optional.of(RangeExpressions.of(JpaPathCompiler.compile(root, Objects.toString(values.get(0))),
@@ -383,11 +469,16 @@ public final class CompiledBuiltInPredicateSupport {
         if (right instanceof LiteralExpression && ExpressionCardinality.RANGE == right.getCardinality()) {
             LiteralExpression literalExpression = (LiteralExpression) right;
             List<Object> rangeValues = LiteralCodecs.parseRange(literalExpression.getRawValue(), Constant.DECOLLATOR, literalExpression.getJavaType());
-            return Optional.of(RangeExpressions.of(cb.literal(rangeValues.get(0)), cb.literal(rangeValues.get(1))));
+            return leftExpression.isPresent()
+                ? Optional.of(RangeExpressions.of(
+                    JpaExpressionResolver.literal(cb, rangeValues.get(0), leftExpression.get(), spec.getCollectionPolicy().getTargetFormat()),
+                    JpaExpressionResolver.literal(cb, rangeValues.get(1), leftExpression.get(), spec.getCollectionPolicy().getTargetFormat())))
+                : Optional.of(RangeExpressions.of(literal(cb, rangeValues.get(0)), literal(cb, rangeValues.get(1))));
         }
         if (!predicateSpec.getExtraOperands().isEmpty()) {
-            Optional<Expression<?>> start = resolveSingle(spec, right, args, fieldValue, root, query, cb);
-            Optional<Expression<?>> end = resolveSingle(spec, predicateSpec.getExtraOperands().get(0), args, fieldValue, root, query, cb);
+            Optional<Expression<?>> start = resolveSingle(spec, right, args, fieldValue, root, query, cb, leftExpression.orElse(null));
+            Optional<Expression<?>> end = resolveSingle(spec, predicateSpec.getExtraOperands().get(0), args, fieldValue, root, query, cb,
+                leftExpression.orElse(null));
             if (start.isPresent() && end.isPresent()) {
                 return Optional.of(RangeExpressions.of(start.get(), end.get()));
             }
@@ -579,7 +670,7 @@ public final class CompiledBuiltInPredicateSupport {
         final CompiledPredicateSpec predicateSpec, final Object args, final Object fieldValue, final Root<?> root, final AbstractQuery<?> query,
         final CriteriaBuilder cb) {
         Optional<Expression<?>> leftExpression = resolveSingle(spec, predicateSpec.getLeft(), args, fieldValue, root, query, cb);
-        Optional<Expression<?>> rightExpression = resolveSingle(spec, predicateSpec.getRight(), args, fieldValue, root, query, cb);
+        Optional<Expression<?>> rightExpression = resolveSingle(spec, predicateSpec.getRight(), args, fieldValue, root, query, cb, leftExpression.orElse(null));
         if (!leftExpression.isPresent() || !rightExpression.isPresent()) {
             return Optional.empty();
         }
@@ -671,6 +762,11 @@ public final class CompiledBuiltInPredicateSupport {
             normalized[index] = Array.get(fieldValue, index);
         }
         return normalized;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Expression<T> literal(final CriteriaBuilder cb, final Object value) {
+        return cb.literal((T) value);
     }
 
     /**

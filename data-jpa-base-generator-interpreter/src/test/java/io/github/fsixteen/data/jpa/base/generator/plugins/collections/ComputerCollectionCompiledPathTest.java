@@ -219,26 +219,25 @@ public class ComputerCollectionCompiledPathTest {
         CompiledPredicateProviderRegistry.clear();
         ServiceLoaderBootstrap.reload();
 
+        assertTrue(CompiledPredicateProviderRegistry.containsRegistered(Selectable.class));
+        assertTrue(CompiledPredicateProviderRegistry.containsRegistered(Existed.class));
         assertTrue(CompiledPredicateProviderRegistry.containsRegistered(Compare.class));
+        assertTrue(CompiledPredicateProviderRegistry.containsRegistered(Equal.class));
+        assertTrue(CompiledPredicateProviderRegistry.containsRegistered(Gt.class));
+        assertTrue(CompiledPredicateProviderRegistry.containsRegistered(Membership.class));
+        assertTrue(CompiledPredicateProviderRegistry.containsRegistered(SplitIn.class));
+        assertTrue(CompiledPredicateProviderRegistry.containsRegistered(NullCheck.class));
+        assertTrue(CompiledPredicateProviderRegistry.containsRegistered(Exists.class));
         assertTrue(CompiledPredicateProviderRegistry.containsRegistered(SubqueryPredicate.class));
         assertTrue(CompiledPredicateProviderRegistry.containsRegistered(Cases.class));
         assertTrue(CompiledPredicateProviderRegistry.containsRegistered(io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Null.class));
 
-        assertFalse(CompiledPredicateProviderRegistry.containsRegistered(Equal.class));
-        assertFalse(CompiledPredicateProviderRegistry.containsRegistered(Selectable.class));
-        assertFalse(CompiledPredicateProviderRegistry.containsRegistered(Existed.class));
-        assertFalse(CompiledPredicateProviderRegistry.containsRegistered(Gt.class));
-        assertFalse(CompiledPredicateProviderRegistry.containsRegistered(Exists.class));
-
         assertSame(CompiledPredicateProviderRegistry.reference(Compare.class), CompiledPredicateProviderRegistry.reference(Equal.class));
         assertSame(CompiledPredicateProviderRegistry.reference(Compare.class), CompiledPredicateProviderRegistry.reference(Selectable.class));
         assertSame(CompiledPredicateProviderRegistry.reference(Compare.class), CompiledPredicateProviderRegistry.reference(Existed.class));
+        assertSame(CompiledPredicateProviderRegistry.reference(Compare.class), CompiledPredicateProviderRegistry.reference(Gt.class));
+        assertSame(CompiledPredicateProviderRegistry.reference(Compare.class), CompiledPredicateProviderRegistry.reference(NullCheck.class));
         assertSame(CompiledPredicateProviderRegistry.reference(SubqueryPredicate.class), CompiledPredicateProviderRegistry.reference(Exists.class));
-
-        assertTrue(CompiledPredicateProviderRegistry.containsRegistered(Equal.class));
-        assertTrue(CompiledPredicateProviderRegistry.containsRegistered(Selectable.class));
-        assertTrue(CompiledPredicateProviderRegistry.containsRegistered(Existed.class));
-        assertTrue(CompiledPredicateProviderRegistry.containsRegistered(Exists.class));
     }
 
     @Test

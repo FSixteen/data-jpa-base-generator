@@ -7,14 +7,53 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import io.github.fsixteen.data.jpa.base.generator.annotations.Existed;
+import io.github.fsixteen.data.jpa.base.generator.annotations.Selectable;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Between;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Cases;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Compare;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.EndWith;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Equal;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Exists;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.FilterIn;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.FilterNotIn;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.GreaterThan;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.GreaterThanOrEqualTo;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Gt;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Gte;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.IgnoreCaseEqual;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.IgnoreCaseLike;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.In;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.InTable;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.IsNotNull;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.IsNull;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.LeftLike;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Length;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.LessThan;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.LessThanOrEqualTo;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Like;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Lt;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Lte;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Membership;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NotBetween;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NotEqual;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NotExists;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NotIn;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NotLike;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Null;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.NullCheck;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Range;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.RightLike;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitIn;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SplitNotIn;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.StartWith;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.SubqueryPredicate;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.TextMatch;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.TupleExists;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.TupleInValues;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.TupleNotExists;
 import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.TupleNotInValues;
+import io.github.fsixteen.data.jpa.base.generator.annotations.plugins.Unique;
 import io.github.fsixteen.data.jpa.base.generator.plugins.constant.ComparableType;
 import io.github.fsixteen.data.jpa.base.generator.plugins.spi.CompiledPredicateProvider;
 import io.github.fsixteen.data.jpa.base.generator.plugins.spi.CompiledPredicateProviderRegistry;
@@ -40,18 +79,34 @@ public final class BuiltInCompiledPredicateProviders {
      * 注册 compiled 主链路内建支持的 provider.
      */
     public static void registerAll() {
-        // 这里优先注册 canonical 家族与少数特殊能力注解.
-        // Selectable / Existed 这类角色元注解也不再直接注册 compare provider,
-        // 而是和其余快捷注解、组合注解一起统一交给 registry 的递归元注解路由解析,
-        // 避免每新增一个语义别名都要在这里再登记一遍.
-        register(Compare.class, new GenericCompareProvider());
-        register(SubqueryPredicate.class, new SubqueryProvider());
+        registerCompareFamily();
+        registerSubqueryFamily();
         register(Cases.class, new CasesProvider());
         register(Null.class, new NullProvider());
         register(TupleInValues.class, new TupleValuesProvider());
         register(TupleNotInValues.class, new TupleValuesProvider());
         register(TupleExists.class, new TupleSubqueryProvider());
         register(TupleNotExists.class, new TupleSubqueryProvider());
+    }
+
+    private static void registerCompareFamily() {
+        CompiledPredicateProvider provider = new GenericCompareProvider();
+        register(provider, Selectable.class, Existed.class, Compare.class, Equal.class, NotEqual.class, Unique.class, IgnoreCaseEqual.class, Membership.class,
+            In.class, NotIn.class, SplitIn.class, SplitNotIn.class, FilterIn.class, FilterNotIn.class, Range.class, Between.class, NotBetween.class,
+            NullCheck.class, IsNull.class, IsNotNull.class, Like.class, NotLike.class, StartWith.class, EndWith.class, LeftLike.class, RightLike.class,
+            TextMatch.class, IgnoreCaseLike.class, Gt.class, Gte.class, Lt.class, Lte.class, GreaterThan.class, GreaterThanOrEqualTo.class, LessThan.class,
+            LessThanOrEqualTo.class, Length.class);
+    }
+
+    private static void registerSubqueryFamily() {
+        register(new SubqueryProvider(), SubqueryPredicate.class, Exists.class, NotExists.class, InTable.class);
+    }
+
+    @SafeVarargs
+    private static void register(final CompiledPredicateProvider provider, final Class<? extends Annotation>... annotationTypes) {
+        for (Class<? extends Annotation> annotationType : annotationTypes) {
+            register(annotationType, provider);
+        }
     }
 
     /**

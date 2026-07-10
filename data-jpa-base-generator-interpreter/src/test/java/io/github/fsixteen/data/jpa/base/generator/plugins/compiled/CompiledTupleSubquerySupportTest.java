@@ -130,6 +130,7 @@ public class CompiledTupleSubquerySupportTest {
         public Integer getTenantId() {
             return this.tenantId;
         }
+
     }
 
     @SuppressWarnings("unused")
@@ -155,6 +156,7 @@ public class CompiledTupleSubquerySupportTest {
         public Integer getB() {
             return this.b;
         }
+
     }
 
 }

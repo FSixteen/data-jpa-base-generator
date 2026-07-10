@@ -1,6 +1,9 @@
 package io.github.fsixteen.data.jpa.base.generator.plugins.compiler;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -133,6 +136,32 @@ public final class JpaExpressionResolver {
     }
 
     /**
+     * 将 canonical 表达式解析为 JPA {@link Expression}, 并显式使用一个“类型锚点”约束右值类型.
+     *
+     * <p>
+     * 该重载主要服务于 Hibernate 6 等更严格的 Criteria 类型校验场景：
+     * 当当前表达式来源于运行时字段值或固定字面量时, 会优先参考 {@code anchor}
+     * 的 {@link Expression#getJavaType()} 对右值做归一化, 从而避免把
+     * {@link String}、{@link java.io.Serializable} 等过宽类型直接送入比较表达式.
+     * </p>
+     *
+     * @param expression 待解析的 canonical 表达式；允许为 {@code null}
+     * @param fieldValue 当前注解绑定字段的运行时值
+     * @param root       当前查询根实体
+     * @param query      当前查询对象；部分表达式类型可能不会直接使用它
+     * @param cb         当前 CriteriaBuilder
+     * @param anchor     类型锚点表达式；为 {@code null} 或其 Java 类型未知时回退到表达式自身声明类型
+     * @param format     日期时间等字面量解析格式；为空时使用默认解析规则
+     * @param <T>        目标 JPA 表达式泛型
+     * @return 解析后的 JPA 表达式；若输入表达式为 {@code null} 或当前来源不支持解析, 则返回 {@code null}
+     * @throws IllegalArgumentException 当字面量/运行时值无法安全归一化为锚点类型时抛出
+     */
+    public static <T> Expression<T> resolve(final PredicateExpression expression, final Object fieldValue, final Root<?> root, final AbstractQuery<?> query,
+        final CriteriaBuilder cb, final Expression<?> anchor, final String format) {
+        return resolve(expression, null, fieldValue, root, query, cb, anchor, format);
+    }
+
+    /**
      * 将 canonical 表达式解析为 JPA {@link Expression}.
      *
      * <p>
@@ -161,6 +190,33 @@ public final class JpaExpressionResolver {
      */
     public static <T> Expression<T> resolve(final PredicateExpression expression, final Object args, final Object fieldValue, final Root<?> root,
         final AbstractQuery<?> query, final CriteriaBuilder cb) {
+        return resolve(expression, args, fieldValue, root, query, cb, null, null);
+    }
+
+    /**
+     * 将 canonical 表达式解析为 JPA {@link Expression}, 并在必要时按锚点表达式类型归一化右值.
+     *
+     * <p>
+     * 与基础重载相比, 该入口允许调用方传入一条左值表达式作为比较基准.
+     * 当当前表达式来自 {@code FIELD_VALUE} 或 {@code LITERAL} 时,
+     * 解析器会优先尝试把值转换到锚点类型, 从而让二元比较、区间比较、集合成员比较在
+     * Spring Boot 3 / Hibernate 6 的严格类型检查下仍能稳定工作.
+     * </p>
+     *
+     * @param expression 待解析的 canonical 表达式；允许为 {@code null}
+     * @param args       当前查询参数对象；值路径与函数参数求值会从这里读取属性
+     * @param fieldValue 当前注解绑定字段的运行时值
+     * @param root       当前查询根实体
+     * @param query      当前查询对象；主要用于保持统一签名, 部分表达式分支不会直接使用
+     * @param cb         当前 CriteriaBuilder
+     * @param anchor     类型锚点表达式；为 {@code null} 时按表达式自身语义解析
+     * @param format     目标类型转换时使用的日期时间格式；为空时按默认规则解析
+     * @param <T>        目标 JPA 表达式泛型
+     * @return 解析后的 JPA 表达式；若输入表达式为 {@code null} 或当前来源不支持解析, 则返回 {@code null}
+     * @throws IllegalArgumentException 当函数字符串参数校验失败, 或右值无法转换为锚点类型时抛出
+     */
+    public static <T> Expression<T> resolve(final PredicateExpression expression, final Object args, final Object fieldValue, final Root<?> root,
+        final AbstractQuery<?> query, final CriteriaBuilder cb, final Expression<?> anchor, final String format) {
         if (Objects.isNull(expression)) {
             return null;
         }
@@ -170,8 +226,9 @@ public final class JpaExpressionResolver {
             return castExpression(JpaPathCompiler.compile(root, ((PathExpression) expression).getPath()));
         }
         if (ExpressionSource.FIELD_VALUE == expression.getSource()) {
-            return literal(cb, RuntimeValueResolver.resolve((io.github.fsixteen.data.jpa.base.generator.plugins.expression.FieldValueExpression) expression,
-                args, fieldValue));
+            return literal(cb, normalizeValueForExpression(
+                RuntimeValueResolver.resolve((io.github.fsixteen.data.jpa.base.generator.plugins.expression.FieldValueExpression) expression, args, fieldValue),
+                anchor, format));
         }
         if (ExpressionSource.FIELD_VALUE_PATH == expression.getSource()) {
             Object runtimeValue = RuntimeValueResolver.resolve((io.github.fsixteen.data.jpa.base.generator.plugins.expression.FieldValueExpression) expression,
@@ -180,7 +237,7 @@ public final class JpaExpressionResolver {
         }
         if (ExpressionSource.LITERAL == expression.getSource()) {
             LiteralExpression literalExpression = (LiteralExpression) expression;
-            return literal(cb, LiteralCodecs.parse(literalExpression.getRawValue(), literalExpression.getJavaType()));
+            return literal(cb, parseLiteral(literalExpression, anchor, format));
         }
         if (ExpressionSource.FUNCTION == expression.getSource()) {
             FunctionExpression functionExpression = (FunctionExpression) expression;
@@ -235,6 +292,68 @@ public final class JpaExpressionResolver {
             resolvedArgs.add(resolve(expression, args, fieldValue, root, query, cb));
         }
         return resolvedArgs.toArray(new Expression<?>[resolvedArgs.size()]);
+    }
+
+    /**
+     * 按给定锚点表达式类型批量归一化一个集合中的元素值.
+     *
+     * <p>
+     * 该方法主要服务于 `IN / NOT IN / SPLIT IN` 这类集合比较场景,
+     * 确保集合内每一个元素都与左侧表达式的 Java 类型保持一致.
+     * </p>
+     *
+     * @param values 待归一化的原始集合值
+     * @param anchor 类型锚点表达式；为空或类型未知时返回原值集合副本
+     * @param format 日期时间等字面量格式
+     * @return 归一化后的新集合；顺序与输入集合保持一致
+     * @throws IllegalArgumentException 当某个元素无法转换为锚点类型时抛出
+     */
+    public static Collection<Object> normalizeCollectionForExpression(final Collection<?> values, final Expression<?> anchor, final String format) {
+        List<Object> normalized = new ArrayList<Object>(values.size());
+        for (Object value : values) {
+            normalized.add(normalizeValueForExpression(value, anchor, format));
+        }
+        return normalized;
+    }
+
+    /**
+     * 按给定锚点表达式类型归一化一个运行时值.
+     *
+     * <p>
+     * 若锚点表达式不存在、未暴露确定 Java 类型, 或值本身已经兼容目标类型,
+     * 则直接返回原值. 否则会尝试执行字符串、数值、枚举、布尔、字符和日期时间等受控转换.
+     * </p>
+     *
+     * @param value  待归一化的原始值；允许为 {@code null}
+     * @param anchor 类型锚点表达式
+     * @param format 日期时间类转换格式
+     * @return 归一化后的值；输入为 {@code null} 时返回 {@code null}
+     * @throws IllegalArgumentException 当值无法安全转换为锚点类型时抛出
+     */
+    public static Object normalizeValueForExpression(final Object value, final Expression<?> anchor, final String format) {
+        if (Objects.isNull(value)) {
+            return null;
+        }
+        Class<?> targetType = concreteJavaType(anchor);
+        if (Objects.isNull(targetType)) {
+            return value;
+        }
+        return convertValue(value, targetType, format);
+    }
+
+    /**
+     * 先按锚点类型归一化普通 Java 值, 再包装为 Criteria 字面量表达式.
+     *
+     * @param cb     当前 CriteriaBuilder
+     * @param value  待包装的原始值
+     * @param anchor 类型锚点表达式
+     * @param format 日期时间类转换格式
+     * @param <T>    字面量表达式值类型
+     * @return 归一化后的 Criteria 字面量表达式
+     * @throws IllegalArgumentException 当值无法安全转换为锚点类型时抛出
+     */
+    public static <T> Expression<T> literal(final CriteriaBuilder cb, final Object value, final Expression<?> anchor, final String format) {
+        return literal(cb, normalizeValueForExpression(value, anchor, format));
     }
 
     /**
@@ -324,6 +443,155 @@ public final class JpaExpressionResolver {
         } catch (RuntimeException ex) {
             return false;
         }
+    }
+
+    /**
+     * 解析固定字面量, 并在锚点类型明确时优先按锚点类型解码.
+     *
+     * @param expression 待解析的字面量表达式
+     * @param anchor     类型锚点表达式
+     * @param format     日期时间类解析格式
+     * @return 解码后的普通 Java 值
+     */
+    private static Object parseLiteral(final LiteralExpression expression, final Expression<?> anchor, final String format) {
+        Class<?> targetType = concreteJavaType(anchor);
+        if (Objects.nonNull(targetType)) {
+            return LiteralCodecs.parse(expression.getRawValue(), targetType, format);
+        }
+        return LiteralCodecs.parse(expression.getRawValue(), expression.getJavaType());
+    }
+
+    /**
+     * 读取锚点表达式的具体 Java 类型, 并把 primitive 包装为对应包装类型.
+     *
+     * @param anchor 类型锚点表达式
+     * @return 可用于值归一化的具体 Java 类型；未知时返回 {@code null}
+     */
+    private static Class<?> concreteJavaType(final Expression<?> anchor) {
+        if (Objects.isNull(anchor)) {
+            return null;
+        }
+        Class<?> javaType = anchor.getJavaType();
+        return Objects.isNull(javaType) || Object.class == javaType ? null : wrapPrimitive(javaType);
+    }
+
+    /**
+     * 将普通 Java 值转换为指定目标类型.
+     *
+     * <p>
+     * 当前支持字符串、数值、枚举、布尔、字符以及基于字符串 codec 的日期时间类转换.
+     * 若值已兼容目标类型则原样返回；若不支持该转换组合则立即抛错, 避免把类型问题推迟到
+     * Hibernate Criteria 构建阶段才暴露.
+     * </p>
+     *
+     * @param value      原始值
+     * @param targetType 目标类型
+     * @param format     日期时间类转换格式
+     * @return 转换后的值
+     * @throws IllegalArgumentException 当当前值无法转换为目标类型时抛出
+     */
+    private static Object convertValue(final Object value, final Class<?> targetType, final String format) {
+        if (Objects.isNull(targetType) || Object.class == targetType || targetType.isInstance(value)) {
+            return value;
+        }
+        if (value instanceof String) {
+            return LiteralCodecs.parse(String.class.cast(value), targetType, format);
+        }
+        if (value instanceof Number && Number.class.isAssignableFrom(targetType)) {
+            return convertNumber((Number) value, targetType);
+        }
+        if (targetType.isEnum()) {
+            return LiteralCodecs.parse(Objects.toString(value), targetType, format);
+        }
+        if (String.class == targetType) {
+            return Objects.toString(value, null);
+        }
+        if (Boolean.class == targetType && value instanceof Number) {
+            return Boolean.valueOf(0 != ((Number) value).intValue());
+        }
+        if (Character.class == targetType) {
+            String text = Objects.toString(value, "");
+            return text.isEmpty() ? null : Character.valueOf(text.charAt(0));
+        }
+        if (value instanceof CharSequence) {
+            return LiteralCodecs.parse(value.toString(), targetType, format);
+        }
+        if (targetType.isAssignableFrom(value.getClass())) {
+            return value;
+        }
+        throw new IllegalArgumentException("Unsupported expression value conversion from " + value.getClass().getName() + " to " + targetType.getName());
+    }
+
+    /**
+     * 在数值体系内部执行受控收窄/放宽转换.
+     *
+     * @param number     原始数值
+     * @param targetType 目标数值类型
+     * @return 转换后的数值对象；若未命中特殊分支则返回原始数值对象
+     */
+    private static Object convertNumber(final Number number, final Class<?> targetType) {
+        if (Integer.class == targetType) {
+            return Integer.valueOf(number.intValue());
+        }
+        if (Long.class == targetType) {
+            return Long.valueOf(number.longValue());
+        }
+        if (Short.class == targetType) {
+            return Short.valueOf(number.shortValue());
+        }
+        if (Byte.class == targetType) {
+            return Byte.valueOf(number.byteValue());
+        }
+        if (Double.class == targetType) {
+            return Double.valueOf(number.doubleValue());
+        }
+        if (Float.class == targetType) {
+            return Float.valueOf(number.floatValue());
+        }
+        if (BigDecimal.class == targetType) {
+            return new BigDecimal(number.toString());
+        }
+        if (BigInteger.class == targetType) {
+            return BigInteger.valueOf(number.longValue());
+        }
+        return number;
+    }
+
+    /**
+     * 将 primitive 类型映射为其包装类型, 便于统一参与值转换链路.
+     *
+     * @param type 原始类型
+     * @return 若输入为 primitive, 则返回对应包装类型；否则返回原类型
+     */
+    private static Class<?> wrapPrimitive(final Class<?> type) {
+        if (!type.isPrimitive()) {
+            return type;
+        }
+        if (int.class == type) {
+            return Integer.class;
+        }
+        if (long.class == type) {
+            return Long.class;
+        }
+        if (short.class == type) {
+            return Short.class;
+        }
+        if (byte.class == type) {
+            return Byte.class;
+        }
+        if (double.class == type) {
+            return Double.class;
+        }
+        if (float.class == type) {
+            return Float.class;
+        }
+        if (boolean.class == type) {
+            return Boolean.class;
+        }
+        if (char.class == type) {
+            return Character.class;
+        }
+        return type;
     }
 
     /**

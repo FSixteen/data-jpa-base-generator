@@ -41,6 +41,7 @@ public final class RuntimeExpressionEvaluator {
      * 单参字符串函数枚举.
      */
     private enum UnaryStringOperator {
+
         LOWER("lower"), UPPER("upper"), TRIM("trim");
 
         private final String functionName;
@@ -62,6 +63,7 @@ public final class RuntimeExpressionEvaluator {
         private String functionName() {
             return this.functionName;
         }
+
     }
 
     /**

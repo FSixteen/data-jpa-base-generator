@@ -206,6 +206,7 @@ public class CompiledTuplePredicateSupportTest {
         public List<PairRow> getPairs() {
             return this.pairs;
         }
+
     }
 
     @SuppressWarnings("unused")
@@ -218,6 +219,7 @@ public class CompiledTuplePredicateSupportTest {
         public int[][] getPairs() {
             return this.pairs;
         }
+
     }
 
     @SuppressWarnings("unused")
@@ -248,6 +250,7 @@ public class CompiledTuplePredicateSupportTest {
         public Set<Long[]> getPairs() {
             return this.pairs;
         }
+
     }
 
     @SuppressWarnings("unused")
@@ -260,6 +263,7 @@ public class CompiledTuplePredicateSupportTest {
         public Object[][] getPairs() {
             return this.pairs;
         }
+
     }
 
     public static final class PairRow {
@@ -282,6 +286,7 @@ public class CompiledTuplePredicateSupportTest {
         public ValueHolder getRight() {
             return this.right;
         }
+
     }
 
     public static final class ValueHolder {
@@ -295,6 +300,7 @@ public class CompiledTuplePredicateSupportTest {
         public String getValue() {
             return this.value;
         }
+
     }
 
 }

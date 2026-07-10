@@ -29,6 +29,12 @@ public final class RegisteredPredicateResolver {
     /**
      * 解析一份注册式谓词模板.
      *
+     * <p>
+     * 这里会先解析左表达式, 再以左表达式 Java 类型作为右表达式的可选锚点继续解析右值.
+     * 这样注册式模板在比较 literal / field-value 右值时, 也能复用 compiled 主链路里的
+     * 严格类型归一化规则.
+     * </p>
+     *
      * @param template   谓词模板
      * @param fieldValue 当前字段运行时值
      * @param root       当前查询根实体
@@ -41,7 +47,7 @@ public final class RegisteredPredicateResolver {
         // registry/template 路径最终都会汇聚到同一种表达式求值方式,
         // 差别只在“模板从哪里来”, 而不是“怎么落成 Predicate”.
         Expression<?> left = JpaExpressionResolver.resolve(template.getLeft(), fieldValue, root, query, cb);
-        Expression<?> right = JpaExpressionResolver.resolve(template.getRight(), fieldValue, root, query, cb);
+        Expression<?> right = JpaExpressionResolver.resolve(template.getRight(), fieldValue, root, query, cb, left, null);
         PredicateOperator operator = template.getOperator();
         if (PredicateOperator.IN == operator || PredicateOperator.NOT_IN == operator || PredicateOperator.BETWEEN == operator
             || PredicateOperator.NOT_BETWEEN == operator || PredicateOperator.IS_NULL == operator || PredicateOperator.IS_NOT_NULL == operator

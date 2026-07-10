@@ -12,6 +12,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import io.github.fsixteen.data.jpa.base.generator.plugins.compiler.JpaExpressionResolver;
 import io.github.fsixteen.data.jpa.base.generator.plugins.compiler.JpaPathCompiler;
 
 /**
@@ -76,7 +77,7 @@ public final class CompiledTuplePredicateSupport {
             }
             Path<?> left = JpaPathCompiler.compile(root, column.getLeftPath());
             Object convertedValue = convertValue(tupleSpec, rowIndex, columnIndex, column, rawValue, left);
-            predicates.add(cb.equal(left, literal(cb, convertedValue)));
+            predicates.add(cb.equal(left, literal(cb, convertedValue, left)));
             columnIndex++;
         }
         if (predicates.isEmpty()) {
@@ -124,8 +125,8 @@ public final class CompiledTuplePredicateSupport {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> Expression<T> literal(final CriteriaBuilder cb, final Object value) {
-        return cb.literal((T) value);
+    private static <T> Expression<T> literal(final CriteriaBuilder cb, final Object value, final Path<?> left) {
+        return (Expression<T>) JpaExpressionResolver.literal(cb, value, left, "");
     }
 
 }
